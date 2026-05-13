@@ -1,3 +1,4 @@
+@config '../../tailwind.config.js';
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -8,4 +9,414 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --page: #f6f2fb;
+        --page-alt: #ffffff;
+        --panel: rgb(255 255 255 / 0.82);
+        --panel-strong: #ffffff;
+        --card-soft: #efe6f6;
+        --card: rgb(237 228 244 / 0.92);
+        --line: rgb(111 76 151 / 0.12);
+        --text: #594f68;
+        --text-strong: #16111f;
+        --muted: #8d809d;
+        --accent: #8b5cf6;
+        --accent-strong: #7441eb;
+    }
+
+    html {
+        color-scheme: light;
+    }
+
+    html.dark {
+        color-scheme: dark;
+        --page: #0f0f12;
+        --page-alt: #17171c;
+        --panel: rgb(20 20 24 / 0.84);
+        --panel-strong: #151519;
+        --card-soft: #16161b;
+        --card: rgb(22 22 27 / 0.95);
+        --line: rgb(255 255 255 / 0.06);
+        --text: #9b9ba4;
+        --text-strong: #f8f7fb;
+        --muted: #71717c;
+        --accent: #a279ff;
+        --accent-strong: #8d63fb;
+    }
+
+    body {
+        @apply min-h-screen antialiased transition-colors duration-300;
+        font-family: var(--font-sans);
+        color: var(--text);
+        background-image:
+            radial-gradient(circle at top, rgb(139 92 246 / 0.12), transparent 28%),
+            linear-gradient(180deg, var(--page) 0%, var(--page-alt) 100%);
+    }
+
+    html.dark body {
+        background-image:
+            radial-gradient(circle at top, rgb(139 92 246 / 0.1), transparent 18%),
+            linear-gradient(180deg, var(--page) 0%, #0b0b0e 100%);
+    }
+
+    ::selection {
+        @apply bg-violet-200 text-violet-950;
+    }
+
+    html.dark ::selection {
+        @apply bg-violet-500/40 text-violet-50;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: var(--text-strong);
+    }
+
+    a {
+        @apply transition-colors duration-200;
+    }
+
+    input,
+    select,
+    textarea {
+        @apply rounded-2xl outline-none transition duration-200;
+        border: 1px solid var(--line);
+        background: var(--card-soft);
+        color: var(--text-strong);
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        @apply ring-4 ring-violet-500/15;
+        border-color: rgb(139 92 246 / 0.35);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--muted);
+    }
+
+    table {
+        @apply w-full border-collapse;
+    }
+
+    th {
+        @apply px-4 py-3 text-left text-sm font-semibold;
+        border-bottom: 1px solid var(--line);
+        color: var(--text);
+    }
+
+    td {
+        @apply px-4 py-3 text-sm;
+        border-bottom: 1px solid var(--line);
+        color: var(--text);
+    }
+}
+
+@layer components {
+    .app-shell {
+        @apply flex min-h-screen;
+    }
+
+    .workspace-sidebar {
+        @apply border-r backdrop-blur-xl transition-transform duration-300;
+        border-color: var(--line);
+        background: color-mix(in srgb, var(--panel-strong) 92%, transparent);
+    }
+
+    .workspace-switcher {
+        @apply flex items-center gap-3 rounded-2xl p-3;
+        border: 1px solid var(--line);
+        background: var(--card-soft);
+    }
+
+    .sidebar-section-title {
+        @apply px-3 text-[10px] font-semibold uppercase tracking-[0.22em];
+        color: var(--muted);
+    }
+
+    .sidebar-link {
+        @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200;
+        color: var(--text);
+        border: 1px solid transparent;
+    }
+
+    .sidebar-link:hover {
+        color: var(--text-strong);
+        background: color-mix(in srgb, var(--accent) 10%, var(--card-soft));
+        border-color: color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .active-link {
+        color: white;
+        border-color: transparent;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+        box-shadow: 0 12px 24px -14px rgb(139 92 246 / 0.8);
+    }
+
+    .sidebar-icon {
+        @apply flex h-8 w-8 items-center justify-center rounded-lg;
+        background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+    }
+
+    .sidebar-icon svg {
+        @apply h-4 w-4;
+    }
+
+    .active-link .sidebar-icon {
+        background: rgb(255 255 255 / 0.14);
+    }
+
+    .icon-button {
+        @apply inline-flex h-10 items-center justify-center rounded-xl px-3 transition;
+        border: 1px solid var(--line);
+        background: var(--card-soft);
+        color: var(--text);
+    }
+
+    .icon-button:hover {
+        color: var(--text-strong);
+        border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+    .topbar-chip {
+        @apply inline-flex items-center rounded-xl px-4 py-2 text-sm transition;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        background: transparent;
+    }
+
+    .topbar-chip-active {
+        color: var(--text-strong);
+        background: var(--card-soft);
+    }
+
+    .metric-card {
+        @apply rounded-3xl p-5;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: 0 18px 40px -28px rgb(15 23 42 / 0.32);
+    }
+
+    .metric-card-featured {
+        background:
+            radial-gradient(circle at top right, rgb(139 92 246 / 0.14), transparent 30%),
+            var(--panel);
+    }
+
+    .metric-label {
+        @apply text-[10px] font-semibold uppercase tracking-[0.24em];
+        color: var(--muted);
+    }
+
+    .metric-value {
+        @apply text-4xl font-semibold leading-none;
+        color: var(--text-strong);
+    }
+
+    .filter-pill {
+        @apply rounded-full px-3 py-1.5 text-xs font-medium transition;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--muted);
+    }
+
+    .filter-pill-active,
+    .filter-pill:hover {
+        background: color-mix(in srgb, var(--accent) 16%, var(--panel));
+        color: var(--text-strong);
+    }
+
+    .avatar-stack {
+        @apply flex items-center;
+    }
+
+    .avatar-dot {
+        @apply flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-semibold;
+        margin-left: -0.35rem;
+        border: 2px solid var(--page-alt);
+        background: linear-gradient(135deg, var(--accent) 0%, #2dd4bf 100%);
+        color: white;
+    }
+
+    .avatar-dot:first-child {
+        margin-left: 0;
+    }
+
+    .board-grid {
+        @apply grid gap-4;
+        grid-template-columns: repeat(4, minmax(250px, 1fr));
+    }
+
+    .board-column {
+        @apply min-w-0 rounded-3xl p-1;
+    }
+
+    .board-column-title {
+        @apply text-xs font-semibold uppercase tracking-[0.2em];
+        color: var(--text);
+    }
+
+    .board-column-count {
+        @apply text-xs;
+        color: var(--muted);
+    }
+
+    .task-card {
+        @apply rounded-2xl p-4 transition-transform duration-200;
+        border: 1px solid var(--line);
+        background: var(--card);
+        box-shadow: 0 16px 30px -24px rgb(15 23 42 / 0.25);
+    }
+
+    .task-card:hover {
+        transform: translateY(-2px);
+        border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+    }
+
+    .task-title {
+        @apply text-sm font-medium leading-5;
+        color: var(--text-strong);
+    }
+
+    .task-menu {
+        @apply rounded-lg px-2 py-1 text-xs transition;
+        color: var(--muted);
+    }
+
+    .task-menu:hover {
+        background: rgb(255 255 255 / 0.05);
+        color: var(--text-strong);
+    }
+
+    .task-description {
+        @apply mt-3 text-xs leading-5;
+        color: var(--muted);
+    }
+
+    .tag-chip {
+        @apply rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em];
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 70%, transparent);
+        color: var(--muted);
+    }
+
+    .tag-chip-violet {
+        background: rgb(139 92 246 / 0.16);
+        color: #c4b5fd;
+        border-color: rgb(139 92 246 / 0.25);
+    }
+
+    .tag-chip-amber {
+        background: rgb(245 158 11 / 0.16);
+        color: #fcd34d;
+        border-color: rgb(245 158 11 / 0.25);
+    }
+
+    .tag-chip-emerald {
+        background: rgb(16 185 129 / 0.16);
+        color: #6ee7b7;
+        border-color: rgb(16 185 129 / 0.25);
+    }
+
+    .progress-track {
+        @apply h-1.5 overflow-hidden rounded-full;
+        background: color-mix(in srgb, var(--text-strong) 12%, transparent);
+    }
+
+    .progress-bar {
+        @apply h-full rounded-full;
+        background: linear-gradient(90deg, var(--accent) 0%, #34d399 100%);
+    }
+
+    .mini-avatar {
+        @apply flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold text-white;
+        background: linear-gradient(135deg, var(--accent) 0%, #22c55e 100%);
+        border: 2px solid var(--card);
+    }
+
+    .mini-avatar-secondary {
+        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    }
+
+    .empty-column-card {
+        @apply flex min-h-24 items-center justify-center rounded-2xl border border-dashed p-4 text-center text-sm;
+        border-color: var(--line);
+        color: var(--muted);
+        background: transparent;
+    }
+
+    .board-add-card {
+        @apply w-full rounded-2xl border border-dashed px-4 py-3 text-sm transition;
+        border-color: var(--line);
+        color: var(--muted);
+        background: transparent;
+    }
+
+    .board-add-card:hover {
+        border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+        color: var(--text-strong);
+    }
+
+    .card {
+        @apply rounded-2xl p-5;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: 0 20px 45px -30px rgb(15 23 42 / 0.25);
+    }
+
+    .panel-dark {
+        @apply rounded-2xl shadow-xl backdrop-blur-sm;
+        border: 1px solid var(--line);
+        background: var(--panel);
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-white transition duration-200;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+        box-shadow: 0 16px 28px -18px rgb(139 92 246 / 0.8);
+    }
+
+    .btn-primary:focus {
+        @apply ring-4 ring-violet-500/20 outline-none;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 font-medium transition duration-200;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--text);
+    }
+
+    .btn-secondary:hover {
+        color: var(--text-strong);
+        border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+        border-radius: 9999px;
+        background: rgb(139 92 246 / 0.22);
+    }
+
+    .custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
 }
