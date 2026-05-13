@@ -2,12 +2,13 @@
 
 @section('content')
     @php
-        $projectCollection = collect($projects->items());
+        $projectCollection = $allFilteredProjects;
+        $queryWithoutStatus = request()->except(['status', 'page']);
 
         $stats = [
             [
                 'label' => 'Total tasks',
-                'value' => $projects->total(),
+                'value' => $projectCollection->count(),
                 'meta' => $projectCollection->where('created_at', '>=', now()->startOfWeek())->count() . ' added this week',
                 'tone' => 'positive',
             ],
@@ -20,7 +21,7 @@
             [
                 'label' => 'Completed',
                 'value' => $projectCollection->where('status', 'completed')->count(),
-                'meta' => $projects->total() > 0 ? round(($projectCollection->where('status', 'completed')->count() / max($projects->total(), 1)) * 100) . '% of total' : 'No data yet',
+                'meta' => $projectCollection->count() > 0 ? round(($projectCollection->where('status', 'completed')->count() / max($projectCollection->count(), 1)) * 100) . '% of total' : 'No data yet',
                 'tone' => 'neutral',
             ],
             [
@@ -64,13 +65,13 @@
 
         <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div class="flex flex-wrap items-center gap-2">
-                <a href="{{ route('projects.index') }}"
+                <a href="{{ route('projects.index', $queryWithoutStatus) }}"
                     class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">All tasks</a>
-                <a href="{{ route('projects.index', ['status' => 'pending']) }}"
+                <a href="{{ route('projects.index', array_merge($queryWithoutStatus, ['status' => 'pending'])) }}"
                     class="filter-pill {{ request('status') === 'pending' ? 'filter-pill-active' : '' }}">Pending</a>
-                <a href="{{ route('projects.index', ['status' => 'in_progress']) }}"
+                <a href="{{ route('projects.index', array_merge($queryWithoutStatus, ['status' => 'in_progress'])) }}"
                     class="filter-pill {{ request('status') === 'in_progress' ? 'filter-pill-active' : '' }}">In progress</a>
-                <a href="{{ route('projects.index', ['status' => 'completed']) }}"
+                <a href="{{ route('projects.index', array_merge($queryWithoutStatus, ['status' => 'completed'])) }}"
                     class="filter-pill {{ request('status') === 'completed' ? 'filter-pill-active' : '' }}">Completed</a>
             </div>
 
@@ -111,8 +112,10 @@
                             @endphp
                             <article class="task-card">
                                 <div class="flex items-start justify-between gap-3">
-                                    <h3 class="task-title">{{ $project->name }}</h3>
-                                    <button class="task-menu" type="button" aria-label="Open card options">•••</button>
+                                    <a href="{{ route('projects.show', $project) }}" class="task-title hover:text-violet-300">
+                                        {{ $project->name }}
+                                    </a>
+                                    <a href="{{ route('projects.edit', $project) }}" class="task-menu" aria-label="Edit card">Edit</a>
                                 </div>
 
                                 <div class="mt-3 flex flex-wrap items-center gap-2">
@@ -148,6 +151,21 @@
                                         <span class="mini-avatar">A</span>
                                         <span class="mini-avatar mini-avatar-secondary">B</span>
                                     </div>
+                                </div>
+
+                                <div class="mt-4 flex items-center justify-between gap-3 border-t border-[var(--line)] pt-4">
+                                    <a href="{{ route('projects.show', $project) }}" class="text-xs font-medium text-[var(--muted)] hover:text-[var(--text-strong)]">
+                                        View details
+                                    </a>
+
+                                    <form action="{{ route('projects.destroy', $project) }}" method="POST"
+                                        onsubmit="return confirm('Delete this project?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs font-medium text-rose-300 hover:text-rose-200">
+                                            Delete
+                                        </button>
+                                    </form>
                                 </div>
                             </article>
                         @empty

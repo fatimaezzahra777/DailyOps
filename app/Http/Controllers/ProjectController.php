@@ -20,8 +20,9 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $projects = $this->projectService->filterProjects($request);
+        $allFilteredProjects = $this->projectService->getFilteredProjectCollection($request);
 
-        return view('projects.index', compact('projects'));
+        return view('projects.index', compact('projects', 'allFilteredProjects'));
     }
 
     /**
@@ -43,7 +44,7 @@ class ProjectController extends Controller
             'status' => 'required|in:pending,in_progress,completed',
             'assigned_to' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
         $this->projectService->createProject($validated);
@@ -83,7 +84,7 @@ class ProjectController extends Controller
             'status' => 'required|in:pending,in_progress,completed',
             'assigned_to' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
         $this->projectService->updateProject($id, $validated);

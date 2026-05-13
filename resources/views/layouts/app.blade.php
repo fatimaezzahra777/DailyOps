@@ -21,6 +21,12 @@
             @include('partials.navbar')
 
             <main class="flex-1 p-4 sm:p-6 lg:p-8">
+                @if (session('success'))
+                    <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 @yield('content')
             </main>
         </div>

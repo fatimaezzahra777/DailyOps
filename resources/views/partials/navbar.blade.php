@@ -24,6 +24,9 @@
         <div class="flex flex-wrap items-center gap-2 lg:justify-between">
             <div class="flex flex-1 flex-wrap items-center gap-2">
                 <form method="GET" action="{{ route('projects.index') }}" class="relative min-w-[220px] flex-1 max-w-md">
+                    @if (request('status'))
+                        <input type="hidden" name="status" value="{{ request('status') }}">
+                    @endif
                     <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                         <circle cx="11" cy="11" r="7"></circle>

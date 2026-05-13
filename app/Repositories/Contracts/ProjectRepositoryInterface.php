@@ -15,5 +15,6 @@ interface ProjectRepositoryInterface
     public function delete($id);
 
     public function searchAndFilter($request);
-    
+
+    public function getFilteredCollection($request);
 }

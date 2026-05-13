@@ -42,4 +42,9 @@ class ProjectService
     {
         return $this->projectRepository->searchAndFilter($request);
     }
+
+    public function getFilteredProjectCollection($request)
+    {
+        return $this->projectRepository->getFilteredCollection($request);
+    }
 }

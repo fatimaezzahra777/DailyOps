@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Project;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -40,6 +41,21 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     public function searchAndFilter($request)
     {
+        return $this->buildFilteredQuery($request)
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+    }
+
+    public function getFilteredCollection($request)
+    {
+        return $this->buildFilteredQuery($request)
+            ->latest()
+            ->get();
+    }
+
+    protected function buildFilteredQuery($request): Builder
+    {
         $query = Project::query();
 
         if ($request->search) {
@@ -50,6 +66,6 @@ class ProjectRepository implements ProjectRepositoryInterface
             $query->where('status', $request->status);
         }
 
-        return $query->latest()->paginate(10);
+        return $query;
     }
 }
