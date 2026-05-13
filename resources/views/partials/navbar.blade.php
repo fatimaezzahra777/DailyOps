@@ -32,7 +32,7 @@
                         <circle cx="11" cy="11" r="7"></circle>
                         <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
                     </svg>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search tasks, projects..."
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search projects..."
                         class="w-full pl-10 pr-4">
                 </form>
 
@@ -53,10 +53,10 @@
                 </button>
             </div>
 
-            <a href="{{ route('projects.create') }}" class="btn-primary">
+            <button type="button" class="btn-primary" data-modal-open="create-project-modal">
                 <span class="text-base leading-none">+</span>
-                <span>Add task</span>
-            </a>
+                <span>Add project</span>
+            </button>
         </div>
     </div>
 </nav>

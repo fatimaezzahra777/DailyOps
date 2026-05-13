@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -38,7 +39,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:pending,in_progress,completed',
@@ -47,9 +48,18 @@ class ProjectController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator, 'createProject')
+                ->withInput()
+                ->with('open_modal', 'create-project-modal');
+        }
+
+        $validated = $validator->validated();
+
         $this->projectService->createProject($validated);
 
-        return redirect()->route('projects.index')->with('success', 'Projet créé avec succès');
+        return back()->with('success', 'Projet créé avec succès');
     }
 
     /**
@@ -78,7 +88,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:pending,in_progress,completed',
@@ -87,11 +97,18 @@ class ProjectController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator, "updateProject.{$id}")
+                ->withInput()
+                ->with('open_modal', "edit-project-modal-{$id}");
+        }
+
+        $validated = $validator->validated();
+
         $this->projectService->updateProject($id, $validated);
 
-        return redirect()
-            ->route('projects.index')
-            ->with('success', 'Projet mis à jour avec succès');
+        return back()->with('success', 'Projet mis à jour avec succès');
     }
 
     /**
@@ -101,8 +118,6 @@ class ProjectController extends Controller
     {
         $this->projectService->deleteProject($id);
 
-        return redirect()
-            ->route('projects.index')
-            ->with('success', 'Projet supprimé avec succès');
+        return back()->with('success', 'Projet supprimé avec succès');
     }
 }
