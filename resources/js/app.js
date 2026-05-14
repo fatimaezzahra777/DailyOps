@@ -6,6 +6,26 @@ const sidebarOverlay = document.getElementById('sidebar-overlay');
 const modalRoots = Array.from(document.querySelectorAll('[data-modal]'));
 let activeModal = null;
 
+const resetModalFields = (modal) => {
+    if (!modal || modal.dataset.resetOnOpen !== 'true') {
+        return;
+    }
+
+    const form = modal.querySelector('form');
+    form?.reset();
+
+    modal.querySelectorAll('[data-field-default]').forEach((field) => {
+        field.value = field.dataset.fieldDefault ?? '';
+
+        if (field.tagName === 'SELECT') {
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+            return;
+        }
+
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+};
+
 const applyTheme = (theme) => {
     const isDark = theme === 'dark';
     html.classList.toggle('dark', isDark);
@@ -92,12 +112,24 @@ const setModalState = (modal, open) => {
 
 const openModalById = (id) => {
     modalRoots.forEach((modal) => {
+        if (modal.id === id) {
+            resetModalFields(modal);
+        }
+
         setModalState(modal, modal.id === id);
+
+        if (modal.id === id && modal.dataset.resetOnOpen === 'true') {
+            requestAnimationFrame(() => resetModalFields(modal));
+            setTimeout(() => resetModalFields(modal), 0);
+        }
     });
 };
 
 const closeAllModals = () => {
-    modalRoots.forEach((modal) => setModalState(modal, false));
+    modalRoots.forEach((modal) => {
+        setModalState(modal, false);
+        resetModalFields(modal);
+    });
 };
 
 document.querySelectorAll('[data-modal-open]').forEach((trigger) => {

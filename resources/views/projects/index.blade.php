@@ -194,6 +194,7 @@
     </section>
 
     <div class="modal-shell {{ $openModal === 'create-project-modal' ? '' : 'hidden' }}" id="create-project-modal"
+        data-reset-on-open="true"
         data-modal tabindex="-1" aria-hidden="{{ $openModal === 'create-project-modal' ? 'false' : 'true' }}">
         <div class="modal-backdrop" data-modal-close></div>
         <div class="modal-panel modal-panel-form">
@@ -206,13 +207,69 @@
                 <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
             </div>
 
-            <form action="{{ route('projects.store') }}" method="POST" class="space-y-5">
+            <form action="{{ route('projects.store') }}" method="POST" class="space-y-5" autocomplete="off" spellcheck="false">
                 @csrf
-                @include('projects.partials.form', [
-                    'prefix' => 'create-project',
-                    'errorBag' => 'createProject',
-                    'useOldValues' => $openModal === 'create-project-modal',
-                ])
+                <input type="text" tabindex="-1" autocomplete="username" class="hidden" aria-hidden="true">
+                <input type="password" tabindex="-1" autocomplete="new-password" class="hidden" aria-hidden="true">
+
+                @if ($errors->getBag('createProject')->any())
+                    <div class="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-sm text-rose-200">
+                        <p class="font-medium text-rose-100">Please fix the following errors:</p>
+                        <ul class="mt-2 space-y-1">
+                            @foreach ($errors->getBag('createProject')->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="grid gap-5 md:grid-cols-2">
+                    <div class="md:col-span-2">
+                        <label for="create-project-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Name</label>
+                        <input id="create-project-name" name="create_name" type="text" class="w-full px-4 py-3"
+                            value="{{ $openModal === 'create-project-modal' ? old('create_name') : '' }}"
+                            data-field-default="" autocomplete="new-password" required>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="create-project-description" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Description</label>
+                        <textarea id="create-project-description" name="create_description" rows="4" class="w-full px-4 py-3"
+                            data-field-default="" autocomplete="off">{{ $openModal === 'create-project-modal' ? old('create_description') : '' }}</textarea>
+                    </div>
+
+                    <div>
+                        <label for="create-project-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Status</label>
+                        <select id="create-project-status" name="create_status" class="w-full px-4 py-3"
+                            data-field-default="pending" autocomplete="off">
+                            @foreach (['pending' => 'Pending', 'in_progress' => 'In progress', 'completed' => 'Completed'] as $value => $label)
+                                <option value="{{ $value }}" @selected(($openModal === 'create-project-modal' ? old('create_status', 'pending') : 'pending') === $value)>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="create-project-assigned-to" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Assigned to</label>
+                        <input id="create-project-assigned-to" name="create_assigned_to" type="text" class="w-full px-4 py-3"
+                            value="{{ $openModal === 'create-project-modal' ? old('create_assigned_to') : '' }}"
+                            data-field-default="" autocomplete="new-password">
+                    </div>
+
+                    <div>
+                        <label for="create-project-start-date" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Start date</label>
+                        <input id="create-project-start-date" name="create_start_date" type="date" class="w-full px-4 py-3"
+                            value="{{ $openModal === 'create-project-modal' ? old('create_start_date') : '' }}"
+                            data-field-default="" autocomplete="off">
+                    </div>
+
+                    <div>
+                        <label for="create-project-end-date" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">End date</label>
+                        <input id="create-project-end-date" name="create_end_date" type="date" class="w-full px-4 py-3"
+                            value="{{ $openModal === 'create-project-modal' ? old('create_end_date') : '' }}"
+                            data-field-default="" autocomplete="off">
+                    </div>
+                </div>
 
                 <div class="modal-actions">
                     <button type="submit" class="btn-primary">Save project</button>

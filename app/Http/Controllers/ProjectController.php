@@ -39,7 +39,16 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $input = [
+            'name' => $request->input('create_name', $request->input('name')),
+            'description' => $request->input('create_description', $request->input('description')),
+            'status' => $request->input('create_status', $request->input('status')),
+            'assigned_to' => $request->input('create_assigned_to', $request->input('assigned_to')),
+            'start_date' => $request->input('create_start_date', $request->input('start_date')),
+            'end_date' => $request->input('create_end_date', $request->input('end_date')),
+        ];
+
+        $validator = Validator::make($input, [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:pending,in_progress,completed',

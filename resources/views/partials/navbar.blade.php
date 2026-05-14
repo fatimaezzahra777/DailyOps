@@ -1,4 +1,4 @@
-<nav class="sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--panel)]/85 backdrop-blur-xl">
+<nav class="z-20 border-b border-[var(--line)] bg-[var(--panel)]/85 backdrop-blur-xl">
     <div class="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-4">
             <div class="flex min-w-0 items-center gap-3">
