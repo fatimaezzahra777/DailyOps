@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
@@ -24,6 +26,35 @@ class ProjectController extends Controller
         $allFilteredProjects = $this->projectService->getFilteredProjectCollection($request);
 
         return view('projects.index', compact('projects', 'allFilteredProjects'));
+    }
+
+    public function table(Request $request)
+    {
+        $projects = $this->projectService->filterProjects($request);
+        $allFilteredProjects = $this->projectService->getFilteredProjectCollection($request);
+
+        return view('projects.table', compact('projects', 'allFilteredProjects'));
+    }
+
+    public function gantt(Request $request)
+    {
+        $projects = $this->projectService->getFilteredProjectCollection($request);
+
+        return view('projects.gantt', compact('projects'));
+    }
+
+    public function calendar(Request $request)
+    {
+        $projects = $this->projectService->getFilteredProjectCollection($request);
+
+        return view('projects.calendar', compact('projects'));
+    }
+
+    public function reports(Request $request)
+    {
+        $projects = $this->projectService->getFilteredProjectCollection($request);
+
+        return view('projects.reports', compact('projects'));
     }
 
     /**
@@ -65,6 +96,8 @@ class ProjectController extends Controller
         }
 
         $validated = $validator->validated();
+        $validated['manager_id'] = $request->user()->id;
+        $validated['assigned_to'] = $validated['assigned_to'] ?: $request->user()->name;
 
         $this->projectService->createProject($validated);
 
@@ -74,9 +107,10 @@ class ProjectController extends Controller
     /**
      * Display one project
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $project = $this->projectService->getProjectById($id);
+        $this->authorizeProjectAccess($request, $project);
 
         return view('projects.show', compact('project'));
     }
@@ -85,9 +119,10 @@ class ProjectController extends Controller
      * MOdifier un projet
     */
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $project = $this->projectService->getProjectById($id);
+        $this->authorizeProjectAccess($request, $project);
 
         return view('projects.edit', compact('project'));
     }
@@ -114,6 +149,8 @@ class ProjectController extends Controller
         }
 
         $validated = $validator->validated();
+        $project = $this->projectService->getProjectById($id);
+        $this->authorizeProjectAccess($request, $project);
 
         $this->projectService->updateProject($id, $validated);
 
@@ -123,10 +160,22 @@ class ProjectController extends Controller
     /**
      * Delete project
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $project = $this->projectService->getProjectById($id);
+        $this->authorizeProjectAccess($request, $project);
+
         $this->projectService->deleteProject($id);
 
         return back()->with('success', 'Projet supprimé avec succès');
+    }
+
+    protected function authorizeProjectAccess(Request $request, Project $project): void
+    {
+        if ($request->user()->isAdmin()) {
+            return;
+        }
+
+        abort_if($project->manager_id !== $request->user()->id, Response::HTTP_FORBIDDEN);
     }
 }
