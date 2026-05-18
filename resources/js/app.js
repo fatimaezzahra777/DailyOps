@@ -1,5 +1,3 @@
-const html = document.documentElement;
-const themeToggle = document.getElementById('theme-toggle');
 const menuToggle = document.getElementById('menu-btn');
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
@@ -26,27 +24,9 @@ const resetModalFields = (modal) => {
     });
 };
 
-const applyTheme = (theme) => {
-    const isDark = theme === 'dark';
-    html.classList.toggle('dark', isDark);
-    localStorage.setItem('theme', theme);
+document.documentElement.classList.remove('dark');
+localStorage.setItem('theme', 'light');
 
-    if (themeToggle) {
-        themeToggle.setAttribute('aria-pressed', String(isDark));
-        const label = themeToggle.querySelector('[data-theme-label]');
-        if (label) {
-            label.textContent = isDark ? 'Dark' : 'Light';
-        }
-    }
-};
-
-const savedTheme = localStorage.getItem('theme');
-const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-applyTheme(savedTheme ?? (systemPrefersDark ? 'dark' : 'light'));
-
-themeToggle?.addEventListener('click', () => {
-    applyTheme(html.classList.contains('dark') ? 'light' : 'dark');
-});
 
 const closeSidebar = () => {
     sidebar?.classList.add('-translate-x-full');
@@ -153,3 +133,11 @@ window.addEventListener('keydown', (event) => {
         closeAllModals();
     }
 });
+
+import './bootstrap';
+
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();
