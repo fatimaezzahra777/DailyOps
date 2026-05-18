@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Project;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -56,7 +57,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     protected function buildFilteredQuery($request): Builder
     {
-        $query = Project::query();
+        $query = Project::query()->with('manager');
+
+        if ($request instanceof Request && $request->user() && ! $request->user()->isAdmin()) {
+            $query->where('manager_id', $request->user()->id);
+        }
 
         if ($request->search) {
             $query->where('name', 'like', '%' . $request->search . '%');

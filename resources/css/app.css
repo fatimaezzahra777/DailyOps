@@ -1,79 +1,45 @@
-@config '../../tailwind.config.js';
-@import 'tailwindcss';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
     :root {
-        --page: #f6f2ee;
-        --page-alt: #fffdfa;
-        --panel: rgb(255 255 255 / 0.86);
+        --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+            'Segoe UI Symbol', 'Noto Color Emoji';
+        --page: #ffffff;
+        --page-alt: #f7f7f7;
+        --panel: #ffffff;
         --panel-strong: #ffffff;
-        --card-soft: #fbf4f6;
-        --card: rgb(255 255 255 / 0.96);
-        --line: rgb(226 25 137 / 0.12);
-        --text: #6e6870;
-        --text-strong: #151515;
-        --muted: #9d93a0;
-        --accent: #e3008c;
-        --accent-strong: #ff0a8a;
+        --card-soft: #f4f4f4;
+        --card: #ffffff;
+        --line: rgb(0 0 0 / 0.08);
+        --line-strong: rgb(0 0 0 / 0.13);
+        --text: #555555;
+        --text-strong: #0a0a0a;
+        --muted: #999999;
+        --accent: #e8007d;
+        --accent-strong: #ff1a8c;
+        --accent-soft: rgb(232 0 125 / 0.07);
+        --accent-line: rgb(232 0 125 / 0.22);
+        --green: #00a86b;
+        --amber: #d97706;
+        --red: #dc2626;
     }
 
     html {
         color-scheme: light;
     }
 
-    html.dark {
-        color-scheme: dark;
-        --page: #111111;
-        --page-alt: #181818;
-        --panel: rgb(22 22 22 / 0.9);
-        --panel-strong: #171717;
-        --card-soft: #1d1a1c;
-        --card: rgb(24 24 24 / 0.96);
-        --line: rgb(255 255 255 / 0.07);
-        --text: #b7b0b5;
-        --text-strong: #fff8fc;
-        --muted: #8b8489;
-        --accent: #e3008c;
-        --accent-strong: #ff4da6;
-    }
-
     body {
-        @apply min-h-screen antialiased transition-colors duration-300;
+        @apply min-h-screen antialiased;
         font-family: var(--font-sans);
         color: var(--text);
-        background-image:
-            radial-gradient(circle at top, rgb(227 0 140 / 0.12), transparent 28%),
-            linear-gradient(180deg, var(--page) 0%, var(--page-alt) 100%);
-    }
-
-    html.dark body {
-        background-image:
-            radial-gradient(circle at top, rgb(227 0 140 / 0.16), transparent 18%),
-            linear-gradient(180deg, var(--page) 0%, #0b0b0e 100%);
+        background: var(--page-alt);
     }
 
     ::selection {
         background: rgb(255 10 138 / 0.18);
         color: #2a1321;
-    }
-
-    html.dark ::selection {
-        background: rgb(255 10 138 / 0.34);
-        color: #fff3f9;
     }
 
     h1,
@@ -92,11 +58,10 @@
     input,
     select,
     textarea {
-        @apply rounded-2xl outline-none transition duration-200;
-        border: 1px solid var(--line);
+        @apply rounded-md outline-none transition duration-200;
+        border: 1px solid var(--line-strong);
         background: var(--card-soft);
         color: var(--text-strong);
-        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
     }
 
     input:focus,
@@ -135,13 +100,14 @@
     }
 
     .workspace-sidebar {
-        @apply border-r backdrop-blur-xl transition-transform duration-300;
+        @apply border-r transition-transform duration-300;
         border-color: var(--line);
-        background: color-mix(in srgb, var(--panel-strong) 92%, transparent);
+        background: var(--panel-strong);
+        box-shadow: 2px 0 12px rgb(0 0 0 / 0.06);
     }
 
     .workspace-switcher {
-        @apply flex items-center gap-3 rounded-2xl p-3;
+        @apply flex items-center gap-3 rounded-[10px] p-3;
         border: 1px solid var(--line);
         background: var(--card-soft);
     }
@@ -152,27 +118,38 @@
     }
 
     .sidebar-link {
-        @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200;
+        @apply relative flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition-all duration-150;
         color: var(--text);
         border: 1px solid transparent;
     }
 
     .sidebar-link:hover {
         color: var(--text-strong);
-        background: color-mix(in srgb, var(--accent) 10%, var(--card-soft));
-        border-color: color-mix(in srgb, var(--accent) 18%, transparent);
+        background: var(--card-soft);
     }
 
     .active-link {
-        color: white;
-        border-color: transparent;
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
-        box-shadow: 0 12px 24px -14px rgb(227 0 140 / 0.55);
+        color: var(--accent);
+        border-color: var(--accent-line);
+        background: var(--accent-soft);
+        box-shadow: none;
+    }
+
+    .active-link::before {
+        content: '';
+        position: absolute;
+        left: -0.55rem;
+        top: 50%;
+        width: 3px;
+        height: 1rem;
+        transform: translateY(-50%);
+        border-radius: 999px;
+        background: var(--accent);
     }
 
     .sidebar-icon {
-        @apply flex h-8 w-8 items-center justify-center rounded-lg;
-        background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+        @apply flex h-7 w-7 items-center justify-center rounded-md;
+        background: var(--accent-soft);
     }
 
     .sidebar-icon svg {
@@ -180,11 +157,11 @@
     }
 
     .active-link .sidebar-icon {
-        background: rgb(255 255 255 / 0.14);
+        background: transparent;
     }
 
     .icon-button {
-        @apply inline-flex h-10 items-center justify-center rounded-xl px-3 transition;
+        @apply inline-flex h-9 items-center justify-center rounded-md px-3 transition;
         border: 1px solid var(--line);
         background: var(--card-soft);
         color: var(--text);
@@ -196,7 +173,7 @@
     }
 
     .topbar-chip {
-        @apply inline-flex items-center rounded-xl px-4 py-2 text-sm transition;
+        @apply inline-flex items-center rounded-md px-4 py-2 text-[13px] transition;
         border: 1px solid var(--line);
         color: var(--muted);
         background: transparent;
@@ -208,15 +185,15 @@
     }
 
     .metric-card {
-        @apply rounded-3xl p-5;
+        @apply rounded-[10px] p-4;
         border: 1px solid var(--line);
         background: var(--panel);
-        box-shadow: 0 18px 40px -28px rgb(15 23 42 / 0.32);
+        box-shadow: 0 4px 20px rgb(0 0 0 / 0.06);
     }
 
     .metric-card-featured {
         background:
-            radial-gradient(circle at top right, rgb(227 0 140 / 0.12), transparent 30%),
+            radial-gradient(circle at top right, rgb(232 0 125 / 0.12), transparent 30%),
             var(--panel);
     }
 
@@ -226,7 +203,7 @@
     }
 
     .metric-value {
-        @apply text-4xl font-semibold leading-none;
+        @apply font-['Syne'] text-[26px] font-bold leading-none;
         color: var(--text-strong);
     }
 
@@ -239,8 +216,9 @@
 
     .filter-pill-active,
     .filter-pill:hover {
-        background: color-mix(in srgb, var(--accent) 16%, var(--panel));
-        color: var(--text-strong);
+        background: var(--accent-soft);
+        color: var(--accent);
+        border-color: var(--accent-line);
     }
 
     .avatar-stack {
@@ -265,7 +243,7 @@
     }
 
     .board-column {
-        @apply min-w-0 rounded-3xl p-1;
+        @apply min-w-0 rounded-[10px] p-1;
     }
 
     .board-column-title {
@@ -279,15 +257,16 @@
     }
 
     .task-card {
-        @apply rounded-2xl p-4 transition-transform duration-200;
+        @apply rounded-[10px] p-4 transition duration-150;
         border: 1px solid var(--line);
         background: var(--card);
-        box-shadow: 0 16px 30px -24px rgb(15 23 42 / 0.25);
+        box-shadow: 0 4px 18px rgb(0 0 0 / 0.05);
     }
 
     .task-card:hover {
         transform: translateY(-2px);
-        border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+        border-color: var(--accent-line);
+        box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
     }
 
     .task-title {
@@ -319,19 +298,19 @@
 
     .tag-chip-violet {
         background: rgb(227 0 140 / 0.1);
-        color: #ff3f9e;
+        color: var(--accent);
         border-color: rgb(227 0 140 / 0.2);
     }
 
     .tag-chip-amber {
         background: rgb(245 158 11 / 0.16);
-        color: #fcd34d;
+        color: var(--amber);
         border-color: rgb(245 158 11 / 0.25);
     }
 
     .tag-chip-emerald {
         background: rgb(16 185 129 / 0.16);
-        color: #6ee7b7;
+        color: var(--green);
         border-color: rgb(16 185 129 / 0.25);
     }
 
@@ -356,14 +335,14 @@
     }
 
     .empty-column-card {
-        @apply flex min-h-24 items-center justify-center rounded-2xl border border-dashed p-4 text-center text-sm;
+        @apply flex min-h-24 items-center justify-center rounded-[10px] border border-dashed p-4 text-center text-sm;
         border-color: var(--line);
         color: var(--muted);
         background: transparent;
     }
 
     .board-add-card {
-        @apply w-full rounded-2xl border border-dashed px-4 py-3 text-sm transition;
+        @apply w-full rounded-[10px] border border-dashed px-4 py-3 text-sm transition;
         border-color: var(--line);
         color: var(--muted);
         background: transparent;
@@ -383,12 +362,10 @@
     }
 
     .modal-panel {
-        @apply relative z-10 max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] p-6 sm:p-7;
+        @apply relative z-10 max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-[14px] p-6 sm:p-7;
         border: 1px solid var(--line);
-        background:
-            radial-gradient(circle at top right, rgb(227 0 140 / 0.12), transparent 24%),
-            color-mix(in srgb, var(--panel-strong) 94%, transparent);
-        box-shadow: 0 30px 80px -40px rgb(15 23 42 / 0.6);
+        background: var(--panel-strong);
+        box-shadow: 0 30px 80px -40px rgb(0 0 0 / 0.35);
     }
 
     .modal-panel-form {
@@ -419,7 +396,7 @@
     }
 
     .modal-close {
-        @apply inline-flex h-10 w-10 items-center justify-center rounded-xl text-xl transition;
+        @apply inline-flex h-9 w-9 items-center justify-center rounded-md text-xl transition;
         border: 1px solid var(--line);
         background: var(--card-soft);
         color: var(--text);
@@ -443,22 +420,22 @@
     }
 
     .card {
-        @apply rounded-2xl p-5;
+        @apply rounded-[10px] p-5;
         border: 1px solid var(--line);
         background: var(--panel);
-        box-shadow: 0 20px 45px -30px rgb(15 23 42 / 0.25);
+        box-shadow: 0 4px 20px rgb(0 0 0 / 0.06);
     }
 
     .panel-dark {
-        @apply rounded-2xl shadow-xl backdrop-blur-sm;
+        @apply rounded-[10px] shadow-sm;
         border: 1px solid var(--line);
         background: var(--panel);
     }
 
     .btn-primary {
-        @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-medium text-white transition duration-200;
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
-        box-shadow: 0 16px 28px -18px rgb(227 0 140 / 0.55);
+        @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium text-white transition duration-150;
+        background: var(--accent);
+        box-shadow: 0 2px 14px rgb(232 0 125 / 0.3);
     }
 
     .btn-primary:focus {
@@ -467,7 +444,7 @@
     }
 
     .btn-secondary {
-        @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 font-medium transition duration-200;
+        @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-[13px] font-medium transition duration-150;
         border: 1px solid var(--line);
         background: var(--panel);
         color: var(--text);
@@ -490,5 +467,146 @@
 
     .custom-scroll::-webkit-scrollbar-track {
         background: transparent;
+    }
+
+    .view-toolbar {
+        @apply mb-4 flex flex-wrap items-center gap-2 rounded-[10px] border border-[var(--line)] bg-white p-3 shadow-sm;
+    }
+
+    .view-table-wrap {
+        @apply overflow-x-auto rounded-[10px] border border-[var(--line)] bg-white shadow-sm;
+    }
+
+    .view-table thead tr {
+        @apply sticky top-0 z-10;
+        background: var(--page-alt);
+    }
+
+    .view-table th {
+        @apply whitespace-nowrap px-4 py-3 text-left font-['Syne'] text-[10.5px] font-semibold uppercase tracking-[0.08em];
+        color: var(--muted);
+    }
+
+    .view-table td {
+        @apply whitespace-nowrap px-4 py-3 text-[13px];
+        color: var(--text);
+    }
+
+    .view-table tbody tr:hover {
+        background: var(--card-soft);
+    }
+
+    .project-check {
+        @apply h-4 w-4 rounded border bg-white;
+        border-color: var(--line-strong);
+    }
+
+    .priority-dot {
+        @apply h-2 w-2 rounded-full;
+    }
+
+    .progress-mini {
+        @apply flex items-center gap-2;
+    }
+
+    .progress-mini-track {
+        @apply h-1 w-16 overflow-hidden rounded-full;
+        background: #ececec;
+    }
+
+    .progress-mini-fill {
+        @apply h-full rounded-full;
+        background: var(--accent);
+    }
+
+    .status-tag {
+        @apply inline-flex rounded-full border px-2.5 py-1 text-[10.5px] font-medium;
+    }
+
+    .status-tag-pending {
+        background: rgb(232 0 125 / 0.1);
+        border-color: rgb(232 0 125 / 0.2);
+        color: var(--accent);
+    }
+
+    .status-tag-progress {
+        background: rgb(217 119 6 / 0.1);
+        border-color: rgb(217 119 6 / 0.2);
+        color: var(--amber);
+    }
+
+    .status-tag-completed {
+        background: rgb(0 168 107 / 0.1);
+        border-color: rgb(0 168 107 / 0.2);
+        color: var(--green);
+    }
+
+    .assignee-dot {
+        @apply flex h-6 w-6 items-center justify-center rounded-full font-['Syne'] text-[9px] font-semibold text-white;
+        background: linear-gradient(135deg, var(--accent), #a0005a);
+    }
+
+    .gantt-shell,
+    .calendar-shell,
+    .report-card {
+        @apply rounded-[10px] border border-[var(--line)] bg-white shadow-sm;
+    }
+
+    .gantt-grid {
+        display: grid;
+        grid-template-columns: 220px repeat(6, minmax(130px, 1fr));
+    }
+
+    .gantt-cell {
+        @apply border-b border-r border-[var(--line)] px-4 py-3 text-[12px];
+    }
+
+    .gantt-head {
+        @apply font-['Syne'] text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)];
+        background: var(--page-alt);
+    }
+
+    .gantt-bar {
+        @apply h-7 rounded-md;
+        background: linear-gradient(90deg, #a0005a, var(--accent));
+        box-shadow: 0 0 12px rgb(232 0 125 / 0.18);
+    }
+
+    .calendar-grid {
+        @apply grid overflow-hidden rounded-[10px] border border-[var(--line)];
+        grid-template-columns: repeat(7, minmax(120px, 1fr));
+    }
+
+    .calendar-head {
+        @apply border-b border-r border-[var(--line)] bg-[#f4f4f4] px-3 py-2 font-['Syne'] text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)];
+    }
+
+    .calendar-day {
+        @apply min-h-32 border-b border-r border-[var(--line)] bg-white p-3 transition hover:bg-[#f4f4f4];
+    }
+
+    .calendar-day-muted {
+        @apply bg-[#fafafa] text-[var(--muted)];
+    }
+
+    .calendar-day-number {
+        @apply mb-2 flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-medium text-[#333333];
+    }
+
+    .calendar-day-today {
+        @apply bg-[#e8007d] text-white;
+    }
+
+    .calendar-event {
+        @apply mb-1 truncate rounded px-2 py-1 text-[11px];
+    }
+
+    .report-meter {
+        @apply h-2 overflow-hidden rounded-full bg-[#ececec];
+    }
+
+    .report-meter-fill {
+        @apply h-full rounded-full;
+        background: var(--accent);
     }
 }
