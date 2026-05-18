@@ -114,7 +114,7 @@
                             @endphp
                             <article class="task-card">
                                 <div class="flex items-start justify-between gap-3">
-                                    <button type="button" class="task-title text-left hover:text-violet-300"
+                                    <button type="button" class="task-title text-left hover:text-[#e8007d]"
                                         data-modal-open="project-details-modal-{{ $project->id }}">
                                         {{ $project->name }}
                                     </button>
@@ -165,7 +165,7 @@
                                         View details
                                     </button>
 
-                                    <button type="button" class="text-xs font-medium text-rose-300 hover:text-rose-200"
+                                    <button type="button" class="text-xs font-medium text-[#dc2626] hover:text-[#b91c1c]"
                                         data-modal-open="delete-project-modal-{{ $project->id }}">
                                         Delete
                                     </button>
@@ -213,8 +213,8 @@
                 <input type="password" tabindex="-1" autocomplete="new-password" class="hidden" aria-hidden="true">
 
                 @if ($errors->getBag('createProject')->any())
-                    <div class="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-sm text-rose-200">
-                        <p class="font-medium text-rose-100">Please fix the following errors:</p>
+                    <div class="rounded-md border border-red-600/20 bg-red-600/10 p-4 text-sm text-red-600">
+                        <p class="font-medium text-red-700">Please fix the following errors:</p>
                         <ul class="mt-2 space-y-1">
                             @foreach ($errors->getBag('createProject')->all() as $error)
                                 <li>{{ $error }}</li>
@@ -381,14 +381,14 @@
             <div class="modal-panel modal-panel-compact">
                 <div class="modal-header">
                     <div>
-                        <p class="modal-eyebrow text-rose-300">Delete project</p>
+                        <p class="modal-eyebrow text-red-600">Delete project</p>
                         <h2 class="modal-title">{{ $project->name }}</h2>
                         <p class="modal-subtitle">This action cannot be undone.</p>
                     </div>
                     <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
                 </div>
 
-                <div class="rounded-2xl border border-rose-500/15 bg-rose-500/10 p-4 text-sm text-[var(--text)]">
+                <div class="rounded-md border border-red-600/15 bg-red-600/10 p-4 text-sm text-[var(--text)]">
                     You are about to delete this project and remove it from the board.
                 </div>
 

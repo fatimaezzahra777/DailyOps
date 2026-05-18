@@ -1,0 +1,119 @@
+@extends('layouts.app')
+
+@section('content')
+    @php
+        $queryWithoutStatus = request()->except(['status', 'page']);
+        $statusMeta = [
+            'pending' => ['label' => 'Draft', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#e8007d]'],
+            'in_progress' => ['label' => 'In progress', 'class' => 'status-tag-progress', 'progress' => 64, 'priority' => 'bg-[#d97706]'],
+            'completed' => ['label' => 'Completed', 'class' => 'status-tag-completed', 'progress' => 100, 'priority' => 'bg-[#00a86b]'],
+        ];
+    @endphp
+
+    <section>
+        <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-3">
+                <span class="h-2 w-2 rounded-full bg-[#e8007d] shadow-[0_0_8px_rgba(232,0,125,0.5)]"></span>
+                <div>
+                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Tasks - Table view</h2>
+                    <p class="mt-1 text-[12.5px] text-[#888888]">Vue compacte de tous les projets.</p>
+                </div>
+            </div>
+            <a href="{{ route('projects.create') }}" class="btn-primary">
+                <i class="ti ti-plus"></i>
+                Add project
+            </a>
+        </div>
+
+        <div class="view-toolbar">
+            <a href="{{ route('projects.table', $queryWithoutStatus) }}" class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">All</a>
+            <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'pending'])) }}" class="filter-pill {{ request('status') === 'pending' ? 'filter-pill-active' : '' }}">Draft</a>
+            <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'in_progress'])) }}" class="filter-pill {{ request('status') === 'in_progress' ? 'filter-pill-active' : '' }}">In progress</a>
+            <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'completed'])) }}" class="filter-pill {{ request('status') === 'completed' ? 'filter-pill-active' : '' }}">Completed</a>
+            <div class="ml-auto text-[12px] text-[#888888]">{{ $allFilteredProjects->count() }} tasks</div>
+            <a href="{{ route('projects.index') }}" class="btn-secondary">
+                <i class="ti ti-layout-kanban mr-1"></i>
+                Board
+            </a>
+        </div>
+
+        <div class="view-table-wrap">
+            <table class="view-table min-w-full">
+                <thead>
+                    <tr>
+                        <th>Task name <i class="ti ti-chevron-up text-[11px]"></i></th>
+                        <th>Column</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Due date</th>
+                        <th>Assignee</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($projects as $project)
+                        @php
+                            $meta = $statusMeta[$project->status] ?? $statusMeta['pending'];
+                            $managerName = $project->manager?->name ?? $project->assigned_to;
+                            $initial = strtoupper(substr($managerName ?: $project->name, 0, 1));
+                            $column = match ($project->status) {
+                                'completed' => 'Review',
+                                'in_progress' => 'Production',
+                                default => 'Research',
+                            };
+                        @endphp
+                        <tr>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="project-check"></div>
+                                    <div class="priority-dot {{ $meta['priority'] }}"></div>
+                                    <div>
+                                        <div class="font-medium text-[#0a0a0a]">{{ $project->name }}</div>
+                                        @if ($project->description)
+                                            <div class="mt-1 max-w-[360px] truncate text-[12px] text-[#888888]">{{ $project->description }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ $column }}</td>
+                            <td><span class="status-tag {{ $meta['class'] }}">{{ $meta['label'] }}</span></td>
+                            <td>
+                                <div class="progress-mini">
+                                    <div class="progress-mini-track">
+                                        <div class="progress-mini-fill" style="width: {{ $meta['progress'] }}%;"></div>
+                                    </div>
+                                    <span class="text-[11px] text-[#999999]">{{ $meta['progress'] }}%</span>
+                                </div>
+                            </td>
+                            <td class="{{ $project->end_date && $project->end_date->isPast() && $project->status !== 'completed' ? 'text-[#dc2626]' : '' }}">
+                                {{ $project->end_date ? $project->end_date->format('d M') : 'No deadline' }}
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <div class="assignee-dot">{{ $initial }}</div>
+                                    <span class="text-[12px] text-[#888888]">{{ $managerName ?: 'No manager' }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex justify-end gap-3">
+                                    <a href="{{ route('projects.show', $project) }}" class="text-[#555555] hover:text-[#0a0a0a]">View</a>
+                                    <a href="{{ route('projects.edit', $project) }}" class="text-[#e8007d] hover:text-[#ff1a8c]">Edit</a>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-10 text-center text-sm text-[#888888]">Aucun projet trouve.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if ($projects->hasPages())
+            <div class="mt-4">
+                {{ $projects->links() }}
+            </div>
+        @endif
+    </section>
+@endsection

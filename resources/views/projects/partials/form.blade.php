@@ -14,8 +14,8 @@
 @endphp
 
 @if ($errorsBag->any())
-    <div class="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-sm text-rose-200">
-        <p class="font-medium text-rose-100">Please fix the following errors:</p>
+    <div class="rounded-md border border-red-600/20 bg-red-600/10 p-4 text-sm text-red-600">
+        <p class="font-medium text-red-700">Please fix the following errors:</p>
         <ul class="mt-2 space-y-1">
             @foreach ($errorsBag->all() as $error)
                 <li>{{ $error }}</li>

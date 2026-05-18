@@ -21,6 +21,9 @@
                     @if ($project->assigned_to)
                         <span class="tag-chip">{{ $project->assigned_to }}</span>
                     @endif
+                    @if ($project->manager)
+                        <span class="tag-chip tag-chip-violet">Manager: {{ $project->manager->name }}</span>
+                    @endif
                 </div>
             </div>
 
@@ -53,6 +56,10 @@
                         <div class="flex items-center justify-between gap-3">
                             <dt class="text-[var(--muted)]">Created at</dt>
                             <dd class="text-[var(--text-strong)]">{{ $project->created_at?->format('d M Y') ?? 'Unknown' }}</dd>
+                        </div>
+                        <div class="flex items-center justify-between gap-3">
+                            <dt class="text-[var(--muted)]">Manager</dt>
+                            <dd class="text-[var(--text-strong)]">{{ $project->manager?->name ?? 'Not assigned' }}</dd>
                         </div>
                     </dl>
                 </div>
