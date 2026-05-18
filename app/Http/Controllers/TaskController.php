@@ -2,64 +2,102 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
+use App\Models\Project;
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $taskService;
+
+    public function __construct(TaskService $taskService)
     {
-        //
+        $this->taskService = $taskService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function index(Request $request)
+    {
+        $tasks = $this->taskService->filterTasks($request);
+
+        return view('tasks.index', compact('tasks'));
+    }
+
     public function create()
     {
-        //
+        $projects = Project::all();
+
+        return view('tasks.create', compact('projects'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+
+            'project_id' => 'required|exists:projects,id',
+
+            'title' => 'required|string|max:255',
+
+            'description' => 'nullable|string',
+
+            'status' => 'required|in:todo,in_progress,done',
+
+            'priority' => 'required|in:low,medium,high',
+
+            'assigned_to' => 'nullable|string|max:255',
+
+            'due_date' => 'nullable|date',
+        ]);
+
+        $this->taskService->createTask($validated);
+
+        return redirect()->route('tasks.index')->with('success', 'Task created successfully');
+    }
+    // afficher details d'une tache
+
+    public function show($id)
+    {
+        $task = $this->taskService->getTaskById($id);
+
+        return view('tasks.show', compact('task'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
+    public function edit($id)
     {
-        //
+        $task = $this->taskService->getTaskById($id);
+
+        $projects = Project::all();
+
+        return view('tasks.edit', compact('task', 'projects'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+
+            'project_id' => 'required|exists:projects,id',
+
+            'title' => 'required|string|max:255',
+
+            'description' => 'nullable|string',
+
+            'status' => 'required|in:todo,in_progress,done',
+
+            'priority' => 'required|in:low,medium,high',
+
+            'assigned_to' => 'nullable|string|max:255',
+
+            'due_date' => 'nullable|date',
+        ]);
+
+        $this->taskService->updateTask($id, $validated);
+
+        return redirect() ->route('tasks.index')->with('success', 'Task updated successfully');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Task $task)
+    public function destroy($id)
     {
-        //
-    }
+        $this->taskService->deleteTask($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Task $task)
-    {
-        //
+        return redirect()->route('tasks.index')->with('success', 'Task deleted successfully');
     }
 }
