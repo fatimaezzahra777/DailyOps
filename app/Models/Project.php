@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
     protected $fillable = [
+        'manager_id',
         'name',
         'description',
         'status',
@@ -19,4 +21,9 @@ class Project extends Model
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    public function manager(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
 }
