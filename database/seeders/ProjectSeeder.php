@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ProjectSeeder extends Seeder
@@ -12,6 +13,8 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
+        $manager = User::where('email', 'test@example.com')->first();
+
         $projects = [
             [
                 'name' => 'Ways to get a slipping project back on track',
@@ -90,7 +93,7 @@ class ProjectSeeder extends Seeder
         foreach ($projects as $project) {
             Project::updateOrCreate(
                 ['name' => $project['name']],
-                $project,
+                array_merge($project, ['manager_id' => $manager?->id]),
             );
         }
     }

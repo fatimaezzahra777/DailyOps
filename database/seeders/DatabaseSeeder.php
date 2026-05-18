@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
@@ -16,6 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         // User::factory(10)->create();
 
         User::updateOrCreate(
@@ -27,5 +29,8 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(ProjectSeeder::class);
+
+        $this->call(AdminSeeder::class);
+
     }
 }
