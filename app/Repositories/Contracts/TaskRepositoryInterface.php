@@ -15,4 +15,6 @@ interface TaskRepositoryInterface
     public function delete($id);
 
     public function searchAndFilter($request);
+
+    public function updateStatus($id, $status);
 }

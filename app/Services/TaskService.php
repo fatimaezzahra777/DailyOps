@@ -42,4 +42,9 @@ class TaskService
     {
         return $this->taskRepository->searchAndFilter($request);
     }
+
+    public function changeStatus($id, $status)
+    {
+        return $this->taskRepository->updateStatus($id, $status);
+    }
 }
