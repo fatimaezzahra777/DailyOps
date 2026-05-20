@@ -59,4 +59,15 @@ class TaskRepository implements TaskRepositoryInterface
 
         return $query->latest()->paginate(10);
     }
+
+    public function updateStatus($id, $status)
+    {
+        $task = $this->findById($id);
+
+        $task->update([
+            'status' => $status
+        ]);
+
+        return $task;
+    }
 }
