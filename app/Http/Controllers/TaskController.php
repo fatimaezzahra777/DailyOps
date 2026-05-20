@@ -100,4 +100,17 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully');
     }
+
+    public function changeStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:todo,in_progress,done'
+        ]);
+
+        $this->taskService->changeStatus($id,$request->status);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }
