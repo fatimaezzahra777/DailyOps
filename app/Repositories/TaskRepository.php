@@ -9,12 +9,12 @@ class TaskRepository implements TaskRepositoryInterface
 {
     public function getAll()
     {
-        return Task::with('project')->latest()->paginate(10);
+        return Task::with(['project', 'comments'])->latest()->paginate(10)->withQueryString();
     }
 
     public function findById($id)
     {
-        return Task::with('project')->findOrFail($id);
+        return Task::with(['project', 'comments' => fn ($query) => $query->latest()])->findOrFail($id);
     }
 
     public function store(array $data)
@@ -40,11 +40,16 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function searchAndFilter($request)
     {
-        $query = Task::with('project');
+        $query = Task::with(['project', 'comments']);
 
         if ($request->search) {
 
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where(function ($builder) use ($request) {
+                $builder
+                    ->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhere('description', 'like', '%' . $request->search . '%')
+                    ->orWhere('assigned_to', 'like', '%' . $request->search . '%');
+            });
         }
 
         if ($request->status) {
@@ -57,7 +62,11 @@ class TaskRepository implements TaskRepositoryInterface
             $query->where('priority', $request->priority);
         }
 
-        return $query->latest()->paginate(10);
+        if ($request->project_id) {
+            $query->where('project_id', $request->project_id);
+        }
+
+        return $query->latest()->paginate(10)->withQueryString();
     }
 
     public function updateStatus($id, $status)
