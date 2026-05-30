@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\ProjectColumn;
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
@@ -24,8 +27,11 @@ class ProjectController extends Controller
     {
         $projects = $this->projectService->filterProjects($request);
         $allFilteredProjects = $this->projectService->getFilteredProjectCollection($request);
+        $projectColumns = Schema::hasTable('project_columns')
+            ? ProjectColumn::orderBy('position')->orderBy('name')->get()
+            : collect();
 
-        return view('projects.index', compact('projects', 'allFilteredProjects'));
+        return view('projects.index', compact('projects', 'allFilteredProjects', 'projectColumns'));
     }
 
     public function table(Request $request)
@@ -79,14 +85,21 @@ class ProjectController extends Controller
             'end_date' => $request->input('create_end_date', $request->input('end_date')),
         ];
 
-        $validator = Validator::make($input, [
+        $rules = [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:pending,in_progress,completed',
             'assigned_to' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-        ]);
+        ];
+
+        if (Schema::hasTable('project_columns') && Schema::hasColumn('projects', 'column_id')) {
+            $input['column_id'] = $request->input('create_column_id', $request->input('column_id'));
+            $rules['column_id'] = 'nullable|exists:project_columns,id';
+        }
+
+        $validator = Validator::make($input, $rules);
 
         if ($validator->fails()) {
             return back()
@@ -102,6 +115,67 @@ class ProjectController extends Controller
         $this->projectService->createProject($validated);
 
         return back()->with('success', 'Projet créé avec succès');
+    }
+
+    public function storeColumn(Request $request): RedirectResponse
+    {
+        abort_unless(Schema::hasTable('project_columns'), Response::HTTP_SERVICE_UNAVAILABLE);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:80',
+        ]);
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator, 'createColumn')
+                ->withInput()
+                ->with('open_modal', 'create-column-modal');
+        }
+
+        $validated = $validator->validated();
+
+        ProjectColumn::create([
+            'name' => $validated['name'],
+            'position' => ProjectColumn::max('position') + 1,
+        ]);
+
+        return redirect()
+            ->route('projects.index')
+            ->with('success', 'Colonne ajoutée avec succès');
+    }
+
+    public function move(Request $request, Project $project)
+    {
+        $this->authorizeProjectAccess($request, $project);
+
+        $rules = [
+            'status' => 'required_without:column_id|nullable|in:pending,in_progress,completed',
+        ];
+
+        if (Schema::hasTable('project_columns') && Schema::hasColumn('projects', 'column_id')) {
+            $rules['column_id'] = 'nullable|exists:project_columns,id';
+        }
+
+        $validated = $request->validate($rules);
+        $data = [];
+
+        $supportsColumns = Schema::hasColumn('projects', 'column_id');
+
+        if ($supportsColumns && array_key_exists('column_id', $validated) && filled($validated['column_id'])) {
+            $data['column_id'] = $validated['column_id'];
+        } else {
+            if ($supportsColumns) {
+                $data['column_id'] = null;
+            }
+
+            $data['status'] = $validated['status'] ?? 'pending';
+        }
+
+        $project->update($data);
+
+        return response()->json([
+            'message' => 'Project moved successfully.',
+        ]);
     }
 
     /**
@@ -172,10 +246,6 @@ class ProjectController extends Controller
 
     protected function authorizeProjectAccess(Request $request, Project $project): void
     {
-        if ($request->user()->isAdmin()) {
-            return;
-        }
-
-        abort_if($project->manager_id !== $request->user()->id, Response::HTTP_FORBIDDEN);
+        abort_if(! $project->isVisibleTo($request->user()), Response::HTTP_FORBIDDEN);
     }
 }
