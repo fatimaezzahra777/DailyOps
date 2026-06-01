@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects/gantt', [ProjectController::class, 'gantt'])->name('projects.gantt');
     Route::get('/projects/calendar', [ProjectController::class, 'calendar'])->name('projects.calendar');
     Route::get('/projects/reports', [ProjectController::class, 'reports'])->name('projects.reports');
+    Route::post('/projects/columns', [ProjectController::class, 'storeColumn'])->name('projects.columns.store');
+    Route::patch('/projects/{project}/move', [ProjectController::class, 'move'])->name('projects.move');
     Route::resource('projects', ProjectController::class);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
