@@ -1,6 +1,7 @@
 @php
     $navItems = [
         ['label' => 'Board', 'icon' => 'grid', 'route' => 'projects.index'],
+        ['label' => 'Tasks', 'icon' => 'checklist', 'route' => 'tasks.index'],
         ['label' => 'Table', 'icon' => 'table', 'route' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'chart', 'route' => 'projects.gantt'],
         ['label' => 'Calendar', 'icon' => 'calendar', 'route' => 'projects.calendar'],
@@ -44,7 +45,7 @@
             <nav class="mt-3 space-y-1.5">
                 @foreach ($navItems as $item)
                     @php
-                        $isActive = $item['route'] && $activeRoute === $item['route'];
+                        $isActive = $item['route'] && ($activeRoute === $item['route'] || str_starts_with($activeRoute ?? '', explode('.', $item['route'])[0] . '.'));
                         $href = $item['route'] ? route($item['route']) : '#';
                     @endphp
                     <a href="{{ $href }}" class="sidebar-link {{ $isActive ? 'active-link' : '' }}">
@@ -53,6 +54,8 @@
                                 <i class="ti ti-layout-dashboard"></i>
                             @elseif ($item['icon'] === 'table')
                                 <i class="ti ti-table"></i>
+                            @elseif ($item['icon'] === 'checklist')
+                                <i class="ti ti-checklist"></i>
                             @elseif ($item['icon'] === 'chart')
                                 <i class="ti ti-chart-bar"></i>
                             @elseif ($item['icon'] === 'calendar')
