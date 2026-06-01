@@ -1,3 +1,13 @@
+@php
+    $projectSearchRoute = match (true) {
+        request()->routeIs('projects.table') => 'projects.table',
+        request()->routeIs('projects.gantt') => 'projects.gantt',
+        request()->routeIs('projects.calendar') => 'projects.calendar',
+        request()->routeIs('projects.reports') => 'projects.reports',
+        default => 'projects.index',
+    };
+@endphp
+
 <nav class="z-20 border-b border-[var(--line)] bg-white shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
     <div class="flex flex-col gap-3 px-4 py-3 sm:px-5">
         <div class="flex items-center justify-between gap-4">
@@ -31,8 +41,8 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2 lg:justify-between">
-            <div class="flex flex-1 flex-wrap items-center gap-2">
-                <form method="GET" action="{{ request()->routeIs('projects.table') ? route('projects.table') : route('projects.index') }}" class="relative min-w-[220px] flex-1 max-w-md">
+            <div class="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                <form method="GET" action="{{ route($projectSearchRoute) }}" class="relative min-w-0 flex-[1_1_100%] sm:flex-[1_1_220px] max-w-md">
                     @if (request('status'))
                         <input type="hidden" name="status" value="{{ request('status') }}">
                     @endif
@@ -57,12 +67,12 @@
             </div>
 
             @if (request()->routeIs('projects.index'))
-                <button type="button" class="btn-primary" data-modal-open="create-project-modal">
+                <button type="button" class="btn-primary w-full sm:w-auto" data-modal-open="create-project-modal">
                     <i class="ti ti-plus text-base"></i>
                     <span>Add project</span>
                 </button>
             @else
-                <a href="{{ route('projects.create') }}" class="btn-primary">
+                <a href="{{ route('projects.create') }}" class="btn-primary w-full sm:w-auto">
                     <i class="ti ti-plus text-base"></i>
                     <span>Add project</span>
                 </a>

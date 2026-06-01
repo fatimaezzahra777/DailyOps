@@ -35,10 +35,11 @@
             ],
         ];
 
-        $columns = [
+        $columns = collect([
             [
                 'title' => 'Pending projects',
                 'status' => 'pending',
+                'column_id' => null,
                 'dot' => 'bg-[#e8007d]',
                 'empty' => 'No pending projects',
                 'description' => 'Ideas to validate and brief before production.',
@@ -49,6 +50,7 @@
             [
                 'title' => 'In progress projects',
                 'status' => 'in_progress',
+                'column_id' => null,
                 'dot' => 'bg-[#f59e0b]',
                 'empty' => 'No active projects',
                 'description' => 'Current execution with active contributors.',
@@ -59,6 +61,7 @@
             [
                 'title' => 'Completed projects',
                 'status' => 'completed',
+                'column_id' => null,
                 'dot' => 'bg-[#00a86b]',
                 'empty' => 'No completed projects',
                 'description' => 'Delivered work and archived outcomes.',
@@ -66,17 +69,19 @@
                 'badgeClass' => 'kanban-count-completed',
                 'cardAccent' => 'project-card-accent-completed',
             ],
-            [
-                'title' => 'New column',
+        ])->merge(
+            ($projectColumns ?? collect())->map(fn ($column) => [
+                'title' => $column->name,
                 'status' => null,
-                'dot' => 'bg-zinc-400',
-                'empty' => 'Create a project to fill this column',
-                'description' => 'Reserved for future workflow extensions.',
+                'column_id' => $column->id,
+                'dot' => 'bg-sky-500',
+                'empty' => 'No projects in this column',
+                'description' => 'Custom workflow column.',
                 'laneClass' => 'kanban-lane-empty',
                 'badgeClass' => 'kanban-count-empty',
                 'cardAccent' => 'project-card-accent-empty',
-            ],
-        ];
+            ])
+        );
 
         $tagPalette = [
             'pending' => 'tag-chip tag-chip-violet',
@@ -138,13 +143,13 @@
             </div>
         </div>
 
-        <div class="kanban-shell custom-scroll overflow-x-auto pb-4">
+        <div class="kanban-shell custom-scroll overflow-x-auto overscroll-x-contain pb-4" data-board data-projects-base-url="{{ url('/projects') }}">
             <div class="board-grid">
             @foreach ($columns as $column)
                 @php
-                    $items = $column['status']
-                        ? $projectCollection->where('status', $column['status'])->values()
-                        : collect();
+                    $items = $column['column_id']
+                        ? $projectCollection->where('column_id', $column['column_id'])->values()
+                        : $projectCollection->whereNull('column_id')->where('status', $column['status'])->values();
                 @endphp
                 <section class="board-column kanban-lane {{ $column['laneClass'] }}">
                     <div class="kanban-lane-head">
@@ -159,12 +164,17 @@
                             </div>
                         </div>
                         <button type="button" class="icon-button h-7 w-7 p-0" aria-label="Add project"
-                            data-modal-open="create-project-modal">
+                            data-modal-open="create-project-modal"
+                            data-create-status="{{ $column['status'] ?? 'pending' }}"
+                            data-create-column-id="{{ $column['column_id'] }}">
                             <span class="text-sm leading-none">+</span>
                         </button>
                     </div>
 
-                    <div class="space-y-3">
+                    <div class="board-drop-zone space-y-3"
+                        data-drop-zone
+                        data-drop-status="{{ $column['status'] ?? '' }}"
+                        data-drop-column-id="{{ $column['column_id'] ?? '' }}">
                         @forelse ($items as $project)
                             @php
                                 $progress = match ($project->status) {
@@ -191,7 +201,7 @@
                                     }
                                 }
                             @endphp
-                            <article class="task-card project-card {{ $column['cardAccent'] }}">
+                            <article class="task-card project-card {{ $column['cardAccent'] }}" draggable="true" data-draggable-project data-project-id="{{ $project->id }}">
                                 <div class="flex items-start justify-between gap-3">
                                     <button type="button" class="task-title text-left hover:text-[#e8007d]"
                                         data-modal-open="project-details-modal-{{ $project->id }}">
@@ -211,6 +221,7 @@
                                         <span class="tag-chip">{{ $project->assigned_to }}</span>
                                     @endif
                                     <span class="tag-chip">#{{ str_pad((string) $project->id, 2, '0', STR_PAD_LEFT) }}</span>
+                                    <span class="tag-chip tag-chip-violet">Manager: {{ $project->manager?->name ?? 'Not assigned' }}</span>
                                 </div>
 
                                 @if ($project->description)
@@ -269,12 +280,36 @@
                         @endforelse
 
                         <button type="button" class="board-add-card inline-flex items-center justify-center"
-                            data-modal-open="create-project-modal">
+                            data-modal-open="create-project-modal"
+                            data-create-status="{{ $column['status'] ?? 'pending' }}"
+                            data-create-column-id="{{ $column['column_id'] }}">
                             + Add project
                         </button>
                     </div>
                 </section>
             @endforeach
+            <section class="board-column kanban-lane kanban-lane-empty">
+                <div class="kanban-lane-head">
+                    <div class="flex min-w-0 items-start gap-3">
+                        <span class="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-400"></span>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h2 class="board-column-title">New column</h2>
+                                <span class="board-column-count kanban-count-empty">+</span>
+                            </div>
+                            <p class="kanban-lane-description">Add a custom workflow lane.</p>
+                        </div>
+                    </div>
+                    <button type="button" class="icon-button h-7 w-7 p-0" aria-label="Add column"
+                        data-modal-open="create-column-modal">
+                        <span class="text-sm leading-none">+</span>
+                    </button>
+                </div>
+
+                <button type="button" class="empty-column-card w-full text-left" data-modal-open="create-column-modal">
+                    <p>Click to add a new board column</p>
+                </button>
+            </section>
             </div>
         </div>
 
@@ -349,6 +384,19 @@
                     </div>
 
                     <div>
+                        <label for="create-project-column-id" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Column</label>
+                        <select id="create-project-column-id" name="create_column_id" class="w-full px-4 py-3"
+                            data-field-default="" autocomplete="off">
+                            <option value="" @selected(blank($openModal === 'create-project-modal' ? old('create_column_id') : ''))>Default status column</option>
+                            @foreach (($projectColumns ?? collect()) as $projectColumn)
+                                <option value="{{ $projectColumn->id }}" @selected(($openModal === 'create-project-modal' ? old('create_column_id') : '') == $projectColumn->id)>
+                                    {{ $projectColumn->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
                         <label for="create-project-start-date" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Start date</label>
                         <input id="create-project-start-date" name="create_start_date" type="date" class="w-full px-4 py-3"
                             value="{{ $openModal === 'create-project-modal' ? old('create_start_date') : '' }}"
@@ -365,6 +413,42 @@
 
                 <div class="modal-actions">
                     <button type="submit" class="btn-primary">Save project</button>
+                    <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-shell {{ $openModal === 'create-column-modal' ? '' : 'hidden' }}" id="create-column-modal"
+        data-reset-on-open="true"
+        data-modal tabindex="-1" aria-hidden="{{ $openModal === 'create-column-modal' ? 'false' : 'true' }}">
+        <div class="modal-backdrop" data-modal-close></div>
+        <div class="modal-panel modal-panel-compact">
+            <div class="modal-header">
+                <div>
+                    <p class="modal-eyebrow">Board column</p>
+                    <h2 class="modal-title">New column</h2>
+                    <p class="modal-subtitle">Add a custom column to this board.</p>
+                </div>
+                <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
+            </div>
+
+            <form action="{{ route('projects.columns.store') }}" method="POST" class="space-y-5">
+                @csrf
+                @if ($errors->getBag('createColumn')->any())
+                    <div class="rounded-md border border-red-600/20 bg-red-600/10 p-4 text-sm text-red-600">
+                        {{ $errors->getBag('createColumn')->first() }}
+                    </div>
+                @endif
+                <div>
+                    <label for="create-column-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Column name</label>
+                    <input id="create-column-name" name="name" type="text" class="w-full px-4 py-3"
+                        value="{{ $openModal === 'create-column-modal' ? old('name') : '' }}"
+                        data-field-default="" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Save column</button>
                     <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
                 </div>
             </form>
@@ -401,6 +485,7 @@
                             @if ($project->assigned_to)
                                 <span class="tag-chip">{{ $project->assigned_to }}</span>
                             @endif
+                            <span class="tag-chip tag-chip-violet">Manager: {{ $project->manager?->name ?? 'Not assigned' }}</span>
                         </div>
 
                         <p class="mt-4 text-sm leading-7 text-[var(--text)]">
@@ -423,6 +508,10 @@
                                 <div class="flex items-center justify-between gap-3">
                                     <dt class="text-[var(--muted)]">Created at</dt>
                                     <dd class="text-[var(--text-strong)]">{{ $project->created_at?->format('d M Y') ?? 'Unknown' }}</dd>
+                                </div>
+                                <div class="flex items-center justify-between gap-3">
+                                    <dt class="text-[var(--muted)]">Manager</dt>
+                                    <dd class="text-[var(--text-strong)]">{{ $project->manager?->name ?? 'Not assigned' }}</dd>
                                 </div>
                             </dl>
                         </div>

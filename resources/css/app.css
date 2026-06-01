@@ -35,6 +35,7 @@
         font-family: var(--font-sans);
         color: var(--text);
         background: var(--page-alt);
+        overflow-x: hidden;
     }
 
     ::selection {
@@ -96,7 +97,7 @@
 
 @layer components {
     .app-shell {
-        @apply flex min-h-screen;
+        @apply flex min-h-screen overflow-x-hidden;
     }
 
     .workspace-sidebar {
@@ -161,7 +162,7 @@
     }
 
     .icon-button {
-        @apply inline-flex h-9 items-center justify-center rounded-md px-3 transition;
+        @apply inline-flex h-9 shrink-0 items-center justify-center rounded-md px-3 transition;
         border: 1px solid var(--line);
         background: var(--card-soft);
         color: var(--text);
@@ -173,7 +174,7 @@
     }
 
     .topbar-chip {
-        @apply inline-flex items-center rounded-md px-4 py-2 text-[13px] transition;
+        @apply inline-flex shrink-0 items-center rounded-md px-4 py-2 text-[13px] transition;
         border: 1px solid var(--line);
         color: var(--muted);
         background: transparent;
@@ -185,7 +186,7 @@
     }
 
     .metric-card {
-        @apply rounded-[10px] p-4;
+        @apply min-w-0 rounded-[10px] p-4;
         border: 1px solid var(--line);
         background: var(--panel);
         box-shadow: 0 4px 20px rgb(0 0 0 / 0.06);
@@ -261,7 +262,7 @@
     }
 
     .filter-pill {
-        @apply rounded-full px-3 py-1.5 text-xs font-medium transition;
+        @apply shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition;
         border: 1px solid var(--line);
         background: var(--panel);
         color: var(--muted);
@@ -292,7 +293,9 @@
 
     .board-grid {
         @apply grid gap-4;
-        grid-template-columns: repeat(4, minmax(250px, 1fr));
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(17rem, min(82vw, 23rem));
+        scroll-snap-type: x proximity;
     }
 
     .kanban-shell {
@@ -305,6 +308,7 @@
 
     .board-column {
         @apply min-w-0 rounded-[10px] p-1;
+        scroll-snap-align: start;
     }
 
     .kanban-lane {
@@ -378,6 +382,7 @@
         border: 1px solid var(--line);
         background: var(--card);
         box-shadow: 0 4px 18px rgb(0 0 0 / 0.05);
+        cursor: grab;
     }
 
     .task-card:hover {
@@ -418,9 +423,31 @@
         background: #d4d4d4;
     }
 
+    .task-card:active {
+        cursor: grabbing;
+    }
+
+    .task-card-dragging {
+        opacity: 0.55;
+        transform: rotate(1deg) scale(0.99);
+    }
+
+    .board-drop-zone {
+        min-height: 9rem;
+        border-radius: 10px;
+        transition: background-color 150ms ease, outline-color 150ms ease;
+    }
+
+    .board-drop-zone-active {
+        background: var(--accent-soft);
+        outline: 1px dashed var(--accent-line);
+        outline-offset: 4px;
+    }
+
     .task-title {
         @apply text-sm font-medium leading-5;
         color: var(--text-strong);
+        overflow-wrap: anywhere;
     }
 
     .task-menu {
@@ -471,10 +498,11 @@
     }
 
     .tag-chip {
-        @apply rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em];
+        @apply max-w-full rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em];
         border: 1px solid var(--line);
         background: color-mix(in srgb, var(--panel) 70%, transparent);
         color: var(--muted);
+        overflow-wrap: anywhere;
     }
 
     .tag-chip-violet {
@@ -543,7 +571,7 @@
     }
 
     .modal-panel {
-        @apply relative z-10 max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-[14px] p-6 sm:p-7;
+        @apply relative z-10 max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-[14px] p-4 sm:p-7;
         border: 1px solid var(--line);
         background: var(--panel-strong);
         box-shadow: 0 30px 80px -40px rgb(0 0 0 / 0.35);
@@ -614,7 +642,7 @@
     }
 
     .btn-primary {
-        @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium text-white transition duration-150;
+        @apply inline-flex shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium text-white transition duration-150;
         background: var(--accent);
         box-shadow: 0 2px 14px rgb(232 0 125 / 0.3);
     }
@@ -625,7 +653,7 @@
     }
 
     .btn-secondary {
-        @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-[13px] font-medium transition duration-150;
+        @apply inline-flex shrink-0 items-center justify-center rounded-md px-4 py-2 text-[13px] font-medium transition duration-150;
         border: 1px solid var(--line);
         background: var(--panel);
         color: var(--text);
@@ -655,7 +683,8 @@
     }
 
     .view-table-wrap {
-        @apply overflow-x-auto rounded-[10px] border border-[var(--line)] bg-white shadow-sm;
+        @apply custom-scroll overflow-x-auto rounded-[10px] border border-[var(--line)] bg-white shadow-sm;
+        -webkit-overflow-scrolling: touch;
     }
 
     .view-table thead tr {
@@ -733,6 +762,11 @@
         @apply rounded-[10px] border border-[var(--line)] bg-white shadow-sm;
     }
 
+    .calendar-shell {
+        @apply custom-scroll overflow-x-auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .gantt-grid {
         display: grid;
         grid-template-columns: 220px repeat(6, minmax(130px, 1fr));
@@ -756,6 +790,7 @@
     .calendar-grid {
         @apply grid overflow-hidden rounded-[10px] border border-[var(--line)];
         grid-template-columns: repeat(7, minmax(120px, 1fr));
+        min-width: 52rem;
     }
 
     .calendar-head {
@@ -789,5 +824,50 @@
     .report-meter-fill {
         @apply h-full rounded-full;
         background: var(--accent);
+    }
+
+    @media (max-width: 640px) {
+        .metric-value {
+            @apply text-[23px];
+        }
+
+        .view-toolbar {
+            @apply overflow-x-auto flex-nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .view-toolbar > .ml-auto {
+            @apply ml-0;
+        }
+
+        .board-grid {
+            @apply -mx-1 px-1;
+            grid-auto-columns: minmax(16.5rem, 86vw);
+        }
+
+        .task-card {
+            @apply p-3;
+        }
+
+        .modal-shell {
+            @apply items-end p-0 sm:items-center sm:p-4;
+        }
+
+        .modal-panel {
+            @apply max-h-[88vh] rounded-b-none rounded-t-[14px];
+        }
+
+        .calendar-shell {
+            @apply p-2;
+        }
+
+        .calendar-grid {
+            min-width: 44rem;
+            grid-template-columns: repeat(7, minmax(96px, 1fr));
+        }
+
+        .calendar-day {
+            @apply min-h-28 p-2;
+        }
     }
 }

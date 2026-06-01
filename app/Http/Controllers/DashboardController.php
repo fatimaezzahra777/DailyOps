@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -10,15 +11,17 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request): View
     {
-        if ($request->user()->role !== 'admin') {
-            $projects = $request->user()
-                ->managedProjects()
+        if (! $request->user()->isAdmin()) {
+            $visibleProjectsQuery = Project::query()
+                ->with('manager')
+                ->visibleTo($request->user());
+
+            $projects = (clone $visibleProjectsQuery)
                 ->latest()
                 ->take(5)
                 ->get();
-            $allProjects = $request->user()
-                ->managedProjects()
-                ->get();
+
+            $allProjects = $visibleProjectsQuery->get();
 
             return view('dashboard', [
                 'isAdmin' => false,

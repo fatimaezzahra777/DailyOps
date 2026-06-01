@@ -56,12 +56,13 @@ class UserController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['role'] = 'member';
+        $validated['email_verified_at'] = now();
 
         User::create($validated);
 
         return redirect()
             ->route('users.index')
-            ->with('status', 'Utilisateur cree avec succes.');
+            ->with('status', 'Utilisateur cree avec succes. Le compte peut maintenant se connecter.');
     }
 
     /**

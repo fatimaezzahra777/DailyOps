@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -57,10 +58,16 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     protected function buildFilteredQuery($request): Builder
     {
-        $query = Project::query()->with('manager');
+        $relations = ['manager'];
 
-        if ($request instanceof Request && $request->user() && ! $request->user()->isAdmin()) {
-            $query->where('manager_id', $request->user()->id);
+        if (Schema::hasColumn('projects', 'column_id')) {
+            $relations[] = 'column';
+        }
+
+        $query = Project::query()->with($relations);
+
+        if ($request instanceof Request && $request->user()) {
+            $query->visibleTo($request->user());
         }
 
         if ($request->search) {
