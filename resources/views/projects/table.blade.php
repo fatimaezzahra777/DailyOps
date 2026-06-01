@@ -46,7 +46,7 @@
                         <th>Status</th>
                         <th>Progress</th>
                         <th>Due date</th>
-                        <th>Assignee</th>
+                        <th>Manager</th>
                         <th class="text-right">Actions</th>
                     </tr>
                 </thead>

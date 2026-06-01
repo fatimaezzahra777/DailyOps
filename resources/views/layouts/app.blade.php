@@ -22,7 +22,7 @@
                 <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
                     @isset($header)
                         <header class="border-b border-black/10 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
-                            <div class="px-5 py-4">
+                            <div class="px-4 py-4 pl-16 sm:px-5 sm:pl-5">
                                 {{ $header }}
                             </div>
                         </header>
