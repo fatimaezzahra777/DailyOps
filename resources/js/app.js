@@ -12,6 +12,7 @@ const menuToggle = document.getElementById('menu-btn');
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
 const taskSearchRoot = document.querySelector('[data-task-search]');
+const realtimeNotificationsRoot = document.querySelector('[data-realtime-notifications]');
 
 let activeModal = null;
 
@@ -265,6 +266,106 @@ document.addEventListener('click', (event) => {
 });
 
 setupBoardDragAndDrop();
+
+const setupRealtimeNotifications = () => {
+    if (!realtimeNotificationsRoot || !window.Echo) {
+        return;
+    }
+
+    const userId = realtimeNotificationsRoot.dataset.notificationUserId;
+    const button = realtimeNotificationsRoot.querySelector('[data-notification-toggle]');
+    const badge = realtimeNotificationsRoot.querySelector('[data-notification-badge]');
+    const list = realtimeNotificationsRoot.querySelector('[data-notification-list]');
+    const empty = realtimeNotificationsRoot.querySelector('[data-notification-empty]');
+    const panel = realtimeNotificationsRoot.querySelector('[data-notification-panel]');
+    const toastContainer = document.getElementById('notification-toast-container');
+    let unreadCount = 0;
+
+    if (!userId || !badge || !list || !toastContainer) {
+        return;
+    }
+
+    const updateBadge = () => {
+        badge.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
+        badge.classList.toggle('hidden', unreadCount === 0);
+    };
+
+    const createNotificationItem = (notification) => {
+        const link = document.createElement('a');
+        link.href = notification.url ?? '#';
+        link.className = 'flex gap-3 border-b border-[var(--line)] px-4 py-3 last:border-0 hover:bg-[var(--card-soft)]';
+
+        const icon = document.createElement('span');
+        icon.className = 'material-symbols-rounded mt-0.5 text-[20px] text-[var(--accent)]';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = notification.type === 'project' ? 'work' : 'task_alt';
+
+        const content = document.createElement('span');
+        content.className = 'min-w-0 flex-1';
+
+        const title = document.createElement('p');
+        title.className = 'text-sm font-semibold text-[var(--text-strong)]';
+        title.textContent = notification.title ?? 'Notification';
+
+        const message = document.createElement('p');
+        message.className = 'mt-1 text-xs leading-5 text-[var(--muted)]';
+        message.textContent = notification.message ?? '';
+
+        content.append(title, message);
+        link.append(icon, content);
+
+        return link;
+    };
+
+    const showToast = (notification) => {
+        const toast = document.createElement('a');
+        toast.href = notification.url ?? '#';
+        toast.className = 'flex w-80 gap-3 rounded-md border border-[var(--accent-line)] bg-white p-4 text-sm shadow-[0_12px_30px_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5';
+
+        const icon = document.createElement('span');
+        icon.className = 'material-symbols-rounded mt-0.5 text-[22px] text-[var(--accent)]';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = notification.type === 'project' ? 'work' : 'task_alt';
+
+        const content = document.createElement('span');
+        content.className = 'min-w-0 flex-1';
+
+        const title = document.createElement('p');
+        title.className = 'font-semibold text-[var(--text-strong)]';
+        title.textContent = notification.title ?? 'Notification';
+
+        const message = document.createElement('p');
+        message.className = 'mt-1 leading-5 text-[var(--muted)]';
+        message.textContent = notification.message ?? '';
+
+        content.append(title, message);
+        toast.append(icon, content);
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 6500);
+    };
+
+    const pushNotification = (notification) => {
+        unreadCount += 1;
+        empty?.classList.add('hidden');
+        list.prepend(createNotificationItem(notification));
+        updateBadge();
+        showToast(notification);
+    };
+
+    button?.addEventListener('click', () => {
+        panel?.classList.toggle('hidden');
+        unreadCount = 0;
+        updateBadge();
+    });
+
+    window.Echo.private(`App.Models.User.${userId}`)
+        .listen('.assignment.notification', pushNotification);
+};
+
+setupRealtimeNotifications();
 
 window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {

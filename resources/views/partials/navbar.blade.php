@@ -61,9 +61,27 @@
                     </svg>
                 </button>
 
-                <button class="icon-button" type="button" aria-label="Notifications">
-                    <i class="ti ti-bell text-base"></i>
-                </button>
+                @auth
+                    <div class="relative" data-realtime-notifications data-notification-user-id="{{ auth()->id() }}">
+                        <button class="icon-button relative" type="button" aria-label="Notifications" data-notification-toggle>
+                            <span class="material-symbols-rounded text-[22px] leading-none" aria-hidden="true">notifications</span>
+                            <span class="absolute -right-1 -top-1 hidden min-w-5 rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white" data-notification-badge>0</span>
+                        </button>
+
+                        <div class="absolute right-0 top-11 z-40 hidden w-80 overflow-hidden rounded-md border border-[var(--line)] bg-white shadow-[0_16px_40px_rgba(0,0,0,0.12)]" data-notification-panel>
+                            <div class="flex items-center gap-2 border-b border-[var(--line)] px-4 py-3">
+                                <span class="material-symbols-rounded text-[20px] text-[var(--accent)]" aria-hidden="true">notifications</span>
+                                <p class="text-sm font-semibold text-[var(--text-strong)]">Notifications</p>
+                            </div>
+                            <div class="max-h-80 overflow-y-auto" data-notification-list>
+                                <div class="flex items-center gap-3 px-4 py-5 text-sm text-[var(--muted)]" data-notification-empty>
+                                    <span class="material-symbols-rounded text-[22px]" aria-hidden="true">notifications_off</span>
+                                    <span>Aucune nouvelle notification.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endauth
             </div>
 
             @if (request()->routeIs('projects.index'))
@@ -80,3 +98,7 @@
         </div>
     </div>
 </nav>
+
+@auth
+    <div id="notification-toast-container" class="fixed right-4 top-4 z-50 space-y-3"></div>
+@endauth
