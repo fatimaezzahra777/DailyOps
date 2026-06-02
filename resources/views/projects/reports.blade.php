@@ -2,6 +2,7 @@
 
 @section('content')
     @php
+        $navigationQuery = array_filter(request()->only(['search', 'status']), fn ($value) => filled($value));
         $total = max($projects->count(), 1);
         $completed = $projects->where('status', 'completed')->count();
         $inProgress = $projects->where('status', 'in_progress')->count();
@@ -26,7 +27,7 @@
                     <p class="mt-1 text-[12.5px] text-[#888888]">Synthese du workspace.</p>
                 </div>
             </div>
-            <a href="{{ route('projects.table') }}" class="btn-secondary">
+            <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary">
                 <i class="ti ti-table mr-1"></i>
                 Open table
             </a>

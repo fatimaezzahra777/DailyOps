@@ -2,6 +2,7 @@
 
 @section('content')
     @php
+        $navigationQuery = array_filter(request()->only(['search', 'status']), fn ($value) => filled($value));
         $weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'];
         $statusMeta = [
             'pending' => ['label' => 'Draft', 'class' => 'status-tag-pending', 'width' => 24, 'offset' => 1],
@@ -26,8 +27,8 @@
         </div>
 
         <div class="view-toolbar">
-            <a href="{{ route('projects.index') }}" class="btn-secondary"><i class="ti ti-layout-kanban mr-1"></i> Board</a>
-            <a href="{{ route('projects.table') }}" class="btn-secondary"><i class="ti ti-table mr-1"></i> Table</a>
+            <a href="{{ route('projects.index', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-layout-kanban mr-1"></i> Board</a>
+            <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-table mr-1"></i> Table</a>
             <span class="ml-auto text-[12px] text-[#888888]">{{ $projects->count() }} scheduled projects</span>
         </div>
 

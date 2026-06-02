@@ -8,8 +8,10 @@ class TaskService
 {
     protected $taskRepository;
 
-    public function __construct(TaskRepositoryInterface $taskRepository)
-    {
+    public function __construct(
+        TaskRepositoryInterface $taskRepository,
+        protected AssignmentNotificationService $assignmentNotificationService,
+    ) {
         $this->taskRepository = $taskRepository;
     }
 
@@ -25,12 +27,25 @@ class TaskService
 
     public function createTask(array $data)
     {
-        return $this->taskRepository->store($data);
+        $task = $this->taskRepository->store($data);
+
+        $this->assignmentNotificationService->notifyTaskAssigned($task);
+
+        return $task;
     }
 
     public function updateTask($id, array $data)
     {
-        return $this->taskRepository->update($id, $data);
+        $task = $this->taskRepository->findById($id);
+        $previousAssignedTo = $task->assigned_to;
+
+        $task = $this->taskRepository->update($id, $data);
+
+        if (($data['assigned_to'] ?? null) !== $previousAssignedTo) {
+            $this->assignmentNotificationService->notifyTaskAssigned($task);
+        }
+
+        return $task;
     }
 
     public function deleteTask($id)

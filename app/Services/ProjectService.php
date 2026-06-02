@@ -8,8 +8,10 @@ class ProjectService
 {
     protected $projectRepository;
 
-    public function __construct(ProjectRepositoryInterface $projectRepository)
-    {
+    public function __construct(
+        ProjectRepositoryInterface $projectRepository,
+        protected AssignmentNotificationService $assignmentNotificationService,
+    ) {
         $this->projectRepository = $projectRepository;
     }
 
@@ -25,12 +27,25 @@ class ProjectService
 
     public function createProject(array $data)
     {
-        return $this->projectRepository->store($data);
+        $project = $this->projectRepository->store($data);
+
+        $this->assignmentNotificationService->notifyProjectAssigned($project);
+
+        return $project;
     }
 
     public function updateProject($id, array $data)
     {
-        return $this->projectRepository->update($id, $data);
+        $project = $this->projectRepository->findById($id);
+        $previousAssignedTo = $project->assigned_to;
+
+        $project = $this->projectRepository->update($id, $data);
+
+        if (($data['assigned_to'] ?? null) !== $previousAssignedTo) {
+            $this->assignmentNotificationService->notifyProjectAssigned($project);
+        }
+
+        return $project;
     }
 
     public function deleteProject($id)
