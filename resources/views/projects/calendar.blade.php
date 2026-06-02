@@ -2,6 +2,7 @@
 
 @section('content')
     @php
+        $navigationQuery = array_filter(request()->only(['search', 'status']), fn ($value) => filled($value));
         $month = now()->startOfMonth();
         $calendarStart = $month->copy()->startOfWeek();
         $days = collect(range(0, 41))->map(fn ($day) => $calendarStart->copy()->addDays($day));
@@ -31,8 +32,8 @@
         </div>
 
         <div class="view-toolbar">
-            <a href="{{ route('projects.table') }}" class="btn-secondary"><i class="ti ti-table mr-1"></i> Table</a>
-            <a href="{{ route('projects.gantt') }}" class="btn-secondary"><i class="ti ti-timeline mr-1"></i> Gantt</a>
+            <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-table mr-1"></i> Table</a>
+            <a href="{{ route('projects.gantt', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-timeline mr-1"></i> Gantt</a>
             <span class="ml-auto text-[12px] text-[#888888]">{{ $projects->filter(fn ($project) => $project->end_date)->count() }} dated projects</span>
         </div>
 
