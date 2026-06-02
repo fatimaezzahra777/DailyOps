@@ -6,6 +6,9 @@
         request()->routeIs('projects.reports') => 'projects.reports',
         default => 'projects.index',
     };
+    $projectNavigationQuery = request()->routeIs('projects.*')
+        ? array_filter(request()->only(['search', 'status']), fn ($value) => filled($value))
+        : [];
 @endphp
 
 <nav class="z-20 border-b border-[var(--line)] bg-white shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
@@ -28,13 +31,13 @@
             </div>
 
             <div class="hidden items-center gap-2 lg:flex">
-                <a href="{{ route('projects.index') }}" class="topbar-chip {{ request()->routeIs('projects.index') ? 'topbar-chip-active' : '' }}">
+                <a href="{{ route('projects.index', $projectNavigationQuery) }}" class="topbar-chip {{ request()->routeIs('projects.index') ? 'topbar-chip-active' : '' }}">
                     <i class="ti ti-layout-kanban mr-1"></i> Board
                 </a>
-                <a href="{{ route('projects.table') }}" class="topbar-chip {{ request()->routeIs('projects.table') ? 'topbar-chip-active' : '' }}">
+                <a href="{{ route('projects.table', $projectNavigationQuery) }}" class="topbar-chip {{ request()->routeIs('projects.table') ? 'topbar-chip-active' : '' }}">
                     <i class="ti ti-table mr-1"></i> Table
                 </a>
-                <a href="{{ route('projects.gantt') }}" class="topbar-chip {{ request()->routeIs('projects.gantt') ? 'topbar-chip-active' : '' }}">
+                <a href="{{ route('projects.gantt', $projectNavigationQuery) }}" class="topbar-chip {{ request()->routeIs('projects.gantt') ? 'topbar-chip-active' : '' }}">
                     <i class="ti ti-timeline mr-1"></i> Gantt
                 </a>
             </div>
