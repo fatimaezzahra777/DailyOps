@@ -1,24 +1,14 @@
 @php
     $userInitials = strtoupper(substr(auth()->user()->name, 0, 2));
     $navItems = [
-<<<<<<< HEAD
         ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'dashboard', 'active' => 'dashboard'],
         auth()->user()->isAdmin() ? ['label' => 'Users', 'icon' => 'users', 'route' => 'users.index', 'active' => 'users.*'] : null,
         ['label' => 'Board', 'icon' => 'grid', 'route' => 'projects.index', 'active' => ['projects.index', 'projects.create', 'projects.show', 'projects.edit']],
+        ['label' => 'Tasks', 'icon' => 'checklist', 'route' => 'tasks.index', 'active' => 'tasks.*'],
         ['label' => 'Table', 'icon' => 'table', 'route' => 'projects.table', 'active' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'chart', 'route' => 'projects.gantt', 'active' => 'projects.gantt'],
         ['label' => 'Calendar', 'icon' => 'calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
         ['label' => 'Reports', 'icon' => 'report', 'route' => 'projects.reports', 'active' => 'projects.reports'],
-=======
-        ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'dashboard'],
-        auth()->user()->isAdmin() ? ['label' => 'Users', 'icon' => 'users', 'route' => 'users.index'] : null,
-        ['label' => 'Board', 'icon' => 'grid', 'route' => 'projects.index'],
-        ['label' => 'Tasks', 'icon' => 'checklist', 'route' => 'tasks.index'],
-        ['label' => 'Table', 'icon' => 'table', 'route' => 'projects.table'],
-        ['label' => 'Gantt', 'icon' => 'chart', 'route' => 'projects.gantt'],
-        ['label' => 'Calendar', 'icon' => 'calendar', 'route' => 'projects.calendar'],
-        ['label' => 'Reports', 'icon' => 'report', 'route' => 'projects.reports'],
->>>>>>> origin/dev
     ];
     $navItems = array_filter($navItems);
 @endphp
@@ -51,12 +41,8 @@
             <nav class="mt-3 space-y-1.5">
                 @foreach ($navItems as $item)
                     @php
-<<<<<<< HEAD
                         $activePatterns = (array) $item['active'];
                         $isActive = request()->routeIs(...$activePatterns);
-=======
-                        $isActive = $item['route'] && ($activeRoute === $item['route'] || str_starts_with($activeRoute ?? '', explode('.', $item['route'])[0] . '.'));
->>>>>>> origin/dev
                         $href = $item['route'] ? route($item['route']) : '#';
                     @endphp
                     <a href="{{ $href }}" class="sidebar-link {{ $isActive ? 'active-link' : '' }}" @if ($isActive) aria-current="page" @endif>

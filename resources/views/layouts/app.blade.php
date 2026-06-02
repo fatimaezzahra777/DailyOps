@@ -16,13 +16,21 @@
     </head>
     <body class="antialiased font-['DM_Sans'] text-[#0a0a0a]">
         @isset($slot)
+            <div id="sidebar-overlay" class="fixed inset-0 z-30 hidden bg-black/50 backdrop-blur-sm lg:hidden"></div>
+
             <div class="flex h-screen overflow-hidden bg-[#f7f7f7]">
-                @include('layouts.navigation')
+                @include('partials.sidebar')
 
                 <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
                     @isset($header)
                         <header class="border-b border-black/10 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
                             <div class="px-4 py-4 pl-16 sm:px-5 sm:pl-5">
+                                <button id="menu-btn" class="icon-button fixed left-4 top-3 z-20 lg:hidden" type="button" aria-label="Open menu">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+                                    </svg>
+                                </button>
+
                                 {{ $header }}
                             </div>
                         </header>

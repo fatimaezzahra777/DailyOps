@@ -28,33 +28,7 @@ const applyTheme = (theme) => {
         if (label) {
             label.textContent = isDark ? 'Dark' : 'Light';
         }
-<<<<<<< HEAD
-
-        field.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-
-    modal.querySelectorAll('input:not([type="hidden"]):not([type="password"]):not([type="text"][tabindex="-1"]), textarea, select').forEach((field) => {
-        if (field.hasAttribute('data-field-default')) {
-            return;
-        }
-
-        if (field.tagName === 'SELECT') {
-            field.selectedIndex = 0;
-            field.dispatchEvent(new Event('change', { bubbles: true }));
-            return;
-        }
-
-        if (field.type === 'checkbox' || field.type === 'radio') {
-            field.checked = field.defaultChecked;
-        } else {
-            field.value = '';
-        }
-
-        field.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-=======
     }
->>>>>>> origin/dev
 };
 
 const savedTheme = localStorage.getItem('theme');
@@ -121,6 +95,26 @@ const resetModalFields = (modal) => {
 
         field.dispatchEvent(new Event('input', { bubbles: true }));
     });
+
+    modal.querySelectorAll('input:not([type="hidden"]):not([type="password"]):not([type="text"][tabindex="-1"]), textarea, select').forEach((field) => {
+        if (field.hasAttribute('data-field-default')) {
+            return;
+        }
+
+        if (field.tagName === 'SELECT') {
+            field.selectedIndex = 0;
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+            return;
+        }
+
+        if (field.type === 'checkbox' || field.type === 'radio') {
+            field.checked = field.defaultChecked;
+        } else {
+            field.value = '';
+        }
+
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+    });
 };
 
 const setModalState = (modal, open) => {
@@ -147,17 +141,11 @@ const setModalState = (modal, open) => {
     }
 };
 
-<<<<<<< HEAD
 const openModalById = (id, afterOpen = null) => {
-    modalRoots.forEach((modal) => {
+    getModalRoots().forEach((modal) => {
         const isTargetModal = modal.id === id;
 
         if (isTargetModal) {
-=======
-const openModalById = (id) => {
-    getModalRoots().forEach((modal) => {
-        if (modal.id === id) {
->>>>>>> origin/dev
             resetModalFields(modal);
         }
 
@@ -212,7 +200,7 @@ const closeAllModals = () => {
 };
 
 const resetClosedModals = () => {
-    modalRoots
+    getModalRoots()
         .filter((modal) => modal.classList.contains('hidden'))
         .forEach((modal) => resetModalFields(modal));
 };
@@ -299,7 +287,6 @@ const setupBoardDragAndDrop = () => {
     });
 };
 
-<<<<<<< HEAD
 const setupCalendarDayCreate = () => {
     document.querySelectorAll('[data-calendar-create-date]').forEach((day) => {
         day.addEventListener('click', (event) => {
@@ -317,20 +304,12 @@ const setupCalendarDayCreate = () => {
     });
 };
 
-document.querySelectorAll('[data-modal-open]').forEach((trigger) => {
-    trigger.addEventListener('click', () => {
-        openModalById(trigger.dataset.modalOpen, (modal) => applyCreateProjectDefaults(trigger, modal));
-    });
-});
-=======
 document.addEventListener('click', (event) => {
     const openTrigger = event.target.closest('[data-modal-open]');
     if (openTrigger) {
-        openModalById(openTrigger.dataset.modalOpen);
-        setTimeout(() => applyCreateProjectDefaults(openTrigger), 1);
+        openModalById(openTrigger.dataset.modalOpen, (modal) => applyCreateProjectDefaults(openTrigger, modal));
         return;
     }
->>>>>>> origin/dev
 
     const closeTrigger = event.target.closest('[data-modal-close]');
     if (closeTrigger) {
