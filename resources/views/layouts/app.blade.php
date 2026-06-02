@@ -39,10 +39,10 @@
             <div class="app-shell">
                 @include('partials.sidebar')
 
-                <div class="flex min-h-screen min-w-0 flex-1 flex-col">
+                <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
                     @include('partials.navbar')
 
-                    <main class="flex-1 p-4 sm:p-6 lg:p-8">
+                    <main class="custom-scroll min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                         @if (session('success'))
                             <div class="mb-6 rounded-md border border-[#00a86b]/20 bg-[#00a86b]/10 px-4 py-3 text-sm font-medium text-[#00a86b]">
                                 {{ session('success') }}

@@ -23,19 +23,8 @@
     <div class="w-full max-w-md relative z-10">
 
         <!-- Logo -->
-        <div class="flex items-center justify-center gap-3 mb-6">
-
-            
-
-            <span class="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[#e8007d] text-white shadow-[0_0_18px_rgba(232,0,125,0.35)]">
-                <i class="ti ti-bolt text-[17px]"></i>
-            </span>
-
-            <h1 class="text-[20px] font-black text-black"
-                style="font-family: 'Syne', sans-serif;">
-                Daily<span class="text-[#e8007d]">Ops</span>
-            </h1>
-
+        <div class="flex items-center justify-center mb-6">
+            <img src="{{ asset('images/dailyops-logo.png') }}" alt="DailyOps" class="h-16 w-auto max-w-full">
         </div>
 
         <div class="flex justify-center gap-2 mb-8 flex-wrap">

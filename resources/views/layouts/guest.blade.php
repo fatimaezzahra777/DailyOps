@@ -16,13 +16,8 @@
     <body class="font-['DM_Sans'] text-[#0a0a0a] antialiased">
         <div class="flex min-h-screen flex-col items-center justify-center bg-[#f7f7f7] px-4 py-8">
             <div class="mb-6">
-                <a href="/" class="flex items-center gap-3">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[#e8007d] text-white shadow-[0_0_18px_rgba(232,0,125,0.35)]">
-                        <i class="ti ti-bolt text-[17px]"></i>
-                    </span>
-                    <span class="font-['Syne'] text-[20px] font-extrabold tracking-wide text-[#0a0a0a]">
-                        Daily<span class="text-[#e8007d]">Ops</span>
-                    </span>
+                <a href="/">
+                    <img src="{{ asset('images/dailyops-logo.png') }}" alt="DailyOps" class="h-14 w-auto">
                 </a>
             </div>
 

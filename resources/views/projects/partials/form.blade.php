@@ -8,8 +8,8 @@
     $errorsBag = $errors->getBag($errorBag);
     $inputName = fn (string $field) => $namePrefix ? "{$namePrefix}{$field}" : $field;
 
-    $fieldValue = function (string $field, $default = null) use ($useOldValues) {
-        return $useOldValues ? old($field, $default) : $default;
+    $fieldValue = function (string $field, $default = null) use ($useOldValues, $inputName) {
+        return $useOldValues ? old($inputName($field), old($field, $default)) : $default;
     };
 @endphp
 

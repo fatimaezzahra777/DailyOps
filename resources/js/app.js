@@ -22,6 +22,26 @@ const resetModalFields = (modal) => {
 
         field.dispatchEvent(new Event('input', { bubbles: true }));
     });
+
+    modal.querySelectorAll('input:not([type="hidden"]):not([type="password"]):not([type="text"][tabindex="-1"]), textarea, select').forEach((field) => {
+        if (field.hasAttribute('data-field-default')) {
+            return;
+        }
+
+        if (field.tagName === 'SELECT') {
+            field.selectedIndex = 0;
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+            return;
+        }
+
+        if (field.type === 'checkbox' || field.type === 'radio') {
+            field.checked = field.defaultChecked;
+        } else {
+            field.value = '';
+        }
+
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+    });
 };
 
 document.documentElement.classList.remove('dark');
@@ -90,28 +110,34 @@ const setModalState = (modal, open) => {
     }
 };
 
-const openModalById = (id) => {
+const openModalById = (id, afterOpen = null) => {
     modalRoots.forEach((modal) => {
-        if (modal.id === id) {
+        const isTargetModal = modal.id === id;
+
+        if (isTargetModal) {
             resetModalFields(modal);
         }
 
-        setModalState(modal, modal.id === id);
+        setModalState(modal, isTargetModal);
 
-        if (modal.id === id && modal.dataset.resetOnOpen === 'true') {
-            requestAnimationFrame(() => resetModalFields(modal));
-            setTimeout(() => resetModalFields(modal), 0);
+        if (isTargetModal) {
+            requestAnimationFrame(() => {
+                resetModalFields(modal);
+                afterOpen?.(modal);
+            });
         }
     });
 };
 
-const applyCreateProjectDefaults = (trigger) => {
+const applyCreateProjectDefaults = (trigger, modal = document) => {
     if (trigger.dataset.modalOpen !== 'create-project-modal') {
         return;
     }
 
-    const statusField = document.getElementById('create-project-status');
-    const columnField = document.getElementById('create-project-column-id');
+    const statusField = modal.querySelector('#create-project-status');
+    const columnField = modal.querySelector('#create-project-column-id');
+    const startDateField = modal.querySelector('[name="create_start_date"]');
+    const endDateField = modal.querySelector('[name="create_end_date"]');
 
     if (statusField && trigger.dataset.createStatus) {
         statusField.value = trigger.dataset.createStatus;
@@ -122,6 +148,17 @@ const applyCreateProjectDefaults = (trigger) => {
         columnField.value = trigger.dataset.createColumnId || '';
         columnField.dispatchEvent(new Event('change', { bubbles: true }));
     }
+
+    if (trigger.dataset.createDate) {
+        [startDateField, endDateField].forEach((field) => {
+            if (!field) {
+                return;
+            }
+
+            field.value = trigger.dataset.createDate;
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    }
 };
 
 const closeAllModals = () => {
@@ -129,6 +166,12 @@ const closeAllModals = () => {
         setModalState(modal, false);
         resetModalFields(modal);
     });
+};
+
+const resetClosedModals = () => {
+    modalRoots
+        .filter((modal) => modal.classList.contains('hidden'))
+        .forEach((modal) => resetModalFields(modal));
 };
 
 const setupBoardDragAndDrop = () => {
@@ -213,10 +256,26 @@ const setupBoardDragAndDrop = () => {
     });
 };
 
+const setupCalendarDayCreate = () => {
+    document.querySelectorAll('[data-calendar-create-date]').forEach((day) => {
+        day.addEventListener('click', (event) => {
+            if (event.target.closest('a, button, input, select, textarea')) {
+                return;
+            }
+
+            openModalById('create-project-modal', (modal) => applyCreateProjectDefaults({
+                dataset: {
+                    modalOpen: 'create-project-modal',
+                    createDate: day.dataset.calendarCreateDate,
+                },
+            }, modal));
+        });
+    });
+};
+
 document.querySelectorAll('[data-modal-open]').forEach((trigger) => {
     trigger.addEventListener('click', () => {
-        openModalById(trigger.dataset.modalOpen);
-        setTimeout(() => applyCreateProjectDefaults(trigger), 1);
+        openModalById(trigger.dataset.modalOpen, (modal) => applyCreateProjectDefaults(trigger, modal));
     });
 });
 
@@ -231,6 +290,10 @@ document.querySelectorAll('[data-modal-switch]').forEach((trigger) => {
 });
 
 setupBoardDragAndDrop();
+setupCalendarDayCreate();
+resetClosedModals();
+
+window.addEventListener('pageshow', resetClosedModals);
 
 window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {

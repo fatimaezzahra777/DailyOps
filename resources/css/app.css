@@ -97,7 +97,7 @@
 
 @layer components {
     .app-shell {
-        @apply flex min-h-screen overflow-x-hidden;
+        @apply flex h-screen overflow-hidden;
     }
 
     .workspace-sidebar {
@@ -105,6 +105,7 @@
         border-color: var(--line);
         background: var(--panel-strong);
         box-shadow: 2px 0 12px rgb(0 0 0 / 0.06);
+        height: 100dvh;
     }
 
     .workspace-switcher {
@@ -206,6 +207,21 @@
     .metric-value {
         @apply font-['Syne'] text-[26px] font-bold leading-none;
         color: var(--text-strong);
+    }
+
+    .kanban-eyebrow {
+        @apply text-[10px] font-semibold uppercase tracking-[0.24em];
+        color: var(--accent);
+    }
+
+    .kanban-title {
+        @apply mt-2 font-['Syne'] text-2xl font-bold tracking-tight;
+        color: var(--text-strong);
+    }
+
+    .kanban-subtitle {
+        @apply mt-2 text-sm leading-6;
+        color: var(--muted);
     }
 
     .filter-pill {
@@ -483,6 +499,12 @@
         border-color: color-mix(in srgb, var(--accent) 24%, transparent);
     }
 
+    .btn-secondary-active {
+        border-color: var(--accent-line);
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
     .custom-scroll::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -582,7 +604,7 @@
     }
 
     .calendar-shell {
-        @apply custom-scroll overflow-x-auto;
+        @apply custom-scroll;
         -webkit-overflow-scrolling: touch;
     }
 
@@ -607,33 +629,88 @@
     }
 
     .calendar-grid {
-        @apply grid overflow-hidden rounded-[10px] border border-[var(--line)];
-        grid-template-columns: repeat(7, minmax(120px, 1fr));
-        min-width: 52rem;
+        @apply grid overflow-hidden rounded-[10px] border border-[var(--line)] bg-white;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
     }
 
     .calendar-head {
-        @apply border-b border-r border-[var(--line)] bg-[#f4f4f4] px-3 py-2 font-['Syne'] text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)];
+        @apply border-b border-r border-[var(--line)] px-3 py-2 text-center font-['Syne'] text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)];
+        background: var(--page-alt);
+    }
+
+    .calendar-month-bar {
+        @apply mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-[var(--line)] p-3;
+        background: linear-gradient(135deg, rgb(232 0 125 / 0.06), transparent 42%), var(--page-alt);
     }
 
     .calendar-day {
-        @apply min-h-32 border-b border-r border-[var(--line)] bg-white p-3 transition hover:bg-[#f4f4f4];
+        @apply min-h-36 cursor-pointer border-b border-r border-[var(--line)] bg-white p-3 transition hover:bg-[#f8f8f8];
     }
 
     .calendar-day-muted {
-        @apply bg-[#fafafa] text-[var(--muted)];
+        @apply bg-[#fbfbfb] text-[var(--muted)];
     }
 
     .calendar-day-number {
-        @apply mb-2 flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-medium text-[#333333];
+        @apply mb-2 flex h-7 w-7 items-center justify-center rounded-full text-[12px] font-semibold text-[#333333];
     }
 
     .calendar-day-today {
         @apply bg-[#e8007d] text-white;
     }
 
+    .calendar-day-add {
+        @apply inline-flex h-7 w-7 items-center justify-center rounded-md text-[13px] opacity-0 transition;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--muted);
+    }
+
+    .calendar-day:hover .calendar-day-add,
+    .calendar-day-add:focus {
+        opacity: 1;
+    }
+
+    .calendar-day-add:hover {
+        border-color: var(--accent-line);
+        color: var(--accent);
+    }
+
     .calendar-event {
-        @apply mb-1 truncate rounded px-2 py-1 text-[11px];
+        @apply flex min-w-0 items-center gap-1.5 rounded-md border px-2 py-1.5 text-[11px] font-semibold transition hover:opacity-80;
+    }
+
+    .calendar-event-dot {
+        @apply h-1.5 w-1.5 shrink-0 rounded-full;
+        background: currentColor;
+    }
+
+    .calendar-event-pending {
+        background: rgb(232 0 125 / 0.1);
+        border-color: rgb(232 0 125 / 0.15);
+        color: var(--accent);
+    }
+
+    .calendar-event-progress {
+        background: rgb(217 119 6 / 0.1);
+        border-color: rgb(217 119 6 / 0.16);
+        color: var(--amber);
+    }
+
+    .calendar-event-completed {
+        background: rgb(0 168 107 / 0.1);
+        border-color: rgb(0 168 107 / 0.16);
+        color: var(--green);
+    }
+
+    .calendar-agenda-item {
+        @apply flex items-center gap-3 rounded-md border border-[var(--line)] bg-white p-3 transition hover:border-[var(--accent-line)] hover:bg-[#f4f4f4];
+    }
+
+    .calendar-agenda-date {
+        @apply flex h-10 w-11 shrink-0 items-center justify-center rounded-md text-[11px] font-semibold;
+        background: var(--accent-soft);
+        color: var(--accent);
     }
 
     .report-meter {
@@ -677,11 +754,11 @@
         }
 
         .calendar-shell {
-            @apply p-2;
+            @apply overflow-x-auto p-2;
         }
 
         .calendar-grid {
-            min-width: 44rem;
+            min-width: 46rem;
             grid-template-columns: repeat(7, minmax(96px, 1fr));
         }
 

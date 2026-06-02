@@ -37,6 +37,9 @@
                 <a href="{{ route('projects.gantt') }}" class="topbar-chip {{ request()->routeIs('projects.gantt') ? 'topbar-chip-active' : '' }}">
                     <i class="ti ti-timeline mr-1"></i> Gantt
                 </a>
+                <a href="{{ route('projects.calendar') }}" class="topbar-chip {{ request()->routeIs('projects.calendar') ? 'topbar-chip-active' : '' }}">
+                    <i class="ti ti-calendar mr-1"></i> Calendar
+                </a>
             </div>
         </div>
 
@@ -66,7 +69,7 @@
                 </button>
             </div>
 
-            @if (request()->routeIs('projects.index'))
+            @if (request()->routeIs('projects.index') || request()->routeIs('projects.calendar'))
                 <button type="button" class="btn-primary w-full sm:w-auto" data-modal-open="create-project-modal">
                     <i class="ti ti-plus text-base"></i>
                     <span>Add project</span>
