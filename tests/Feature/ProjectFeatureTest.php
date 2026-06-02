@@ -85,6 +85,26 @@ class ProjectFeatureTest extends TestCase
             ->assertSee('action="' . route('projects.reports') . '"', false);
     }
 
+    public function test_project_navigation_keeps_active_search_filters(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'admin']));
+
+        $query = [
+            'search' => 'Launch',
+            'status' => 'in_progress',
+        ];
+
+        $this->get('/projects?search=Launch&status=in_progress')
+            ->assertOk()
+            ->assertSee(route('projects.table', $query))
+            ->assertSee(route('projects.gantt', $query));
+
+        $this->get('/projects/gantt?search=Launch&status=in_progress')
+            ->assertOk()
+            ->assertSee(route('projects.index', $query))
+            ->assertSee(route('projects.table', $query));
+    }
+
     public function test_guest_is_redirected_from_projects(): void
     {
         $this->get('/projects')->assertRedirect('/login');
