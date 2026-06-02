@@ -31,7 +31,7 @@
             <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'in_progress'])) }}" class="filter-pill {{ request('status') === 'in_progress' ? 'filter-pill-active' : '' }}">In progress</a>
             <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'completed'])) }}" class="filter-pill {{ request('status') === 'completed' ? 'filter-pill-active' : '' }}">Completed</a>
             <div class="ml-auto text-[12px] text-[#888888]">{{ $allFilteredProjects->count() }} tasks</div>
-            <a href="{{ route('projects.index') }}" class="btn-secondary">
+            <a href="{{ route('projects.index', request()->only(['search', 'status'])) }}" class="btn-secondary">
                 <i class="ti ti-layout-kanban mr-1"></i>
                 Board
             </a>
