@@ -116,6 +116,29 @@ class ProjectFeatureTest extends TestCase
         $this->get('/projects/reports')->assertOk()->assertSee('Projects - Reports');
     }
 
+    public function test_calendar_create_form_is_not_prefilled_from_an_upcoming_project(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Project::create([
+            'manager_id' => $user->id,
+            'name' => 'Upcoming Delivery',
+            'description' => 'Visible in the calendar agenda.',
+            'status' => 'in_progress',
+            'end_date' => now()->addWeek(),
+        ]);
+
+        $response = $this->get('/projects/calendar');
+
+        $response->assertOk();
+        $response->assertSee('Upcoming Delivery');
+        $this->assertMatchesRegularExpression(
+            '/id="create-project-name"[^>]*value=""[^>]*data-field-default=""/',
+            $response->getContent()
+        );
+    }
+
     public function test_project_creator_becomes_project_manager(): void
     {
         $user = User::factory()->create(['name' => 'Project Manager']);
