@@ -29,6 +29,11 @@ class Project extends Model
         return $this->belongsTo(User::class, 'manager_id');
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function column(): BelongsTo
     {
         return $this->belongsTo(ProjectColumn::class, 'column_id');

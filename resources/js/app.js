@@ -1,24 +1,34 @@
+import './bootstrap';
+
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();
+
+const html = document.documentElement;
+const themeToggle = document.getElementById('theme-toggle');
 const menuToggle = document.getElementById('menu-btn');
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
-const modalRoots = Array.from(document.querySelectorAll('[data-modal]'));
+const taskSearchRoot = document.querySelector('[data-task-search]');
+
 let activeModal = null;
 
-const resetModalFields = (modal) => {
-    if (!modal || modal.dataset.resetOnOpen !== 'true') {
-        return;
-    }
+const getModalRoots = () => Array.from(document.querySelectorAll('[data-modal]'));
 
-    const form = modal.querySelector('form');
-    form?.reset();
+const applyTheme = (theme) => {
+    const isDark = theme === 'dark';
+    html.classList.toggle('dark', isDark);
+    localStorage.setItem('theme', theme);
 
-    modal.querySelectorAll('[data-field-default]').forEach((field) => {
-        field.value = field.dataset.fieldDefault ?? '';
-
-        if (field.tagName === 'SELECT') {
-            field.dispatchEvent(new Event('change', { bubbles: true }));
-            return;
+    if (themeToggle) {
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+        const label = themeToggle.querySelector('[data-theme-label]');
+        if (label) {
+            label.textContent = isDark ? 'Dark' : 'Light';
         }
+<<<<<<< HEAD
 
         field.dispatchEvent(new Event('input', { bubbles: true }));
     });
@@ -42,11 +52,18 @@ const resetModalFields = (modal) => {
 
         field.dispatchEvent(new Event('input', { bubbles: true }));
     });
+=======
+    }
+>>>>>>> origin/dev
 };
 
-document.documentElement.classList.remove('dark');
-localStorage.setItem('theme', 'light');
+const savedTheme = localStorage.getItem('theme');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(savedTheme ?? (systemPrefersDark ? 'dark' : 'light'));
 
+themeToggle?.addEventListener('click', () => {
+    applyTheme(html.classList.contains('dark') ? 'light' : 'dark');
+});
 
 const closeSidebar = () => {
     sidebar?.classList.add('-translate-x-full');
@@ -86,6 +103,26 @@ window.addEventListener('resize', () => {
     closeSidebar();
 });
 
+const resetModalFields = (modal) => {
+    if (!modal || modal.dataset.resetOnOpen !== 'true') {
+        return;
+    }
+
+    const form = modal.querySelector('form');
+    form?.reset();
+
+    modal.querySelectorAll('[data-field-default]').forEach((field) => {
+        field.value = field.dataset.fieldDefault ?? '';
+
+        if (field.tagName === 'SELECT') {
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+            return;
+        }
+
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+};
+
 const setModalState = (modal, open) => {
     if (!modal) {
         return;
@@ -105,16 +142,22 @@ const setModalState = (modal, open) => {
         activeModal = null;
     }
 
-    if (!modalRoots.some((item) => !item.classList.contains('hidden'))) {
+    if (!getModalRoots().some((item) => !item.classList.contains('hidden'))) {
         document.body.classList.remove('overflow-hidden');
     }
 };
 
+<<<<<<< HEAD
 const openModalById = (id, afterOpen = null) => {
     modalRoots.forEach((modal) => {
         const isTargetModal = modal.id === id;
 
         if (isTargetModal) {
+=======
+const openModalById = (id) => {
+    getModalRoots().forEach((modal) => {
+        if (modal.id === id) {
+>>>>>>> origin/dev
             resetModalFields(modal);
         }
 
@@ -162,7 +205,7 @@ const applyCreateProjectDefaults = (trigger, modal = document) => {
 };
 
 const closeAllModals = () => {
-    modalRoots.forEach((modal) => {
+    getModalRoots().forEach((modal) => {
         setModalState(modal, false);
         resetModalFields(modal);
     });
@@ -256,6 +299,7 @@ const setupBoardDragAndDrop = () => {
     });
 };
 
+<<<<<<< HEAD
 const setupCalendarDayCreate = () => {
     document.querySelectorAll('[data-calendar-create-date]').forEach((day) => {
         day.addEventListener('click', (event) => {
@@ -278,15 +322,26 @@ document.querySelectorAll('[data-modal-open]').forEach((trigger) => {
         openModalById(trigger.dataset.modalOpen, (modal) => applyCreateProjectDefaults(trigger, modal));
     });
 });
+=======
+document.addEventListener('click', (event) => {
+    const openTrigger = event.target.closest('[data-modal-open]');
+    if (openTrigger) {
+        openModalById(openTrigger.dataset.modalOpen);
+        setTimeout(() => applyCreateProjectDefaults(openTrigger), 1);
+        return;
+    }
+>>>>>>> origin/dev
 
-document.querySelectorAll('[data-modal-close]').forEach((trigger) => {
-    trigger.addEventListener('click', () => closeAllModals());
-});
+    const closeTrigger = event.target.closest('[data-modal-close]');
+    if (closeTrigger) {
+        closeAllModals();
+        return;
+    }
 
-document.querySelectorAll('[data-modal-switch]').forEach((trigger) => {
-    trigger.addEventListener('click', () => {
-        openModalById(trigger.dataset.modalSwitch);
-    });
+    const switchTrigger = event.target.closest('[data-modal-switch]');
+    if (switchTrigger) {
+        openModalById(switchTrigger.dataset.modalSwitch);
+    }
 });
 
 setupBoardDragAndDrop();
@@ -301,10 +356,63 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-import './bootstrap';
+if (taskSearchRoot) {
+    const filterForm = document.getElementById('task-filter-form');
+    const tasksContainer = document.getElementById('tasks-container');
+    const tasksPagination = document.getElementById('tasks-pagination');
+    const searchInput = document.getElementById('task-search-input');
+    let searchTimer;
 
-import Alpine from 'alpinejs';
+    const buildTaskQuery = () => {
+        const formData = new FormData(filterForm);
+        return new URLSearchParams(
+            [...formData.entries()].filter(([, value]) => String(value).trim() !== ''),
+        );
+    };
 
-window.Alpine = Alpine;
+    const refreshTasks = async (url = null) => {
+        const queryString = buildTaskQuery().toString();
+        const targetUrl = url ?? (queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname);
 
-Alpine.start();
+        const response = await fetch(targetUrl, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        tasksContainer.innerHTML = data.results;
+        tasksPagination.innerHTML = data.pagination;
+        window.history.replaceState({}, '', targetUrl);
+    };
+
+    filterForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        refreshTasks();
+    });
+
+    filterForm?.querySelectorAll('select').forEach((select) => {
+        select.addEventListener('change', () => refreshTasks());
+    });
+
+    searchInput?.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => refreshTasks(), 280);
+    });
+
+    tasksPagination?.addEventListener('click', (event) => {
+        const link = event.target.closest('a');
+
+        if (!link) {
+            return;
+        }
+
+        event.preventDefault();
+        refreshTasks(link.href);
+    });
+}

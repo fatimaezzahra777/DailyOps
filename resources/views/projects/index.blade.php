@@ -36,9 +36,39 @@
         ];
 
         $columns = collect([
-            ['title' => 'Pending projects', 'status' => 'pending', 'column_id' => null, 'dot' => 'bg-violet-500', 'empty' => 'No pending projects'],
-            ['title' => 'In progress projects', 'status' => 'in_progress', 'column_id' => null, 'dot' => 'bg-emerald-500', 'empty' => 'No active projects'],
-            ['title' => 'Completed projects', 'status' => 'completed', 'column_id' => null, 'dot' => 'bg-rose-500', 'empty' => 'No completed projects'],
+            [
+                'title' => 'Pending projects',
+                'status' => 'pending',
+                'column_id' => null,
+                'dot' => 'bg-[#e8007d]',
+                'empty' => 'No pending projects',
+                'description' => 'Ideas to validate and brief before production.',
+                'laneClass' => 'kanban-lane-pending',
+                'badgeClass' => 'kanban-count-pending',
+                'cardAccent' => 'project-card-accent-pending',
+            ],
+            [
+                'title' => 'In progress projects',
+                'status' => 'in_progress',
+                'column_id' => null,
+                'dot' => 'bg-[#f59e0b]',
+                'empty' => 'No active projects',
+                'description' => 'Current execution with active contributors.',
+                'laneClass' => 'kanban-lane-progress',
+                'badgeClass' => 'kanban-count-progress',
+                'cardAccent' => 'project-card-accent-progress',
+            ],
+            [
+                'title' => 'Completed projects',
+                'status' => 'completed',
+                'column_id' => null,
+                'dot' => 'bg-[#00a86b]',
+                'empty' => 'No completed projects',
+                'description' => 'Delivered work and archived outcomes.',
+                'laneClass' => 'kanban-lane-completed',
+                'badgeClass' => 'kanban-count-completed',
+                'cardAccent' => 'project-card-accent-completed',
+            ],
         ])->merge(
             ($projectColumns ?? collect())->map(fn ($column) => [
                 'title' => $column->name,
@@ -46,6 +76,10 @@
                 'column_id' => $column->id,
                 'dot' => 'bg-sky-500',
                 'empty' => 'No projects in this column',
+                'description' => 'Custom workflow column.',
+                'laneClass' => 'kanban-lane-empty',
+                'badgeClass' => 'kanban-count-empty',
+                'cardAccent' => 'project-card-accent-empty',
             ])
         );
 
@@ -57,6 +91,22 @@
     @endphp
 
     <section class="space-y-6">
+        <div class="kanban-overview">
+            <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                <div class="max-w-2xl">
+                    <p class="kanban-eyebrow">Kanban board</p>
+                    <h1 class="kanban-title">Projects flow</h1>
+                    <p class="kanban-subtitle">Visualise the entire project pipeline from idea to delivery, with the platform palette and clearer lane ownership.</p>
+                </div>
+
+                <div class="kanban-legend">
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#e8007d]"></span> Pending</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#f59e0b]"></span> In progress</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#00a86b]"></span> Completed</span>
+                </div>
+            </div>
+        </div>
+
         <div class="grid gap-4 xl:grid-cols-4">
             @foreach ($stats as $index => $stat)
                 <article class="metric-card {{ $index === 0 ? 'metric-card-featured' : '' }}">
@@ -71,7 +121,7 @@
             @endforeach
         </div>
 
-        <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+        <div class="kanban-toolbar">
             <div class="flex flex-wrap items-center gap-2">
                 <a href="{{ route('projects.index', $queryWithoutStatus) }}"
                     class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">All projects</a>
@@ -83,26 +133,35 @@
                     class="filter-pill {{ request('status') === 'completed' ? 'filter-pill-active' : '' }}">Completed</a>
             </div>
 
-            <div class="avatar-stack self-start xl:self-end">
-                @foreach (['A', 'B', 'C', '+'] as $avatar)
-                    <span class="avatar-dot">{{ $avatar }}</span>
-                @endforeach
+            <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--muted)]">
+                <span class="kanban-toolbar-note">3 active collaborators</span>
+                <div class="avatar-stack self-end">
+                    @foreach (['A', 'B', 'C', '+'] as $avatar)
+                        <span class="avatar-dot">{{ $avatar }}</span>
+                    @endforeach
+                </div>
             </div>
         </div>
 
-        <div class="board-grid custom-scroll overflow-x-auto overscroll-x-contain pb-4" data-board data-projects-base-url="{{ url('/projects') }}">
+        <div class="kanban-shell custom-scroll overflow-x-auto overscroll-x-contain pb-4" data-board data-projects-base-url="{{ url('/projects') }}">
+            <div class="board-grid">
             @foreach ($columns as $column)
                 @php
                     $items = $column['column_id']
                         ? $projectCollection->where('column_id', $column['column_id'])->values()
                         : $projectCollection->whereNull('column_id')->where('status', $column['status'])->values();
                 @endphp
-                <section class="board-column">
-                    <div class="mb-4 flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-2">
-                            <span class="h-2.5 w-2.5 rounded-full {{ $column['dot'] }}"></span>
-                            <h2 class="board-column-title">{{ $column['title'] }}</h2>
-                            <span class="board-column-count">{{ $items->count() }}</span>
+                <section class="board-column kanban-lane {{ $column['laneClass'] }}">
+                    <div class="kanban-lane-head">
+                        <div class="flex min-w-0 items-start gap-3">
+                            <span class="mt-1 h-2.5 w-2.5 rounded-full {{ $column['dot'] }}"></span>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <h2 class="board-column-title">{{ $column['title'] }}</h2>
+                                    <span class="board-column-count {{ $column['badgeClass'] }}">{{ $items->count() }}</span>
+                                </div>
+                                <p class="kanban-lane-description">{{ $column['description'] }}</p>
+                            </div>
                         </div>
                         <button type="button" class="icon-button h-7 w-7 p-0" aria-label="Add project"
                             data-modal-open="create-project-modal"
@@ -123,8 +182,26 @@
                                     'in_progress' => 68,
                                     default => 28,
                                 };
+
+                                $deadlineLabel = 'No deadline';
+                                $deadlineClass = 'project-deadline-neutral';
+
+                                if ($project->end_date) {
+                                    if ($project->status !== 'completed' && $project->end_date->isPast()) {
+                                        $deadlineLabel = 'Overdue';
+                                        $deadlineClass = 'project-deadline-danger';
+                                    } elseif ($project->status !== 'completed' && $project->end_date->isToday()) {
+                                        $deadlineLabel = 'Due today';
+                                        $deadlineClass = 'project-deadline-warning';
+                                    } elseif ($project->status !== 'completed' && $project->end_date->diffInDays(now()) <= 3) {
+                                        $deadlineLabel = 'Due soon';
+                                        $deadlineClass = 'project-deadline-warning';
+                                    } else {
+                                        $deadlineLabel = $project->end_date->format('d M');
+                                    }
+                                }
                             @endphp
-                            <article class="task-card" draggable="true" data-draggable-project data-project-id="{{ $project->id }}">
+                            <article class="task-card project-card {{ $column['cardAccent'] }}" draggable="true" data-draggable-project data-project-id="{{ $project->id }}">
                                 <div class="flex items-start justify-between gap-3">
                                     <button type="button" class="task-title text-left hover:text-[#e8007d]"
                                         data-modal-open="project-details-modal-{{ $project->id }}">
@@ -143,16 +220,28 @@
                                     @if ($project->assigned_to)
                                         <span class="tag-chip">{{ $project->assigned_to }}</span>
                                     @endif
+                                    <span class="tag-chip">#{{ str_pad((string) $project->id, 2, '0', STR_PAD_LEFT) }}</span>
                                     <span class="tag-chip tag-chip-violet">Manager: {{ $project->manager?->name ?? 'Not assigned' }}</span>
                                 </div>
 
                                 @if ($project->description)
-                                    <p class="task-description">{{ \Illuminate\Support\Str::limit($project->description, 88) }}</p>
+                                    <p class="task-description">{{ \Illuminate\Support\Str::limit($project->description, 96) }}</p>
                                 @endif
+
+                                <div class="project-meta-grid">
+                                    <div class="project-meta-item">
+                                        <span class="project-meta-label">Start</span>
+                                        <span class="project-meta-value">{{ $project->start_date ? $project->start_date->format('d M') : 'Not set' }}</span>
+                                    </div>
+                                    <div class="project-meta-item">
+                                        <span class="project-meta-label">Deadline</span>
+                                        <span class="project-meta-value {{ $deadlineClass }}">{{ $deadlineLabel }}</span>
+                                    </div>
+                                </div>
 
                                 <div class="mt-4">
                                     <div class="mb-2 flex items-center justify-between text-[11px] text-[var(--muted)]">
-                                        <span>{{ $project->end_date ? $project->end_date->format('d M') : 'No deadline' }}</span>
+                                        <span>Progress</span>
                                         <span>{{ $progress }}%</span>
                                     </div>
                                     <div class="progress-track">
@@ -162,8 +251,8 @@
 
                                 <div class="mt-4 flex items-center justify-between">
                                     <div class="flex items-center gap-3 text-[11px] text-[var(--muted)]">
-                                        <span>{{ $project->start_date ? $project->start_date->format('d M') : 'No start' }}</span>
-                                        <span>{{ $project->description ? '1 note' : '0 notes' }}</span>
+                                        <span>{{ $project->description ? 'Brief ready' : 'Brief missing' }}</span>
+                                        <span>{{ $project->created_at?->diffForHumans() }}</span>
                                     </div>
 
                                     <div class="flex -space-x-2">
@@ -199,12 +288,17 @@
                     </div>
                 </section>
             @endforeach
-
-            <section class="board-column">
-                <div class="mb-4 flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2">
-                        <span class="h-2.5 w-2.5 rounded-full bg-zinc-500"></span>
-                        <h2 class="board-column-title">New column</h2>
+            <section class="board-column kanban-lane kanban-lane-empty">
+                <div class="kanban-lane-head">
+                    <div class="flex min-w-0 items-start gap-3">
+                        <span class="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-400"></span>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h2 class="board-column-title">New column</h2>
+                                <span class="board-column-count kanban-count-empty">+</span>
+                            </div>
+                            <p class="kanban-lane-description">Add a custom workflow lane.</p>
+                        </div>
                     </div>
                     <button type="button" class="icon-button h-7 w-7 p-0" aria-label="Add column"
                         data-modal-open="create-column-modal">
@@ -212,11 +306,11 @@
                     </button>
                 </div>
 
-                <button type="button" class="empty-column-card w-full text-left"
-                    data-modal-open="create-column-modal">
+                <button type="button" class="empty-column-card w-full text-left" data-modal-open="create-column-modal">
                     <p>Click to add a new board column</p>
                 </button>
             </section>
+            </div>
         </div>
 
         @if ($projects->hasPages())

@@ -29,6 +29,7 @@
 
             <div class="flex flex-wrap gap-3">
                 <a href="{{ route('projects.edit', $project) }}" class="btn-primary">Edit project</a>
+                <a href="{{ route('tasks.index', ['project_id' => $project->id]) }}" class="btn-secondary">View tasks</a>
                 <a href="{{ route('projects.index') }}" class="btn-secondary">Back to board</a>
             </div>
         </div>
@@ -67,6 +68,7 @@
                 <div class="panel-dark p-6">
                     <h2 class="text-lg font-semibold">Actions</h2>
                     <div class="mt-4 flex flex-col gap-3">
+                        <a href="{{ route('tasks.create') }}" class="btn-secondary">Create task</a>
                         <a href="{{ route('projects.edit', $project) }}" class="btn-primary">Update project</a>
                         <form action="{{ route('projects.destroy', $project) }}" method="POST"
                             onsubmit="return confirm('Delete this project?')">

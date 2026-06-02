@@ -7,6 +7,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\CommentController;
+
 
 Route::get('/', function () {
     return redirect()->route('projects.index');
@@ -24,10 +27,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/projects/columns', [ProjectController::class, 'storeColumn'])->name('projects.columns.store');
     Route::patch('/projects/{project}/move', [ProjectController::class, 'move'])->name('projects.move');
     Route::resource('projects', ProjectController::class);
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::resource('tasks', TaskController::class);
+    Route::patch('/tasks/{id}/change-status',[TaskController::class, 'changeStatus']);
+    Route::resource('comments', CommentController::class)->only(['store', 'destroy']);
+
 });
 
 
