@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\ProjectColumn;
 use App\Services\ProjectService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
@@ -52,8 +53,9 @@ class ProjectController extends Controller
     public function calendar(Request $request)
     {
         $projects = $this->projectService->getFilteredProjectCollection($request);
+        $month = $this->resolveCalendarMonth($request);
 
-        return view('projects.calendar', compact('projects'));
+        return view('projects.calendar', compact('projects', 'month'));
     }
 
     public function reports(Request $request)
@@ -241,11 +243,24 @@ class ProjectController extends Controller
 
         $this->projectService->deleteProject($id);
 
-        return back()->with('success', 'Projet supprimé avec succès');
+        return redirect()
+            ->route('projects.index')
+            ->with('success', 'Projet supprimé avec succès');
     }
 
     protected function authorizeProjectAccess(Request $request, Project $project): void
     {
         abort_if(! $project->isVisibleTo($request->user()), Response::HTTP_FORBIDDEN);
+    }
+
+    protected function resolveCalendarMonth(Request $request): Carbon
+    {
+        $month = $request->query('month');
+
+        if (is_string($month) && preg_match('/^\d{4}-\d{2}$/', $month)) {
+            return Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        }
+
+        return now()->startOfMonth();
     }
 }
