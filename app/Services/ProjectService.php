@@ -11,6 +11,7 @@ class ProjectService
     public function __construct(
         ProjectRepositoryInterface $projectRepository,
         protected AssignmentNotificationService $assignmentNotificationService,
+        protected ProjectInvitationService $projectInvitationService,
     ) {
         $this->projectRepository = $projectRepository;
     }
@@ -30,6 +31,11 @@ class ProjectService
         $project = $this->projectRepository->store($data);
 
         $this->assignmentNotificationService->notifyProjectAssigned($project);
+        $this->projectInvitationService->sendInvitation(
+            $project,
+            $project->assigned_to,
+            $project->manager,
+        );
 
         return $project;
     }
@@ -43,6 +49,11 @@ class ProjectService
 
         if (($data['assigned_to'] ?? null) !== $previousAssignedTo) {
             $this->assignmentNotificationService->notifyProjectAssigned($project);
+            $this->projectInvitationService->sendInvitation(
+                $project,
+                $project->assigned_to,
+                $project->manager,
+            );
         }
 
         return $project;
