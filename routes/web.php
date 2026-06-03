@@ -9,11 +9,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ProjectInvitationController;
 
 
 Route::get('/', function () {
     return redirect()->route('projects.index');
 });
+
+Route::get('/project-invitations/{token}/accept', [ProjectInvitationController::class, 'accept'])
+    ->name('project-invitations.accept');
+
+Route::get('/project-invitations/{token}/decline', [ProjectInvitationController::class, 'decline'])
+    ->name('project-invitations.decline');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])
