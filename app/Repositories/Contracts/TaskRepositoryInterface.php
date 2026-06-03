@@ -16,5 +16,5 @@ interface TaskRepositoryInterface
 
     public function searchAndFilter($request);
 
-    public function updateStatus($id, $status);
+    public function updateStatus($id, $status, $taskColumnId = null);
 }

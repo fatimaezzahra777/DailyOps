@@ -15,9 +15,9 @@
                     </p>
                 </div>
 
-                <a href="{{ route('users.edit', $user) }}" class="inline-flex items-center justify-center gap-2 rounded-[10px] bg-[#c90068] px-6 py-4 text-[12px] font-extrabold uppercase tracking-[0.1em] text-white shadow-[0_10px_24px_rgba(201,0,104,0.22)] transition hover:bg-[#e8007d] focus:outline-none focus:ring-4 focus:ring-[#c90068]/20">
-                    <span class="material-symbols-rounded text-[19px]" aria-hidden="true">edit</span>
-                    Modifier le user
+                <a href="{{ route('users.edit', $user) }}" class="icon-button h-11 w-11 p-0"
+                    aria-label="Modifier user" title="Modifier user">
+                    <span class="material-symbols-rounded text-[22px]" aria-hidden="true">edit</span>
                 </a>
             </div>
 
@@ -69,6 +69,125 @@
                         <dd class="mt-2 text-[15px] font-bold text-[#111827]">{{ $user->updated_at->format('d/m/Y H:i') }}</dd>
                     </div>
                 </dl>
+            </section>
+
+            <section class="mt-10">
+                <div class="mb-5 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="h-7 w-[3px] rounded-full bg-[#c90068]"></span>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c90068]">
+                            {{ $user->isAdmin() ? 'Tous les projets' : 'Projets de cette personne' }}
+                        </p>
+                    </div>
+                    <span class="inline-flex rounded-full border border-black/10 bg-[#f8fafc] px-3 py-1 text-[11px] font-bold text-[#6b7280]">
+                        {{ $visibleProjects->count() }} projets
+                    </span>
+                </div>
+
+                @php
+                    $projectCard = function ($project) {
+                        $statusClass = match ($project->status) {
+                            'completed' => 'border-[#00a86b]/20 bg-[#00a86b]/10 text-[#00a86b]',
+                            'in_progress' => 'border-[#f59e0b]/20 bg-[#f59e0b]/10 text-[#b45309]',
+                            default => 'border-[#c90068]/20 bg-[#c90068]/10 text-[#c90068]',
+                        };
+
+                        return [
+                            'statusClass' => $statusClass,
+                            'statusLabel' => str($project->status)->replace('_', ' ')->title(),
+                            'deadline' => $project->end_date?->format('d M Y') ?? 'No deadline',
+                        ];
+                    };
+                @endphp
+
+                @if ($user->isAdmin())
+                    <div class="grid gap-4 md:grid-cols-2">
+                        @forelse ($visibleProjects as $project)
+                            @php($meta = $projectCard($project))
+                            <article class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] p-4">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <h3 class="text-sm font-bold text-[#111827]">{{ $project->name }}</h3>
+                                        <p class="mt-1 text-xs text-[#6b7280]">Manager: {{ $project->manager?->name ?? 'Not assigned' }}</p>
+                                    </div>
+                                    <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
+                                        aria-label="Voir projet" title="Voir projet">
+                                        <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                    </a>
+                                </div>
+                                <div class="mt-4 flex flex-wrap items-center gap-2">
+                                    <span class="inline-flex rounded-full border px-2.5 py-1 text-[10.5px] font-bold {{ $meta['statusClass'] }}">
+                                        {{ $meta['statusLabel'] }}
+                                    </span>
+                                    <span class="inline-flex rounded-full border border-black/10 bg-white px-2.5 py-1 text-[10.5px] font-bold text-[#6b7280]">
+                                        {{ $meta['deadline'] }}
+                                    </span>
+                                </div>
+                            </article>
+                        @empty
+                            <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">Aucun projet trouve.</p>
+                        @endforelse
+                    </div>
+                @else
+                    <div class="grid gap-6 lg:grid-cols-2">
+                        <div>
+                            <h3 class="mb-3 text-sm font-extrabold text-[#111827]">Projets crees / geres</h3>
+                            <div class="space-y-3">
+                                @forelse ($managedProjects as $project)
+                                    @php($meta = $projectCard($project))
+                                    <article class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] p-4">
+                                        <div class="flex items-start justify-between gap-3">
+                                            <div>
+                                                <h4 class="text-sm font-bold text-[#111827]">{{ $project->name }}</h4>
+                                                <p class="mt-1 text-xs text-[#6b7280]">{{ $meta['deadline'] }}</p>
+                                            </div>
+                                            <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
+                                                aria-label="Voir projet" title="Voir projet">
+                                                <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                            </a>
+                                        </div>
+                                        <span class="mt-3 inline-flex rounded-full border px-2.5 py-1 text-[10.5px] font-bold {{ $meta['statusClass'] }}">
+                                            {{ $meta['statusLabel'] }}
+                                        </span>
+                                    </article>
+                                @empty
+                                    <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">Aucun projet gere.</p>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="mb-3 text-sm font-extrabold text-[#111827]">Projets assignes / collaboration</h3>
+                            <div class="space-y-3">
+                                @forelse ($assignedProjects as $project)
+                                    @php($meta = $projectCard($project))
+                                    <article class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] p-4">
+                                        <div class="flex items-start justify-between gap-3">
+                                            <div>
+                                                <h4 class="text-sm font-bold text-[#111827]">{{ $project->name }}</h4>
+                                                <p class="mt-1 text-xs text-[#6b7280]">Manager: {{ $project->manager?->name ?? 'Not assigned' }}</p>
+                                            </div>
+                                            <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
+                                                aria-label="Voir projet" title="Voir projet">
+                                                <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                            </a>
+                                        </div>
+                                        <div class="mt-3 flex flex-wrap gap-2">
+                                            <span class="inline-flex rounded-full border px-2.5 py-1 text-[10.5px] font-bold {{ $meta['statusClass'] }}">
+                                                {{ $meta['statusLabel'] }}
+                                            </span>
+                                            <span class="inline-flex rounded-full border border-black/10 bg-white px-2.5 py-1 text-[10.5px] font-bold text-[#6b7280]">
+                                                {{ $meta['deadline'] }}
+                                            </span>
+                                        </div>
+                                    </article>
+                                @empty
+                                    <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">Aucun projet assigne.</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </section>
 
             <div class="mt-10">

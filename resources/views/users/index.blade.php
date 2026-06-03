@@ -74,13 +74,22 @@
                                     </td>
                                     <td class="px-6 py-4 text-[12.5px] text-[#888888]">{{ $user->created_at->format('d/m/Y H:i') }}</td>
                                     <td class="px-6 py-4 text-right text-[13px] font-medium">
-                                        <div class="flex justify-end gap-3">
-                                            <a href="{{ route('users.show', $user) }}" class="text-[#555555] hover:text-[#0a0a0a]">Voir</a>
-                                            <a href="{{ route('users.edit', $user) }}" class="text-[#e8007d] hover:text-[#ff1a8c]">Modifier</a>
+                                        <div class="flex justify-end gap-2">
+                                            <a href="{{ route('users.show', $user) }}" class="icon-button h-8 w-8 p-0"
+                                                aria-label="Voir user" title="Voir user">
+                                                <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                            </a>
+                                            <a href="{{ route('users.edit', $user) }}" class="icon-button h-8 w-8 p-0"
+                                                aria-label="Modifier user" title="Modifier user">
+                                                <span class="material-symbols-rounded text-[18px]">edit</span>
+                                            </a>
                                             <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-800">Supprimer</button>
+                                                <button type="submit" class="icon-button h-8 w-8 p-0"
+                                                    aria-label="Supprimer user" title="Supprimer user">
+                                                    <span class="material-symbols-rounded text-[18px]">delete</span>
+                                                </button>
                                             </form>
                                         </div>
                                     </td>

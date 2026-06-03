@@ -13,6 +13,9 @@
     $fieldValue = function (string $field, $default = null) use ($useOldValues, $oldFieldName) {
         return $useOldValues ? old($oldFieldName($field), $default) : $default;
     };
+    $defaultProjectId = $task->project_id ?? request('project_id', $projects->count() === 1 ? $projects->first()->id : '');
+    $selectedProjectId = $fieldValue('project_id', $defaultProjectId);
+    $defaultTaskColumnId = $task->task_column_id ?? '';
 @endphp
 
 @if ($errorsBag->any())
@@ -27,6 +30,9 @@
 @endif
 
 <div class="grid gap-5 md:grid-cols-2">
+    <input type="hidden" name="{{ $inputName('task_column_id') }}" value="{{ $fieldValue('task_column_id', $defaultTaskColumnId) }}"
+        data-task-column-field data-field-default="{{ $defaultTaskColumnId }}">
+
     <div class="md:col-span-2">
         <label for="{{ $prefix }}-title" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Task title</label>
         <input id="{{ $prefix }}-title" type="text" name="{{ $inputName('title') }}"
@@ -41,10 +47,11 @@
     <div>
         <label for="{{ $prefix }}-project" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Project</label>
         <select id="{{ $prefix }}-project" name="{{ $inputName('project_id') }}" class="w-full px-4 py-3"
-            data-field-default="{{ $task->project_id ?? '' }}" autocomplete="off">
+            data-task-project-select
+            data-field-default="{{ $defaultProjectId }}" autocomplete="off">
             <option value="">Select project</option>
             @foreach ($projects as $project)
-                <option value="{{ $project->id }}" @selected($fieldValue('project_id', $task->project_id ?? '') == $project->id)>{{ $project->name }}</option>
+                <option value="{{ $project->id }}" @selected($selectedProjectId == $project->id)>{{ $project->name }}</option>
             @endforeach
         </select>
         @if ($errorsBag->has('project_id'))
@@ -80,12 +87,21 @@
 
     <div>
         <label for="{{ $prefix }}-assigned-to" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Assigned to</label>
-        <input id="{{ $prefix }}-assigned-to" type="text" name="{{ $inputName('assigned_to') }}"
-            value="{{ $fieldValue('assigned_to', $task->assigned_to ?? '') }}" placeholder="Assign a teammate"
-            class="w-full px-4 py-3" data-field-default="{{ $task->assigned_to ?? '' }}"
-            autocomplete="{{ $disableAutofill ? 'new-password' : 'off' }}">
-        @if ($errorsBag->has('assigned_to'))
-            <p class="mt-2 text-sm text-rose-300">{{ $errorsBag->first('assigned_to') }}</p>
+        <select id="{{ $prefix }}-assigned-to" name="{{ $inputName('assigned_user_id') }}" class="w-full px-4 py-3"
+            data-task-assignee-select data-field-default="{{ $task->assigned_user_id ?? '' }}" autocomplete="off">
+            <option value="">Unassigned</option>
+            @foreach ($projects as $project)
+                @foreach ($project->collaborators as $collaborator)
+                    <option value="{{ $collaborator->id }}" data-project-id="{{ $project->id }}"
+                        @selected((string) $fieldValue('assigned_user_id', $task->assigned_user_id ?? '') === (string) $collaborator->id)>
+                        {{ $collaborator->name }} — {{ $collaborator->email }}
+                    </option>
+                @endforeach
+            @endforeach
+        </select>
+        <p class="mt-2 text-xs text-[var(--muted)]">Only accepted collaborators of the selected project are available.</p>
+        @if ($errorsBag->has('assigned_user_id'))
+            <p class="mt-2 text-sm text-rose-300">{{ $errorsBag->first('assigned_user_id') }}</p>
         @endif
     </div>
 

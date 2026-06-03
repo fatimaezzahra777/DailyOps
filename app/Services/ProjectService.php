@@ -41,7 +41,7 @@ class ProjectService
 
         $project = $this->projectRepository->update($id, $data);
 
-        if (($data['assigned_to'] ?? null) !== $previousAssignedTo) {
+        if (array_key_exists('assigned_to', $data) && ($data['assigned_to'] ?? null) !== $previousAssignedTo) {
             $this->assignmentNotificationService->notifyProjectAssigned($project);
         }
 

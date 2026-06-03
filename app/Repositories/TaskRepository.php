@@ -9,12 +9,12 @@ class TaskRepository implements TaskRepositoryInterface
 {
     public function getAll()
     {
-        return Task::with(['project', 'comments'])->latest()->paginate(10)->withQueryString();
+        return Task::with(['project', 'comments', 'assignedUser', 'column'])->latest()->paginate(10)->withQueryString();
     }
 
     public function findById($id)
     {
-        return Task::with(['project', 'comments' => fn ($query) => $query->latest()])->findOrFail($id);
+        return Task::with(['project.collaborators', 'comments' => fn ($query) => $query->latest(), 'assignedUser', 'column'])->findOrFail($id);
     }
 
     public function store(array $data)
@@ -40,7 +40,11 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function searchAndFilter($request)
     {
-        $query = Task::with(['project', 'comments']);
+        $query = Task::with(['project', 'comments', 'assignedUser', 'column']);
+
+        if ($request->user()) {
+            $query->whereHas('project', fn ($projectQuery) => $projectQuery->visibleTo($request->user()));
+        }
 
         if ($request->search) {
 
@@ -48,7 +52,11 @@ class TaskRepository implements TaskRepositoryInterface
                 $builder
                     ->where('title', 'like', '%' . $request->search . '%')
                     ->orWhere('description', 'like', '%' . $request->search . '%')
-                    ->orWhere('assigned_to', 'like', '%' . $request->search . '%');
+                    ->orWhere('assigned_to', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('assignedUser', function ($userQuery) use ($request) {
+                        $userQuery->where('name', 'like', '%' . $request->search . '%')
+                            ->orWhere('email', 'like', '%' . $request->search . '%');
+                    });
             });
         }
 
@@ -69,12 +77,13 @@ class TaskRepository implements TaskRepositoryInterface
         return $query->latest()->paginate(10)->withQueryString();
     }
 
-    public function updateStatus($id, $status)
+    public function updateStatus($id, $status, $taskColumnId = null)
     {
         $task = $this->findById($id);
 
         $task->update([
-            'status' => $status
+            'status' => $status,
+            'task_column_id' => $taskColumnId,
         ]);
 
         return $task;

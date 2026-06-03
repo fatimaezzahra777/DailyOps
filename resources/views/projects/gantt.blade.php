@@ -20,10 +20,7 @@
                     <p class="mt-1 text-[12.5px] text-[#888888]">Planning visuel des projets par semaine.</p>
                 </div>
             </div>
-            <a href="{{ route('projects.create') }}" class="btn-primary">
-                <i class="ti ti-plus"></i>
-                Add project
-            </a>
+
         </div>
 
         <div class="view-toolbar">

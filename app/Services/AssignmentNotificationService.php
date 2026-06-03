@@ -3,21 +3,27 @@
 namespace App\Services;
 
 use App\Events\AssignmentNotificationSent;
+use App\Mail\TaskAssignedMail;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class AssignmentNotificationService
 {
     public function notifyTaskAssigned(Task $task): void
     {
-        $user = $this->resolveAssignedUser($task->assigned_to);
+        $task->loadMissing(['assignedUser', 'project']);
+
+        $user = $task->assignedUser ?: $this->resolveAssignedUser($task->assigned_to);
 
         if (! $user) {
             return;
         }
+
+        Mail::to($user->email)->send(new TaskAssignedMail($task));
 
         $this->broadcast($user, [
             'type' => 'task',

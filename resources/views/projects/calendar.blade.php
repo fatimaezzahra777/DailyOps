@@ -51,19 +51,8 @@
                     Next
                     <i class="ti ti-chevron-right"></i>
                 </a>
-                <button type="button" class="btn-primary" data-modal-open="create-project-modal">
-                    <i class="ti ti-plus"></i>
-                    Add project
-                </button>
-            </div>
-        </div>
 
-        <div class="view-toolbar">
-            <a href="{{ route('projects.index', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-layout-kanban mr-1"></i> Board</a>
-            <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-table mr-1"></i> Table</a>
-            <a href="{{ route('projects.gantt', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-timeline mr-1"></i> Gantt</a>
-            <span class="btn-secondary btn-secondary-active"><i class="ti ti-calendar mr-1"></i> Calendar</span>
-            <span class="ml-auto text-[12px] text-[#888888]">{{ $datedProjects->count() }} dated projects</span>
+            </div>
         </div>
 
         <div class="grid gap-4 xl:grid-cols-[1fr_18rem]">

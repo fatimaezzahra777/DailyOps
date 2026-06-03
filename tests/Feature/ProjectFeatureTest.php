@@ -3,9 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Project;
+use App\Mail\ProjectInvitationMail;
+use App\Models\ProjectInvitation;
 use App\Models\ProjectColumn;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class ProjectFeatureTest extends TestCase
@@ -173,7 +177,7 @@ class ProjectFeatureTest extends TestCase
         $this->assertDatabaseHas('projects', [
             'name' => 'Managed Project',
             'manager_id' => $user->id,
-            'assigned_to' => 'Project Manager',
+            'assigned_to' => null,
         ]);
     }
 
@@ -249,6 +253,79 @@ class ProjectFeatureTest extends TestCase
             ->assertOk();
     }
 
+    public function test_project_manager_can_invite_collaborator_by_email(): void
+    {
+        Mail::fake();
+
+        $manager = User::factory()->create();
+        $collaborator = User::factory()->create([
+            'email' => 'collaborator@example.com',
+        ]);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Collaborative Project',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($manager)
+            ->post(route('project-invitations.store', $project), [
+                'email' => 'collaborator@example.com',
+            ])
+            ->assertRedirect();
+
+        $invitation = ProjectInvitation::firstOrFail();
+
+        $this->assertSame('pending', $invitation->status);
+        $this->assertSame($project->id, $invitation->project_id);
+        $this->assertSame($collaborator->id, $invitation->user_id);
+        Mail::assertSent(ProjectInvitationMail::class, fn (ProjectInvitationMail $mail) => $mail->invitation->is($invitation));
+    }
+
+    public function test_invited_user_accepts_invitation_and_becomes_project_collaborator(): void
+    {
+        $manager = User::factory()->create();
+        $collaborator = User::factory()->create([
+            'email' => 'collaborator@example.com',
+        ]);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Accepted Collaboration',
+            'status' => 'pending',
+        ]);
+        $invitation = ProjectInvitation::create([
+            'project_id' => $project->id,
+            'invited_by' => $manager->id,
+            'user_id' => $collaborator->id,
+            'email' => 'collaborator@example.com',
+            'token' => 'test-token',
+            'status' => 'pending',
+        ]);
+        $acceptUrl = URL::temporarySignedRoute(
+            'project-invitations.accept',
+            now()->addDay(),
+            $invitation,
+        );
+
+        $this->actingAs($collaborator)
+            ->get($acceptUrl)
+            ->assertRedirect(route('projects.show', $project));
+
+        $this->assertDatabaseHas('project_user', [
+            'project_id' => $project->id,
+            'user_id' => $collaborator->id,
+            'invited_by' => $manager->id,
+        ]);
+        $this->assertDatabaseHas('project_invitations', [
+            'id' => $invitation->id,
+            'status' => 'accepted',
+        ]);
+
+        $this->actingAs($collaborator)
+            ->get(route('projects.show', $project))
+            ->assertOk()
+            ->assertSee('Accepted Collaboration');
+    }
+
     public function test_user_can_add_a_board_column_and_create_project_inside_it(): void
     {
         $user = User::factory()->create(['role' => 'admin']);
@@ -273,6 +350,10 @@ class ProjectFeatureTest extends TestCase
             'name' => 'Waiting Approval',
             'column_id' => $column->id,
             'manager_id' => $user->id,
+        ]);
+        $this->assertDatabaseHas('project_columns', [
+            'id' => $column->id,
+            'user_id' => $user->id,
         ]);
 
         $this->actingAs($user)
@@ -309,6 +390,7 @@ class ProjectFeatureTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'admin']);
         $column = ProjectColumn::create([
+            'user_id' => $user->id,
             'name' => 'QA',
             'position' => 1,
         ]);
@@ -327,6 +409,66 @@ class ProjectFeatureTest extends TestCase
         $this->assertDatabaseHas('projects', [
             'id' => $project->id,
             'column_id' => $column->id,
+        ]);
+    }
+
+    public function test_custom_board_columns_are_visible_only_to_their_owner(): void
+    {
+        $owner = User::factory()->create();
+        $collaborator = User::factory()->create();
+        $column = ProjectColumn::create([
+            'user_id' => $owner->id,
+            'name' => 'Owner Only',
+            'position' => 1,
+        ]);
+        $project = Project::create([
+            'manager_id' => $owner->id,
+            'column_id' => $column->id,
+            'name' => 'Shared Project',
+            'status' => 'pending',
+        ]);
+        $project->collaborators()->attach($collaborator->id, [
+            'invited_by' => $owner->id,
+            'accepted_at' => now(),
+        ]);
+
+        $this->actingAs($owner)
+            ->get('/projects')
+            ->assertOk()
+            ->assertSee('Owner Only')
+            ->assertSee('Shared Project');
+
+        $this->actingAs($collaborator)
+            ->get('/projects')
+            ->assertOk()
+            ->assertDontSee('Owner Only')
+            ->assertSee('Shared Project');
+    }
+
+    public function test_user_cannot_move_project_to_another_users_custom_column(): void
+    {
+        $owner = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $project = Project::create([
+            'manager_id' => $owner->id,
+            'name' => 'Protected Project',
+            'status' => 'pending',
+        ]);
+        $otherColumn = ProjectColumn::create([
+            'user_id' => $otherUser->id,
+            'name' => 'Other Column',
+            'position' => 1,
+        ]);
+
+        $this->actingAs($owner)
+            ->patchJson(route('projects.move', $project), [
+                'column_id' => $otherColumn->id,
+            ])
+            ->assertUnprocessable();
+
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            'column_id' => null,
         ]);
     }
 

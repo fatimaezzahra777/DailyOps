@@ -29,6 +29,9 @@
             </thead>
             <tbody>
                 @forelse ($tasks as $task)
+                    @php
+                        $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
+                    @endphp
                     <tr class="transition hover:bg-white/5">
                         <td>
                             <div class="min-w-[220px]">
@@ -48,19 +51,28 @@
                         <td class="text-sm">{{ $task->due_date ? \Illuminate\Support\Carbon::parse($task->due_date)->format('d M Y') : 'Not set' }}</td>
                         <td>
                             <div class="flex items-center gap-2">
-                                <div class="mini-avatar !h-8 !w-8 !text-[11px]">{{ strtoupper(substr($task->assigned_to ?: 'T', 0, 1)) }}</div>
-                                <span class="text-sm">{{ $task->assigned_to ?: 'Unassigned' }}</span>
+                                <div class="mini-avatar !h-8 !w-8 !text-[11px]">{{ strtoupper(substr($assigneeName ?: 'T', 0, 1)) }}</div>
+                                <span class="text-sm">{{ $assigneeName ?: 'Unassigned' }}</span>
                             </div>
                         </td>
                         <td class="text-sm">{{ $task->comments->count() }}</td>
                         <td>
-                            <div class="flex items-center gap-3 text-sm">
-                                <button type="button" class="text-[var(--muted)] hover:text-[var(--text-strong)]"
-                                    data-modal-open="task-details-modal-{{ $task->id }}">View</button>
-                                <button type="button" class="text-[var(--accent)] hover:text-[var(--accent-strong)]"
-                                    data-modal-open="edit-task-modal-{{ $task->id }}">Edit</button>
-                                <button type="button" class="text-rose-300 hover:text-rose-200"
-                                    data-modal-open="delete-task-modal-{{ $task->id }}">Delete</button>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="icon-button h-8 w-8 p-0"
+                                    data-modal-open="task-details-modal-{{ $task->id }}"
+                                    aria-label="View task" title="View task">
+                                    <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                </button>
+                                <button type="button" class="icon-button h-8 w-8 p-0"
+                                    data-modal-open="edit-task-modal-{{ $task->id }}"
+                                    aria-label="Edit task" title="Edit task">
+                                    <span class="material-symbols-rounded text-[18px]">edit</span>
+                                </button>
+                                <button type="button" class="icon-button h-8 w-8 p-0"
+                                    data-modal-open="delete-task-modal-{{ $task->id }}"
+                                    aria-label="Delete task" title="Delete task">
+                                    <span class="material-symbols-rounded text-[18px]">delete</span>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -75,6 +87,9 @@
 
     <div class="grid gap-4 p-4 xl:hidden">
         @forelse ($tasks as $task)
+            @php
+                $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
+            @endphp
             <article class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4">
                 <div class="flex items-start justify-between gap-3">
                     <div>
@@ -98,7 +113,7 @@
                 <div class="mt-4 grid gap-2 text-sm text-[var(--muted)]">
                     <div class="flex justify-between gap-3">
                         <span>Assignee</span>
-                        <span class="text-[var(--text-strong)]">{{ $task->assigned_to ?: 'Unassigned' }}</span>
+                        <span class="text-[var(--text-strong)]">{{ $assigneeName ?: 'Unassigned' }}</span>
                     </div>
                     <div class="flex justify-between gap-3">
                         <span>Due date</span>
@@ -106,9 +121,19 @@
                     </div>
                 </div>
 
-                <div class="mt-5 flex flex-wrap gap-3">
-                    <button type="button" class="btn-secondary flex-1" data-modal-open="task-details-modal-{{ $task->id }}">View</button>
-                    <button type="button" class="btn-primary flex-1" data-modal-open="edit-task-modal-{{ $task->id }}">Edit</button>
+                <div class="mt-5 flex flex-wrap justify-end gap-2">
+                    <button type="button" class="icon-button h-9 w-9 p-0" data-modal-open="task-details-modal-{{ $task->id }}"
+                        aria-label="View task" title="View task">
+                        <span class="material-symbols-rounded text-[19px]">visibility</span>
+                    </button>
+                    <button type="button" class="icon-button h-9 w-9 p-0" data-modal-open="edit-task-modal-{{ $task->id }}"
+                        aria-label="Edit task" title="Edit task">
+                        <span class="material-symbols-rounded text-[19px]">edit</span>
+                    </button>
+                    <button type="button" class="icon-button h-9 w-9 p-0" data-modal-open="delete-task-modal-{{ $task->id }}"
+                        aria-label="Delete task" title="Delete task">
+                        <span class="material-symbols-rounded text-[19px]">delete</span>
+                    </button>
                 </div>
             </article>
         @empty
