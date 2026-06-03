@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -39,6 +41,16 @@ class Project extends Model
         return $this->belongsTo(ProjectColumn::class, 'column_id');
     }
 
+    public function collaborators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_collaborators')->withTimestamps();
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(ProjectInvitation::class);
+    }
+
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
         if ($user->isAdmin()) {
@@ -47,14 +59,33 @@ class Project extends Model
 
         return $query->where(function (Builder $query) use ($user) {
             $query->where('manager_id', $user->id)
-                ->orWhereIn('assigned_to', array_filter([$user->name, $user->email]));
+                ->orWhereHas('collaborators', fn (Builder $query) => $query->where('users.id', $user->id))
+                ->orWhere(function (Builder $query) use ($user) {
+                    $query->whereIn('assigned_to', array_filter([$user->name, $user->email]))
+                        ->whereDoesntHave('invitations', function (Builder $query) use ($user) {
+                            $query->where('email', $user->email)
+                                ->where('status', ProjectInvitation::STATUS_PENDING);
+                        });
+                });
         });
     }
 
     public function isVisibleTo(User $user): bool
     {
+        if ($user->isAdmin() || $this->manager_id === $user->id) {
+            return true;
+        }
+
+        if ($this->collaborators()->where('users.id', $user->id)->exists()) {
+            return true;
+        }
+
+        $hasPendingInvitation = $this->invitations()
+            ->where('email', $user->email)
+            ->where('status', ProjectInvitation::STATUS_PENDING)
+            ->exists();
+
         return $user->isAdmin()
-            || $this->manager_id === $user->id
-            || in_array($this->assigned_to, array_filter([$user->name, $user->email]), true);
+            || (! $hasPendingInvitation && in_array($this->assigned_to, array_filter([$user->name, $user->email]), true));
     }
 }
