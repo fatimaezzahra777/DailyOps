@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
 {
@@ -29,7 +30,7 @@ class ProjectController extends Controller
         $projects = $this->projectService->filterProjects($request);
         $allFilteredProjects = $this->projectService->getFilteredProjectCollection($request);
         $projectColumns = Schema::hasTable('project_columns')
-            ? ProjectColumn::orderBy('position')->orderBy('name')->get()
+            ? ProjectColumn::where('user_id', $request->user()->id)->orderBy('position')->orderBy('name')->get()
             : collect();
 
         return view('projects.index', compact('projects', 'allFilteredProjects', 'projectColumns'));
@@ -82,7 +83,6 @@ class ProjectController extends Controller
             'name' => $request->input('create_name', $request->input('name')),
             'description' => $request->input('create_description', $request->input('description')),
             'status' => $request->input('create_status', $request->input('status')),
-            'assigned_to' => $request->input('create_assigned_to', $request->input('assigned_to')),
             'start_date' => $request->input('create_start_date', $request->input('start_date')),
             'end_date' => $request->input('create_end_date', $request->input('end_date')),
         ];
@@ -91,14 +91,16 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:pending,in_progress,completed',
-            'assigned_to' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ];
 
         if (Schema::hasTable('project_columns') && Schema::hasColumn('projects', 'column_id')) {
             $input['column_id'] = $request->input('create_column_id', $request->input('column_id'));
-            $rules['column_id'] = 'nullable|exists:project_columns,id';
+            $rules['column_id'] = [
+                'nullable',
+                Rule::exists('project_columns', 'id')->where('user_id', $request->user()->id),
+            ];
         }
 
         $validator = Validator::make($input, $rules);
@@ -112,7 +114,6 @@ class ProjectController extends Controller
 
         $validated = $validator->validated();
         $validated['manager_id'] = $request->user()->id;
-        $validated['assigned_to'] = $validated['assigned_to'] ?: $request->user()->name;
 
         $this->projectService->createProject($validated);
 
@@ -137,8 +138,9 @@ class ProjectController extends Controller
         $validated = $validator->validated();
 
         ProjectColumn::create([
+            'user_id' => $request->user()->id,
             'name' => $validated['name'],
-            'position' => ProjectColumn::max('position') + 1,
+            'position' => ProjectColumn::where('user_id', $request->user()->id)->max('position') + 1,
         ]);
 
         return redirect()
@@ -148,14 +150,17 @@ class ProjectController extends Controller
 
     public function move(Request $request, Project $project)
     {
-        $this->authorizeProjectAccess($request, $project);
+        $this->authorizeProjectManagement($request, $project);
 
         $rules = [
             'status' => 'required_without:column_id|nullable|in:pending,in_progress,completed',
         ];
 
         if (Schema::hasTable('project_columns') && Schema::hasColumn('projects', 'column_id')) {
-            $rules['column_id'] = 'nullable|exists:project_columns,id';
+            $rules['column_id'] = [
+                'nullable',
+                Rule::exists('project_columns', 'id')->where('user_id', $request->user()->id),
+            ];
         }
 
         $validated = $request->validate($rules);
@@ -185,7 +190,14 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $project = $this->projectService->getProjectById($id);
+        $project = Project::with([
+            'manager',
+            'collaborators' => fn ($query) => $query->orderBy('name'),
+            'invitations' => fn ($query) => $query->latest(),
+            'invitations.user',
+            'tasks' => fn ($query) => $query->with('assignedUser')->latest(),
+            'taskColumns' => fn ($query) => $query->with(['tasks.assignedUser'])->orderBy('position')->orderBy('name'),
+        ])->findOrFail($id);
         $this->authorizeProjectAccess($request, $project);
 
         return view('projects.show', compact('project'));
@@ -198,7 +210,7 @@ class ProjectController extends Controller
     public function edit(Request $request, $id)
     {
         $project = $this->projectService->getProjectById($id);
-        $this->authorizeProjectAccess($request, $project);
+        $this->authorizeProjectManagement($request, $project);
 
         return view('projects.edit', compact('project'));
     }
@@ -212,7 +224,6 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:pending,in_progress,completed',
-            'assigned_to' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
@@ -226,7 +237,7 @@ class ProjectController extends Controller
 
         $validated = $validator->validated();
         $project = $this->projectService->getProjectById($id);
-        $this->authorizeProjectAccess($request, $project);
+        $this->authorizeProjectManagement($request, $project);
 
         $this->projectService->updateProject($id, $validated);
 
@@ -239,7 +250,7 @@ class ProjectController extends Controller
     public function destroy(Request $request, $id)
     {
         $project = $this->projectService->getProjectById($id);
-        $this->authorizeProjectAccess($request, $project);
+        $this->authorizeProjectManagement($request, $project);
 
         $this->projectService->deleteProject($id);
 
@@ -251,6 +262,11 @@ class ProjectController extends Controller
     protected function authorizeProjectAccess(Request $request, Project $project): void
     {
         abort_if(! $project->isVisibleTo($request->user()), Response::HTTP_FORBIDDEN);
+    }
+
+    protected function authorizeProjectManagement(Request $request, Project $project): void
+    {
+        abort_if(! $project->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
     }
 
     protected function resolveCalendarMonth(Request $request): Carbon

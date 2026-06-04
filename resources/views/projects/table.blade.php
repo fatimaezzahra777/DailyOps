@@ -19,10 +19,7 @@
                     <p class="mt-1 text-[12.5px] text-[#888888]">Vue compacte de tous les projets.</p>
                 </div>
             </div>
-            <a href="{{ route('projects.create') }}" class="btn-primary">
-                <i class="ti ti-plus"></i>
-                Add project
-            </a>
+
         </div>
 
         <div class="view-toolbar">
@@ -95,9 +92,24 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="flex justify-end gap-3">
-                                    <a href="{{ route('projects.show', $project) }}" class="text-[#555555] hover:text-[#0a0a0a]">View</a>
-                                    <a href="{{ route('projects.edit', $project) }}" class="text-[#e8007d] hover:text-[#ff1a8c]">Edit</a>
+                                <div class="flex justify-end gap-2">
+                                    <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
+                                        aria-label="View project" title="View project">
+                                        <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                    </a>
+                                    <a href="{{ route('projects.edit', $project) }}" class="icon-button h-8 w-8 p-0"
+                                        aria-label="Edit project" title="Edit project">
+                                        <span class="material-symbols-rounded text-[18px]">edit</span>
+                                    </a>
+                                    <form action="{{ route('projects.destroy', $project) }}" method="POST"
+                                        onsubmit="return confirm('Delete this project?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="icon-button h-8 w-8 p-0"
+                                            aria-label="Delete project" title="Delete project">
+                                            <span class="material-symbols-rounded text-[18px]">delete</span>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

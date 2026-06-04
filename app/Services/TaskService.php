@@ -37,11 +37,12 @@ class TaskService
     public function updateTask($id, array $data)
     {
         $task = $this->taskRepository->findById($id);
+        $previousAssignedUserId = $task->assigned_user_id;
         $previousAssignedTo = $task->assigned_to;
 
         $task = $this->taskRepository->update($id, $data);
 
-        if (($data['assigned_to'] ?? null) !== $previousAssignedTo) {
+        if (($data['assigned_user_id'] ?? null) !== $previousAssignedUserId || ($data['assigned_to'] ?? null) !== $previousAssignedTo) {
             $this->assignmentNotificationService->notifyTaskAssigned($task);
         }
 
@@ -58,8 +59,8 @@ class TaskService
         return $this->taskRepository->searchAndFilter($request);
     }
 
-    public function changeStatus($id, $status)
+    public function changeStatus($id, $status, $taskColumnId = null)
     {
-        return $this->taskRepository->updateStatus($id, $status);
+        return $this->taskRepository->updateStatus($id, $status, $taskColumnId);
     }
 }

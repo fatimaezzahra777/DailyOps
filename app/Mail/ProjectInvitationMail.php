@@ -8,32 +8,49 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\URL;
 
 class ProjectInvitationMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
+    public string $acceptUrl;
+
+    public string $declineUrl;
+
     public function __construct(public ProjectInvitation $invitation)
     {
+        $this->acceptUrl = URL::temporarySignedRoute(
+            'project-invitations.accept',
+            now()->addDays(7),
+            $invitation,
+        );
+
+        $this->declineUrl = URL::temporarySignedRoute(
+            'project-invitations.decline',
+            now()->addDays(7),
+            $invitation,
+        );
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Invitation au projet '.$this->invitation->project->name,
+            subject: 'Invitation a collaborer sur '.$this->invitation->project->name,
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.projects.invitation',
+            markdown: 'emails.project-invitation',
             with: [
+                'invitation' => $this->invitation,
                 'project' => $this->invitation->project,
-                'manager' => $this->invitation->invitedBy,
-                'acceptUrl' => route('project-invitations.accept', $this->invitation->token),
-                'declineUrl' => route('project-invitations.decline', $this->invitation->token),
+                'manager' => $this->invitation->inviter,
+                'acceptUrl' => $this->acceptUrl,
+                'declineUrl' => $this->declineUrl,
             ],
         );
     }

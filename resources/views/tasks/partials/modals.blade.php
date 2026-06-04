@@ -56,6 +56,7 @@
         $editModalId = "edit-task-modal-{$task->id}";
         $deleteModalId = "delete-task-modal-{$task->id}";
         $editBag = "updateTask.{$task->id}";
+        $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
     @endphp
 
     <div class="modal-shell {{ $openModal === $detailModalId ? '' : 'hidden' }}" id="{{ $detailModalId }}" data-modal tabindex="-1"
@@ -97,7 +98,7 @@
                         <dl class="mt-4 space-y-3 text-sm">
                             <div class="flex items-center justify-between gap-3">
                                 <dt class="text-[var(--muted)]">Assignee</dt>
-                                <dd class="text-[var(--text-strong)]">{{ $task->assigned_to ?: 'Unassigned' }}</dd>
+                                <dd class="text-[var(--text-strong)]">{{ $assigneeName ?: 'Unassigned' }}</dd>
                             </div>
                             <div class="flex items-center justify-between gap-3">
                                 <dt class="text-[var(--muted)]">Due date</dt>
@@ -110,9 +111,15 @@
                         </dl>
                     </div>
 
-                    <div class="modal-actions modal-actions-stacked">
-                        <button type="button" class="btn-primary" data-modal-switch="{{ $editModalId }}">Edit task</button>
-                        <button type="button" class="btn-secondary" data-modal-switch="{{ $deleteModalId }}">Delete task</button>
+                    <div class="modal-actions">
+                        <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $editModalId }}"
+                            aria-label="Edit task" title="Edit task">
+                            <span class="material-symbols-rounded text-[20px]">edit</span>
+                        </button>
+                        <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $deleteModalId }}"
+                            aria-label="Delete task" title="Delete task">
+                            <span class="material-symbols-rounded text-[20px]">delete</span>
+                        </button>
                     </div>
                 </aside>
             </div>

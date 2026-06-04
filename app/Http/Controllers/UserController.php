@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -70,8 +71,27 @@ class UserController extends Controller
      */
     public function show(User $user): View
     {
+        $projectsQuery = Project::query()
+            ->with('manager')
+            ->latest();
+
+        $visibleProjects = $user->isAdmin()
+            ? $projectsQuery->get()
+            : $projectsQuery->visibleTo($user)->get();
+
+        $managedProjects = $user->isAdmin()
+            ? collect()
+            : $visibleProjects->where('manager_id', $user->id)->values();
+
+        $assignedProjects = $user->isAdmin()
+            ? collect()
+            : $visibleProjects->where('manager_id', '!=', $user->id)->values();
+
         return view('users.show', [
             'user' => $user,
+            'visibleProjects' => $visibleProjects,
+            'managedProjects' => $managedProjects,
+            'assignedProjects' => $assignedProjects,
         ]);
     }
 

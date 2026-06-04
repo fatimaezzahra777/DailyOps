@@ -27,7 +27,7 @@ Accepter l'invitation
 Refuser l'invitation
 </x-mail::button>
 
-Si vous n'attendiez pas cette invitation, vous pouvez ignorer cet email.
+Ce lien expire dans 7 jours. Si vous n'attendiez pas cette invitation, vous pouvez ignorer cet email.
 
 Merci,<br>
 L'equipe DailyOps

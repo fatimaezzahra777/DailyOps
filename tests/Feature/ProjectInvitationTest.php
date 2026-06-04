@@ -8,6 +8,7 @@ use App\Models\ProjectInvitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class ProjectInvitationTest extends TestCase
@@ -20,19 +21,22 @@ class ProjectInvitationTest extends TestCase
 
         $manager = User::factory()->create(['role' => 'admin']);
         $collaborator = User::factory()->create(['email' => 'collab@example.com']);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Client Launch',
+            'status' => 'pending',
+        ]);
 
         $this->actingAs($manager)
-            ->post(route('projects.store'), [
-                'name' => 'Client Launch',
-                'status' => 'pending',
-                'assigned_to' => 'collab@example.com',
+            ->post(route('project-invitations.store', $project), [
+                'email' => 'collab@example.com',
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('project_invitations', [
             'email' => 'collab@example.com',
             'status' => ProjectInvitation::STATUS_PENDING,
-            'invited_by_id' => $manager->id,
+            'invited_by' => $manager->id,
         ]);
 
         Mail::assertSent(
@@ -47,16 +51,18 @@ class ProjectInvitationTest extends TestCase
 
         $manager = User::factory()->create(['role' => 'admin']);
         $collaborator = User::factory()->create(['email' => 'collab@example.com']);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Client Launch',
+            'status' => 'pending',
+        ]);
 
         $this->actingAs($manager)
-            ->post(route('projects.store'), [
-                'name' => 'Client Launch',
-                'status' => 'pending',
-                'assigned_to' => 'collab@example.com',
+            ->post(route('project-invitations.store', $project), [
+                'email' => 'collab@example.com',
             ]);
 
         $invitation = ProjectInvitation::firstOrFail();
-        $project = Project::firstOrFail();
 
         $this->actingAs($collaborator)
             ->get(route('projects.show', $project))
@@ -64,10 +70,10 @@ class ProjectInvitationTest extends TestCase
 
         auth()->logout();
 
-        $this->get(route('project-invitations.accept', $invitation->token))
+        $this->get(URL::temporarySignedRoute('project-invitations.accept', now()->addDays(7), $invitation))
             ->assertRedirect();
 
-        $this->assertDatabaseHas('project_collaborators', [
+        $this->assertDatabaseHas('project_user', [
             'project_id' => $project->id,
             'user_id' => $collaborator->id,
         ]);
@@ -87,22 +93,23 @@ class ProjectInvitationTest extends TestCase
 
         $manager = User::factory()->create(['role' => 'admin']);
         $collaborator = User::factory()->create(['email' => 'collab@example.com']);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Client Launch',
+            'status' => 'pending',
+        ]);
 
         $this->actingAs($manager)
-            ->post(route('projects.store'), [
-                'name' => 'Client Launch',
-                'status' => 'pending',
-                'assigned_to' => 'collab@example.com',
+            ->post(route('project-invitations.store', $project), [
+                'email' => 'collab@example.com',
             ]);
 
         $invitation = ProjectInvitation::firstOrFail();
 
-        $this->get(route('project-invitations.decline', $invitation->token))
-            ->assertRedirect(route('login'));
+        $this->get(URL::temporarySignedRoute('project-invitations.decline', now()->addDays(7), $invitation))
+            ->assertRedirect(route('projects.index'));
 
-        $project = Project::firstOrFail();
-
-        $this->assertDatabaseMissing('project_collaborators', [
+        $this->assertDatabaseMissing('project_user', [
             'project_id' => $project->id,
             'user_id' => $collaborator->id,
         ]);

@@ -58,13 +58,15 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     protected function buildFilteredQuery($request): Builder
     {
-        $relations = ['manager'];
+        $relations = ['manager', 'collaborators'];
 
         if (Schema::hasColumn('projects', 'column_id')) {
             $relations[] = 'column';
         }
 
-        $query = Project::query()->with($relations);
+        $query = Project::query()
+            ->with($relations)
+            ->withCount('tasks');
 
         if ($request instanceof Request && $request->user()) {
             $query->visibleTo($request->user());

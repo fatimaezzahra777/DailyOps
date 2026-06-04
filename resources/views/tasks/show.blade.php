@@ -13,6 +13,9 @@
             'medium' => 'tag-chip tag-chip-amber',
             'high' => 'tag-chip tag-chip-violet',
         ];
+
+        $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
+        $canManageTask = $task->project?->isManagedBy(auth()->user()) ?? false;
     @endphp
 
     <section class="mx-auto max-w-6xl space-y-6">
@@ -23,14 +26,16 @@
                 <div class="mt-3 flex flex-wrap items-center gap-2">
                     <span class="{{ $statusClasses[$task->status] ?? 'tag-chip' }}">{{ str($task->status)->replace('_', ' ')->title() }}</span>
                     <span class="{{ $priorityClasses[$task->priority] ?? 'tag-chip' }}">{{ ucfirst($task->priority) }} priority</span>
-                    @if ($task->assigned_to)
-                        <span class="tag-chip">{{ $task->assigned_to }}</span>
+                    @if ($assigneeName)
+                        <span class="tag-chip">{{ $assigneeName }}</span>
                     @endif
                 </div>
             </div>
 
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('tasks.edit', $task) }}" class="btn-primary">Edit task</a>
+                @if ($canManageTask)
+                    <a href="{{ route('tasks.edit', $task) }}" class="btn-primary">Edit task</a>
+                @endif
                 <a href="{{ route('tasks.index') }}" class="btn-secondary">Back to tasks</a>
             </div>
         </div>
@@ -126,7 +131,7 @@
                         </div>
                         <div class="flex items-center justify-between gap-3">
                             <dt class="text-[var(--muted)]">Assignee</dt>
-                            <dd class="text-[var(--text-strong)]">{{ $task->assigned_to ?: 'Not assigned' }}</dd>
+                            <dd class="text-[var(--text-strong)]">{{ $assigneeName ?: 'Not assigned' }}</dd>
                         </div>
                         <div class="flex items-center justify-between gap-3">
                             <dt class="text-[var(--muted)]">Created at</dt>
@@ -137,15 +142,19 @@
 
                 <div class="panel-dark p-6">
                     <h2 class="text-lg font-semibold">Quick actions</h2>
-                    <div class="mt-4 flex flex-col gap-3">
-                        <a href="{{ route('tasks.edit', $task) }}" class="btn-primary">Update task</a>
-                        <form action="{{ route('tasks.destroy', $task) }}" method="POST"
-                            onsubmit="return confirm('Delete this task?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-secondary w-full">Delete task</button>
-                        </form>
-                    </div>
+                    @if ($canManageTask)
+                        <div class="mt-4 flex flex-col gap-3">
+                            <a href="{{ route('tasks.edit', $task) }}" class="btn-primary">Update task</a>
+                            <form action="{{ route('tasks.destroy', $task) }}" method="POST"
+                                onsubmit="return confirm('Delete this task?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-secondary w-full">Delete task</button>
+                            </form>
+                        </div>
+                    @else
+                        <p class="mt-4 text-sm leading-6 text-[var(--muted)]">Only the project manager can update or delete this task.</p>
+                    @endif
                 </div>
             </aside>
         </div>

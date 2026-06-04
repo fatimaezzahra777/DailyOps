@@ -13,19 +13,16 @@ class ProjectInvitation extends Model
 
     protected $fillable = [
         'project_id',
-        'invited_by_id',
+        'invited_by',
+        'user_id',
         'email',
         'token',
         'status',
-        'accepted_at',
-        'declined_at',
-        'expires_at',
+        'responded_at',
     ];
 
     protected $casts = [
-        'accepted_at' => 'datetime',
-        'declined_at' => 'datetime',
-        'expires_at' => 'datetime',
+        'responded_at' => 'datetime',
     ];
 
     public function project(): BelongsTo
@@ -33,14 +30,23 @@ class ProjectInvitation extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function inviter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'invited_by');
+    }
+
     public function invitedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'invited_by_id');
+        return $this->inviter();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function isPending(): bool
     {
-        return $this->status === self::STATUS_PENDING
-            && (! $this->expires_at || $this->expires_at->isFuture());
+        return $this->status === self::STATUS_PENDING;
     }
 }

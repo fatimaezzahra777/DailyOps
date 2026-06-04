@@ -5,6 +5,7 @@
         $projectCollection = $allFilteredProjects;
         $queryWithoutStatus = request()->except(['status', 'page']);
         $openModal = session('open_modal');
+        $visibleColumnIds = $projectColumns->pluck('id');
 
         $stats = [
             [
@@ -133,14 +134,7 @@
                     class="filter-pill {{ request('status') === 'completed' ? 'filter-pill-active' : '' }}">Completed</a>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--muted)]">
-                <span class="kanban-toolbar-note">3 active collaborators</span>
-                <div class="avatar-stack self-end">
-                    @foreach (['A', 'B', 'C', '+'] as $avatar)
-                        <span class="avatar-dot">{{ $avatar }}</span>
-                    @endforeach
-                </div>
-            </div>
+            <span class="kanban-toolbar-note">{{ $projectCollection->count() }} visible projects</span>
         </div>
 
         <div class="kanban-shell custom-scroll overflow-x-auto pb-4" data-board data-projects-base-url="{{ url('/projects') }}">
@@ -149,7 +143,10 @@
                 @php
                     $items = $column['column_id']
                         ? $projectCollection->where('column_id', $column['column_id'])->values()
-                        : $projectCollection->whereNull('column_id')->where('status', $column['status'])->values();
+                        : $projectCollection
+                            ->where('status', $column['status'])
+                            ->filter(fn ($project) => blank($project->column_id) || ! $visibleColumnIds->contains($project->column_id))
+                            ->values();
                 @endphp
                 <section class="board-column kanban-lane {{ $column['laneClass'] }}">
                     <div class="kanban-lane-head">
@@ -200,27 +197,26 @@
                                         $deadlineLabel = $project->end_date->format('d M');
                                     }
                                 }
+                                $canManageCard = $project->isManagedBy(auth()->user());
                             @endphp
                             <article class="task-card project-card {{ $column['cardAccent'] }}" draggable="true"
                                 data-draggable-project data-project-id="{{ $project->id }}">
                                 <div class="flex items-start justify-between gap-3">
-                                    <button type="button" class="task-title text-left hover:text-[#e8007d]"
-                                        data-modal-open="project-details-modal-{{ $project->id }}">
+                                    <a href="{{ route('projects.show', $project) }}" class="task-title text-left hover:text-[#e8007d]">
                                         {{ $project->name }}
-                                    </button>
-                                    <button type="button" class="task-menu" aria-label="Edit project"
-                                        data-modal-open="edit-project-modal-{{ $project->id }}">
-                                        Edit
-                                    </button>
+                                    </a>
+                                    @if ($canManageCard)
+                                        <button type="button" class="icon-button h-8 w-8 p-0" aria-label="Edit project" title="Edit project"
+                                            data-modal-open="edit-project-modal-{{ $project->id }}">
+                                            <span class="material-symbols-rounded text-[18px]">edit</span>
+                                        </button>
+                                    @endif
                                 </div>
 
                                 <div class="mt-3 flex flex-wrap items-center gap-2">
                                     <span class="{{ $tagPalette[$project->status] ?? 'tag-chip' }}">
                                         {{ str($project->status)->replace('_', ' ')->title() }}
                                     </span>
-                                    @if ($project->assigned_to)
-                                        <span class="tag-chip">{{ $project->assigned_to }}</span>
-                                    @endif
                                     <span class="tag-chip">#{{ str_pad((string) $project->id, 2, '0', STR_PAD_LEFT) }}</span>
                                 </div>
 
@@ -255,22 +251,21 @@
                                         <span>{{ $project->created_at?->diffForHumans() }}</span>
                                     </div>
 
-                                    <div class="flex -space-x-2">
-                                        <span class="mini-avatar">A</span>
-                                        <span class="mini-avatar mini-avatar-secondary">B</span>
-                                    </div>
+                                    <span class="text-[11px] text-[var(--muted)]">{{ $project->tasks_count ?? 0 }} tasks</span>
                                 </div>
 
                                 <div class="mt-4 flex items-center justify-between gap-3 border-t border-[var(--line)] pt-4">
-                                    <button type="button" class="text-xs font-medium text-[var(--muted)] hover:text-[var(--text-strong)]"
-                                        data-modal-open="project-details-modal-{{ $project->id }}">
-                                        View details
-                                    </button>
+                                    <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
+                                        aria-label="View project" title="View project">
+                                        <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                    </a>
 
-                                    <button type="button" class="text-xs font-medium text-[#dc2626] hover:text-[#b91c1c]"
-                                        data-modal-open="delete-project-modal-{{ $project->id }}">
-                                        Delete
-                                    </button>
+                                    @if ($canManageCard)
+                                        <button type="button" class="icon-button h-8 w-8 p-0"
+                                            data-modal-open="delete-project-modal-{{ $project->id }}">
+                                            <span class="material-symbols-rounded text-[18px]">delete</span>
+                                        </button>
+                                    @endif
                                 </div>
                             </article>
                         @empty
@@ -376,13 +371,6 @@
                     </div>
 
                     <div>
-                        <label for="create-project-assigned-to" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Assigned to</label>
-                        <input id="create-project-assigned-to" name="create_assigned_to" type="text" class="w-full px-4 py-3"
-                            value="{{ $openModal === 'create-project-modal' ? old('create_assigned_to') : '' }}"
-                            data-field-default="" autocomplete="new-password">
-                    </div>
-
-                    <div>
                         <label for="create-project-column-id" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Column</label>
                         <select id="create-project-column-id" name="create_column_id" class="w-full px-4 py-3"
                             data-field-default="" autocomplete="off">
@@ -483,9 +471,6 @@
                             <span class="{{ $tagPalette[$project->status] ?? 'tag-chip' }}">
                                 {{ str($project->status)->replace('_', ' ')->title() }}
                             </span>
-                            @if ($project->assigned_to)
-                                <span class="tag-chip">{{ $project->assigned_to }}</span>
-                            @endif
                         </div>
 
                         <p class="mt-4 text-sm leading-7 text-[var(--text)]">
@@ -512,9 +497,19 @@
                             </dl>
                         </div>
 
-                        <div class="modal-actions modal-actions-stacked">
-                            <button type="button" class="btn-primary" data-modal-switch="{{ $editModalId }}">Edit project</button>
-                            <button type="button" class="btn-secondary" data-modal-switch="{{ $deleteModalId }}">Delete project</button>
+                        <div class="modal-actions">
+                            <a href="{{ route('projects.show', $project) }}" class="icon-button h-10 w-10 p-0"
+                                aria-label="View project" title="View project">
+                                <span class="material-symbols-rounded text-[20px]">visibility</span>
+                            </a>
+                            <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $editModalId }}"
+                                aria-label="Edit project" title="Edit project">
+                                <span class="material-symbols-rounded text-[20px]">edit</span>
+                            </button>
+                            <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $deleteModalId }}"
+                                aria-label="Delete project" title="Delete project">
+                                <span class="material-symbols-rounded text-[20px]">delete</span>
+                            </button>
                         </div>
                     </aside>
                 </div>

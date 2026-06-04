@@ -31,9 +31,14 @@ class Project extends Model
         return $this->belongsTo(User::class, 'manager_id');
     }
 
-    public function tasks()
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function taskColumns(): HasMany
+    {
+        return $this->hasMany(TaskColumn::class);
     }
 
     public function column(): BelongsTo
@@ -43,7 +48,9 @@ class Project extends Model
 
     public function collaborators(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'project_collaborators')->withTimestamps();
+        return $this->belongsToMany(User::class)
+            ->withPivot(['invited_by', 'accepted_at'])
+            ->withTimestamps();
     }
 
     public function invitations(): HasMany
@@ -59,7 +66,7 @@ class Project extends Model
 
         return $query->where(function (Builder $query) use ($user) {
             $query->where('manager_id', $user->id)
-                ->orWhereHas('collaborators', fn (Builder $query) => $query->where('users.id', $user->id))
+                ->orWhereHas('collaborators', fn (Builder $query) => $query->whereKey($user->id))
                 ->orWhere(function (Builder $query) use ($user) {
                     $query->whereIn('assigned_to', array_filter([$user->name, $user->email]))
                         ->whereDoesntHave('invitations', function (Builder $query) use ($user) {
@@ -87,5 +94,10 @@ class Project extends Model
 
         return $user->isAdmin()
             || (! $hasPendingInvitation && in_array($this->assigned_to, array_filter([$user->name, $user->email]), true));
+    }
+
+    public function isManagedBy(User $user): bool
+    {
+        return $user->isAdmin() || $this->manager_id === $user->id;
     }
 }

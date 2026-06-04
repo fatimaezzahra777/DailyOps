@@ -156,6 +156,7 @@ const openModalById = (id, afterOpen = null) => {
             requestAnimationFrame(() => {
                 resetModalFields(modal);
                 afterOpen?.(modal);
+                updateTaskAssigneeOptions(modal);
             });
         }
     });
@@ -193,6 +194,25 @@ const applyCreateProjectDefaults = (trigger, modal = document) => {
     }
 };
 
+const applyCreateTaskDefaults = (trigger, modal = document) => {
+    if (trigger.dataset.modalOpen !== 'create-task-modal') {
+        return;
+    }
+
+    const statusField = modal.querySelector('#create-task-status');
+    const columnField = modal.querySelector('[data-task-column-field]');
+
+    if (statusField && trigger.dataset.createTaskStatus) {
+        statusField.value = trigger.dataset.createTaskStatus;
+        statusField.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    if (columnField) {
+        columnField.value = trigger.dataset.createTaskColumnId || '';
+        columnField.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
 const closeAllModals = () => {
     getModalRoots().forEach((modal) => {
         setModalState(modal, false);
@@ -204,6 +224,38 @@ const resetClosedModals = () => {
     getModalRoots()
         .filter((modal) => modal.classList.contains('hidden'))
         .forEach((modal) => resetModalFields(modal));
+};
+
+const updateTaskAssigneeOptions = (root = document) => {
+    root.querySelectorAll('[data-task-project-select]').forEach((projectField) => {
+        const form = projectField.closest('form') ?? root;
+        const assigneeField = form.querySelector('[data-task-assignee-select]');
+
+        if (!assigneeField) {
+            return;
+        }
+
+        const projectId = projectField.value;
+        let selectedOptionIsVisible = assigneeField.value === '';
+
+        Array.from(assigneeField.options).forEach((option) => {
+            if (!option.value) {
+                option.hidden = false;
+                return;
+            }
+
+            const isVisible = option.dataset.projectId === projectId;
+            option.hidden = !isVisible;
+
+            if (isVisible && option.selected) {
+                selectedOptionIsVisible = true;
+            }
+        });
+
+        if (!selectedOptionIsVisible) {
+            assigneeField.value = '';
+        }
+    });
 };
 
 const setupBoardDragAndDrop = () => {
@@ -288,6 +340,88 @@ const setupBoardDragAndDrop = () => {
     });
 };
 
+const setupTaskBoardDragAndDrop = () => {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    if (!token) {
+        return;
+    }
+
+    document.querySelectorAll('[data-task-board]').forEach((board) => {
+        const cards = Array.from(board.querySelectorAll('[data-draggable-task]'));
+        const zones = Array.from(board.querySelectorAll('[data-task-drop-zone]'));
+        let draggedCard = null;
+
+        cards.forEach((card) => {
+            card.addEventListener('dragstart', (event) => {
+                draggedCard = card;
+                card.classList.add('task-card-dragging');
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', card.dataset.taskId);
+            });
+
+            card.addEventListener('dragend', () => {
+                card.classList.remove('task-card-dragging');
+                zones.forEach((zone) => zone.classList.remove('board-drop-zone-active'));
+                draggedCard = null;
+            });
+        });
+
+        zones.forEach((zone) => {
+            zone.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                zone.classList.add('board-drop-zone-active');
+                event.dataTransfer.dropEffect = 'move';
+            });
+
+            zone.addEventListener('dragleave', (event) => {
+                if (!zone.contains(event.relatedTarget)) {
+                    zone.classList.remove('board-drop-zone-active');
+                }
+            });
+
+            zone.addEventListener('drop', async (event) => {
+                event.preventDefault();
+                zone.classList.remove('board-drop-zone-active');
+
+                const taskId = event.dataTransfer.getData('text/plain');
+                const status = zone.dataset.taskStatus;
+                const taskColumnId = zone.dataset.taskColumnId;
+
+                if (!taskId || (!status && !taskColumnId) || !draggedCard || zone.contains(draggedCard)) {
+                    return;
+                }
+
+                zone.appendChild(draggedCard);
+                draggedCard.classList.add('opacity-60');
+
+                try {
+                    const response = await fetch(`/tasks/${taskId}/change-status`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                        },
+                        body: JSON.stringify({
+                            status: status || null,
+                            task_column_id: taskColumnId || null,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Task move failed');
+                    }
+
+                    window.location.reload();
+                } catch (error) {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+};
+
 const setupCalendarDayCreate = () => {
     document.querySelectorAll('[data-calendar-create-date]').forEach((day) => {
         day.addEventListener('click', (event) => {
@@ -308,7 +442,10 @@ const setupCalendarDayCreate = () => {
 document.addEventListener('click', (event) => {
     const openTrigger = event.target.closest('[data-modal-open]');
     if (openTrigger) {
-        openModalById(openTrigger.dataset.modalOpen, (modal) => applyCreateProjectDefaults(openTrigger, modal));
+        openModalById(openTrigger.dataset.modalOpen, (modal) => {
+            applyCreateProjectDefaults(openTrigger, modal);
+            applyCreateTaskDefaults(openTrigger, modal);
+        });
         return;
     }
 
@@ -324,11 +461,22 @@ document.addEventListener('click', (event) => {
     }
 });
 
+document.addEventListener('change', (event) => {
+    if (event.target.matches('[data-task-project-select]')) {
+        updateTaskAssigneeOptions(event.target.closest('form') ?? document);
+    }
+});
+
 setupBoardDragAndDrop();
+setupTaskBoardDragAndDrop();
 setupCalendarDayCreate();
 resetClosedModals();
+updateTaskAssigneeOptions();
 
-window.addEventListener('pageshow', resetClosedModals);
+window.addEventListener('pageshow', () => {
+    resetClosedModals();
+    updateTaskAssigneeOptions();
+});
 
 const setupRealtimeNotifications = () => {
     if (!realtimeNotificationsRoot || !window.Echo) {

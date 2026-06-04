@@ -51,13 +51,6 @@
     </div>
 
     <div>
-        <label for="{{ $prefix }}-assigned_to" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Assigned to</label>
-        <input id="{{ $prefix }}-assigned_to" name="{{ $inputName('assigned_to') }}" type="text" class="w-full px-4 py-3"
-            value="{{ $fieldValue('assigned_to', $project?->assigned_to) }}" data-field-default="{{ $project?->assigned_to ?? '' }}"
-            autocomplete="{{ $disableAutofill ? 'new-password' : 'off' }}">
-    </div>
-
-    <div>
         <label for="{{ $prefix }}-start_date" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Start date</label>
         <input id="{{ $prefix }}-start_date" name="{{ $inputName('start_date') }}" type="date" class="w-full px-4 py-3"
             value="{{ $fieldValue('start_date', optional($project?->start_date)->format('Y-m-d')) }}"

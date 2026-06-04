@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ProjectColumn extends Model
+class TaskColumn extends Model
 {
     protected $fillable = [
-        'user_id',
+        'project_id',
         'name',
         'position',
     ];
 
-    public function user(): BelongsTo
+    public function project(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Project::class);
     }
 
-    public function projects(): HasMany
+    public function tasks(): HasMany
     {
-        return $this->hasMany(Project::class, 'column_id');
+        return $this->hasMany(Task::class);
     }
 }

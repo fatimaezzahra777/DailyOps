@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -40,5 +41,46 @@ class UserManagementTest extends TestCase
         ])->assertRedirect(route('dashboard', absolute: false));
 
         $this->assertAuthenticatedAs($createdUser);
+    }
+
+    public function test_user_details_show_relevant_projects_and_admin_sees_all_projects(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $member = User::factory()->create([
+            'name' => 'Assigned Member',
+            'email' => 'assigned-member@example.com',
+        ]);
+        $other = User::factory()->create();
+
+        $managedProject = Project::create([
+            'manager_id' => $member->id,
+            'name' => 'Managed Project',
+            'status' => 'pending',
+        ]);
+        $assignedProject = Project::create([
+            'manager_id' => $other->id,
+            'name' => 'Assigned Project',
+            'status' => 'in_progress',
+            'assigned_to' => 'assigned-member@example.com',
+        ]);
+        Project::create([
+            'manager_id' => $other->id,
+            'name' => 'Admin Visible Project',
+            'status' => 'completed',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('users.show', $member))
+            ->assertOk()
+            ->assertSee('Managed Project')
+            ->assertSee('Assigned Project')
+            ->assertDontSee('Admin Visible Project');
+
+        $this->actingAs($admin)
+            ->get(route('users.show', $admin))
+            ->assertOk()
+            ->assertSee('Managed Project')
+            ->assertSee('Assigned Project')
+            ->assertSee('Admin Visible Project');
     }
 }

@@ -28,14 +28,15 @@ class ProjectInvitationService
                 'status' => ProjectInvitation::STATUS_PENDING,
             ],
             [
-                'invited_by_id' => $manager?->id,
+                'invited_by' => $manager?->id,
+                'user_id' => User::where('email', $email)->value('id'),
                 'token' => Str::random(64),
-                'expires_at' => now()->addDays(7),
+                'responded_at' => null,
             ],
         );
 
         try {
-            Mail::to($email)->send(new ProjectInvitationMail($invitation->load(['project', 'invitedBy'])));
+            Mail::to($email)->send(new ProjectInvitationMail($invitation->load(['project', 'inviter'])));
         } catch (Throwable $exception) {
             Log::warning('Project invitation email could not be sent.', [
                 'project_id' => $project->id,
