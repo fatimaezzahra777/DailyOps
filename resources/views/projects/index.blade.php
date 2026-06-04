@@ -370,18 +370,9 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label for="create-project-column-id" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Column</label>
-                        <select id="create-project-column-id" name="create_column_id" class="w-full px-4 py-3"
-                            data-field-default="" autocomplete="off">
-                            <option value="" @selected(blank($openModal === 'create-project-modal' ? old('create_column_id') : ''))>Default status column</option>
-                            @foreach ($projectColumns as $projectColumn)
-                                <option value="{{ $projectColumn->id }}" @selected(($openModal === 'create-project-modal' ? old('create_column_id') : '') == $projectColumn->id)>
-                                    {{ $projectColumn->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <input id="create-project-column-id" name="create_column_id" type="hidden"
+                        value="{{ $openModal === 'create-project-modal' ? old('create_column_id') : '' }}"
+                        data-field-default="">
 
                     <div>
                         <label for="create-project-start-date" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Start date</label>

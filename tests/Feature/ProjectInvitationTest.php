@@ -45,6 +45,37 @@ class ProjectInvitationTest extends TestCase
         );
     }
 
+    public function test_manager_can_invite_external_email(): void
+    {
+        Mail::fake();
+
+        $manager = User::factory()->create(['role' => 'admin']);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'External Launch',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($manager)
+            ->post(route('project-invitations.store', $project), [
+                'email' => 'external-collab@example.com',
+            ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('project_invitations', [
+            'email' => 'external-collab@example.com',
+            'status' => ProjectInvitation::STATUS_PENDING,
+            'invited_by' => $manager->id,
+            'user_id' => null,
+        ]);
+
+        Mail::assertSent(
+            ProjectInvitationMail::class,
+            fn (ProjectInvitationMail $mail) => $mail->hasTo('external-collab@example.com')
+        );
+    }
+
     public function test_accepting_project_invitation_adds_collaborator(): void
     {
         Mail::fake();

@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProjectInvitationController extends Controller
@@ -25,7 +24,6 @@ class ProjectInvitationController extends Controller
                 'required',
                 'email',
                 'max:255',
-                Rule::exists('users', 'email'),
             ],
         ]);
 
@@ -37,15 +35,15 @@ class ProjectInvitationController extends Controller
         }
 
         $email = Str::lower($validator->validated()['email']);
-        $user = User::where('email', $email)->firstOrFail();
+        $user = User::where('email', $email)->first();
 
-        if ($project->manager_id === $user->id) {
+        if ($user && $project->manager_id === $user->id) {
             return back()->withErrors([
                 'email' => 'Le manager est deja responsable de ce projet.',
             ])->withInput()->with('open_modal', 'invite-collaborator-modal');
         }
 
-        if ($project->collaborators()->whereKey($user->id)->exists()) {
+        if ($user && $project->collaborators()->whereKey($user->id)->exists()) {
             return back()->with('success', 'Cette personne est deja collaborateur du projet.');
         }
 
@@ -57,7 +55,7 @@ class ProjectInvitationController extends Controller
             ],
             [
                 'invited_by' => $request->user()->id,
-                'user_id' => $user->id,
+                'user_id' => $user?->id,
                 'token' => Str::random(64),
                 'responded_at' => null,
             ],
@@ -124,6 +122,5 @@ class ProjectInvitationController extends Controller
         return redirect()
             ->route('projects.index')
             ->with('success', 'Invitation refusee.');
-   
-            }
+    }
 }

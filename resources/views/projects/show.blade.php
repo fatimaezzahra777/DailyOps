@@ -12,6 +12,15 @@
         $tasks = $project->tasks;
         $customTaskColumns = $project->taskColumns;
         $projects = collect([$project]);
+        $acceptedCollaborators = $project->collaborators
+            ->merge(
+                $project->invitations
+                    ->where('status', \App\Models\ProjectInvitation::STATUS_ACCEPTED)
+                    ->pluck('user')
+                    ->filter()
+            )
+            ->unique('id')
+            ->values();
         $taskColumns = [
             'todo' => [
                 'title' => 'To do',
@@ -328,7 +337,7 @@
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <h2 class="text-lg font-semibold">Collaborators</h2>
-                        <p class="mt-1 text-sm text-[var(--muted)]">{{ $project->collaborators->count() }} accepted</p>
+                        <p class="mt-1 text-sm text-[var(--muted)]">{{ $acceptedCollaborators->count() }} accepted</p>
                     </div>
                     @if ($canManageProject)
                         <button type="button" class="icon-button h-10 w-10 px-0" data-modal-open="invite-collaborator-modal"
@@ -339,7 +348,7 @@
                 </div>
 
                 <div class="mt-5 space-y-3">
-                    @forelse ($project->collaborators as $collaborator)
+                    @forelse ($acceptedCollaborators as $collaborator)
                         <div class="flex items-center justify-between gap-3 rounded-md border border-[var(--line)] p-3">
                             <div>
                                 <p class="text-sm font-medium text-[var(--text-strong)]">{{ $collaborator->name }}</p>

@@ -323,7 +323,56 @@ class ProjectFeatureTest extends TestCase
         $this->actingAs($collaborator)
             ->get(route('projects.show', $project))
             ->assertOk()
-            ->assertSee('Accepted Collaboration');
+            ->assertSee('Accepted Collaboration')
+            ->assertSee($collaborator->name)
+            ->assertSee($collaborator->email);
+    }
+
+    public function test_project_create_modal_keeps_column_hidden(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+
+        ProjectColumn::create([
+            'user_id' => $user->id,
+            'name' => 'Client QA',
+            'position' => 1,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/projects');
+
+        $response->assertOk();
+        $response->assertDontSee('for="create-project-column-id"', false);
+        $response->assertSee('id="create-project-column-id" name="create_column_id" type="hidden"', false);
+    }
+
+    public function test_project_show_create_task_modal_is_not_prefilled_from_existing_tasks(): void
+    {
+        $manager = User::factory()->create(['role' => 'admin']);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Task Modal Project',
+            'status' => 'pending',
+        ]);
+        $project->tasks()->create([
+            'title' => 'Existing Task',
+            'description' => 'Should not prefill create modal',
+            'status' => 'todo',
+            'priority' => 'high',
+        ]);
+
+        $response = $this->actingAs($manager)
+            ->get(route('projects.show', $project));
+
+        $response->assertOk();
+        $this->assertMatchesRegularExpression(
+            '/id="create-task-title"[^>]*value=""[^>]*data-field-default=""/',
+            $response->getContent()
+        );
+        $this->assertStringNotContainsString(
+            '<textarea id="create-task-description" name="create_description" rows="6"'."\n".'            placeholder="Describe the task clearly for the team..." class="w-full px-4 py-3"'."\n".'            data-field-default="Should not prefill create modal"',
+            $response->getContent()
+        );
     }
 
     public function test_user_can_add_a_board_column_and_create_project_inside_it(): void

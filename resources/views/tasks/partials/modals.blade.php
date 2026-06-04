@@ -34,6 +34,7 @@
             <input type="password" tabindex="-1" autocomplete="new-password" class="hidden" aria-hidden="true">
 
             @include('tasks.partials.form', [
+                'task' => null,
                 'prefix' => 'create-task',
                 'errorBag' => 'createTask',
                 'useOldValues' => $openModal === 'create-task-modal',
