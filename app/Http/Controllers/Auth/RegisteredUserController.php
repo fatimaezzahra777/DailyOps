@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProjectInvitation;
 use App\Models\User;
+use App\Services\ProjectInvitationService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +16,10 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+    public function __construct(
+        private readonly ProjectInvitationService $invitationService,
+    ) {}
+
     /**
      * Display the registration view.
      */
@@ -43,6 +49,18 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        $invitation = ProjectInvitation::find(
+            $request->session()->get('pending_project_invitation_id')
+        );
+
+        if ($invitation && $this->invitationService->acceptInvitation($invitation, $user)) {
+            $request->session()->forget('pending_project_invitation_id');
+
+            return redirect()
+                ->route('projects.show', $invitation->project)
+                ->with('success', 'Invitation acceptee. Vous etes maintenant collaborateur du projet.');
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

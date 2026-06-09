@@ -118,6 +118,55 @@ class ProjectInvitationTest extends TestCase
             ->assertOk();
     }
 
+    public function test_external_user_registration_completes_the_accepted_invitation(): void
+    {
+        Mail::fake();
+
+        $manager = User::factory()->create(['role' => 'admin']);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'External Launch',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($manager)
+            ->post(route('project-invitations.store', $project), [
+                'email' => 'external-collab@example.com',
+            ]);
+
+        auth()->logout();
+
+        $invitation = ProjectInvitation::firstOrFail();
+
+        $this->get(URL::temporarySignedRoute('project-invitations.accept', now()->addDays(7), $invitation))
+            ->assertRedirect(route('register', ['email' => 'external-collab@example.com']))
+            ->assertSessionHas('pending_project_invitation_id', $invitation->id);
+
+        $this->post(route('register'), [
+            'name' => 'External Collaborator',
+            'email' => 'external-collab@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])->assertRedirect(route('projects.show', $project));
+
+        $collaborator = User::where('email', 'external-collab@example.com')->firstOrFail();
+
+        $this->assertDatabaseHas('project_user', [
+            'project_id' => $project->id,
+            'user_id' => $collaborator->id,
+        ]);
+        $this->assertDatabaseHas('project_invitations', [
+            'id' => $invitation->id,
+            'user_id' => $collaborator->id,
+            'status' => ProjectInvitation::STATUS_ACCEPTED,
+        ]);
+
+        $this->get(route('projects.show', $project))
+            ->assertOk()
+            ->assertSee('External Collaborator')
+            ->assertSee('external-collab@example.com');
+    }
+
     public function test_declining_project_invitation_does_not_add_collaborator(): void
     {
         Mail::fake();

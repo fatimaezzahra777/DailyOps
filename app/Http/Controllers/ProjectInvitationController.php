@@ -6,6 +6,7 @@ use App\Mail\ProjectInvitationMail;
 use App\Models\Project;
 use App\Models\ProjectInvitation;
 use App\Models\User;
+use App\Services\ProjectInvitationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -15,6 +16,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProjectInvitationController extends Controller
 {
+    public function __construct(
+        private readonly ProjectInvitationService $invitationService,
+    ) {}
+
     public function store(Request $request, Project $project): RedirectResponse
     {
         abort_if(! $project->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
@@ -79,23 +84,14 @@ class ProjectInvitationController extends Controller
         $user = $invitation->user ?: User::where('email', $invitation->email)->first();
 
         if (! $user) {
+            $request->session()->put('pending_project_invitation_id', $invitation->id);
+
             return redirect()
-                ->route('login')
-                ->with('status', 'Creez ou connectez-vous avec cet email pour accepter l invitation.');
+                ->route('register', ['email' => $invitation->email])
+                ->with('status', 'Creez un compte avec cette adresse email pour accepter l invitation.');
         }
 
-        $invitation->project->collaborators()->syncWithoutDetaching([
-            $user->id => [
-                'invited_by' => $invitation->invited_by,
-                'accepted_at' => now(),
-            ],
-        ]);
-
-        $invitation->update([
-            'user_id' => $user->id,
-            'status' => ProjectInvitation::STATUS_ACCEPTED,
-            'responded_at' => now(),
-        ]);
+        $this->invitationService->acceptInvitation($invitation, $user);
 
         if (! auth()->check()) {
             return redirect()

@@ -1,6 +1,6 @@
 <x-mail::message>
 <div style="text-align:center;margin-bottom:28px;">
-    <img src="{{ asset('images/dailyops-logo.png') }}" alt="{{ config('app.name') }}" style="max-width:220px;width:100%;height:auto;">
+    <img src="{{ asset('images/dailyops-logo.svg') }}" alt="{{ config('app.name') }}" style="max-width:320px;width:100%;height:auto;">
 </div>
 
 # Invitation a collaborer

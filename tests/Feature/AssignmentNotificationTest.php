@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
+use RuntimeException;
 use Tests\TestCase;
 
 class AssignmentNotificationTest extends TestCase
@@ -59,6 +60,80 @@ class AssignmentNotificationTest extends TestCase
         );
 
         Mail::assertSent(TaskAssignedMail::class, fn (TaskAssignedMail $mail) => $mail->task->assigned_user_id === $assignedUser->id);
+    }
+
+    public function test_task_cannot_be_assigned_to_a_user_outside_the_selected_project(): void
+    {
+        Mail::fake();
+
+        $manager = User::factory()->create(['role' => 'admin']);
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Selected Project',
+            'status' => 'pending',
+        ]);
+        $otherProject = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Other Project',
+            'status' => 'pending',
+        ]);
+        $otherCollaborator = User::factory()->create();
+
+        $otherProject->collaborators()->attach($otherCollaborator->id, [
+            'invited_by' => $manager->id,
+            'accepted_at' => now(),
+        ]);
+
+        $this->actingAs($manager)
+            ->post(route('tasks.store'), [
+                'project_id' => $project->id,
+                'title' => 'Restricted assignment',
+                'status' => 'todo',
+                'priority' => 'medium',
+                'assigned_user_id' => $otherCollaborator->id,
+            ])
+            ->assertSessionHasErrors('assigned_user_id', errorBag: 'createTask');
+
+        $this->assertDatabaseMissing('tasks', [
+            'title' => 'Restricted assignment',
+        ]);
+    }
+
+    public function test_realtime_notification_is_dispatched_when_assignment_email_fails(): void
+    {
+        Event::fake([AssignmentNotificationSent::class]);
+        Mail::shouldReceive('to')
+            ->once()
+            ->andThrow(new RuntimeException('SMTP unavailable'));
+
+        $manager = User::factory()->create(['role' => 'admin']);
+        $assignedUser = User::factory()->create();
+        $project = Project::create([
+            'manager_id' => $manager->id,
+            'name' => 'Resilient Notifications',
+            'status' => 'pending',
+        ]);
+        $project->collaborators()->attach($assignedUser->id, [
+            'invited_by' => $manager->id,
+            'accepted_at' => now(),
+        ]);
+
+        $this->actingAs($manager)
+            ->post(route('tasks.store'), [
+                'project_id' => $project->id,
+                'title' => 'Notify despite SMTP failure',
+                'status' => 'todo',
+                'priority' => 'medium',
+                'assigned_user_id' => $assignedUser->id,
+            ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        Event::assertDispatched(
+            AssignmentNotificationSent::class,
+            fn (AssignmentNotificationSent $event) => $event->user->is($assignedUser)
+                && $event->notification['message'] === 'La tâche « Notify despite SMTP failure » vous a été assignée.'
+        );
     }
 
     public function test_project_creation_uses_manager_without_project_assignment_broadcast(): void

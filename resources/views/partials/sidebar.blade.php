@@ -15,9 +15,9 @@
 
 <aside id="sidebar"
     class="workspace-sidebar fixed inset-y-0 left-0 z-40 flex w-[230px] -translate-x-full flex-col overflow-hidden lg:sticky lg:top-0 lg:translate-x-0">
-    <div class="shrink-0 border-b border-black/10 px-5 py-5">
-        <a href="{{ route('dashboard') }}">
-            <img src="{{ asset('images/dailyops-logo.png') }}" alt="DailyOps" class="h-9 w-auto max-w-full">
+    <div class="shrink-0 border-b border-black/10 px-3 py-5">
+        <a href="{{ route('dashboard') }}" class="block">
+            <img src="{{ asset('images/dailyops-logo.svg') }}" alt="DailyOps" class="h-auto w-full">
         </a>
     </div>
 

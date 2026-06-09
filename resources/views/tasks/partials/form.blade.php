@@ -16,6 +16,8 @@
     $defaultProjectId = $task->project_id ?? request('project_id', $projects->count() === 1 ? $projects->first()->id : '');
     $selectedProjectId = $fieldValue('project_id', $defaultProjectId);
     $defaultTaskColumnId = $task->task_column_id ?? '';
+    $selectedProject = $projects->firstWhere('id', (int) $selectedProjectId);
+    $selectedAssigneeId = $fieldValue('assigned_user_id', $task->assigned_user_id ?? '');
 @endphp
 
 @if ($errorsBag->any())
@@ -51,7 +53,13 @@
             data-field-default="{{ $defaultProjectId }}" autocomplete="off">
             <option value="">Select project</option>
             @foreach ($projects as $project)
-                <option value="{{ $project->id }}" @selected($selectedProjectId == $project->id)>{{ $project->name }}</option>
+                <option value="{{ $project->id }}"
+                    data-collaborators="{{ $project->collaborators->map(fn ($collaborator) => [
+                        'id' => $collaborator->id,
+                        'name' => $collaborator->name,
+                        'email' => $collaborator->email,
+                    ])->values()->toJson() }}"
+                    @selected($selectedProjectId == $project->id)>{{ $project->name }}</option>
             @endforeach
         </select>
         @if ($errorsBag->has('project_id'))
@@ -88,18 +96,20 @@
     <div>
         <label for="{{ $prefix }}-assigned-to" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Assigned to</label>
         <select id="{{ $prefix }}-assigned-to" name="{{ $inputName('assigned_user_id') }}" class="w-full px-4 py-3"
-            data-task-assignee-select data-field-default="{{ $task->assigned_user_id ?? '' }}" autocomplete="off">
-            <option value="">Unassigned</option>
-            @foreach ($projects as $project)
-                @foreach ($project->collaborators as $collaborator)
-                    <option value="{{ $collaborator->id }}" data-project-id="{{ $project->id }}"
-                        @selected((string) $fieldValue('assigned_user_id', $task->assigned_user_id ?? '') === (string) $collaborator->id)>
-                        {{ $collaborator->name }} — {{ $collaborator->email }}
-                    </option>
-                @endforeach
+            data-task-assignee-select data-field-default="{{ $task->assigned_user_id ?? '' }}"
+            @disabled(! $selectedProject || $selectedProject->collaborators->isEmpty()) autocomplete="off">
+            <option value="">
+                {{ ! $selectedProject ? 'Select a project first' : ($selectedProject->collaborators->isEmpty() ? 'No collaborators for this project' : 'Unassigned') }}
+            </option>
+            @foreach ($selectedProject?->collaborators ?? collect() as $collaborator)
+                <option value="{{ $collaborator->id }}" @selected((string) $selectedAssigneeId === (string) $collaborator->id)>
+                    {{ $collaborator->name }} — {{ $collaborator->email }}
+                </option>
             @endforeach
         </select>
-        <p class="mt-2 text-xs text-[var(--muted)]">Only accepted collaborators of the selected project are available.</p>
+        <p class="mt-2 text-xs text-[var(--muted)]" data-task-assignee-help>
+            Select a project to display its accepted collaborators.
+        </p>
         @if ($errorsBag->has('assigned_user_id'))
             <p class="mt-2 text-sm text-rose-300">{{ $errorsBag->first('assigned_user_id') }}</p>
         @endif

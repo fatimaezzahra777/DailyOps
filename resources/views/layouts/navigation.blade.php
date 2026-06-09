@@ -9,9 +9,9 @@
 @endphp
 
 <aside x-data="{ open: false }" class="hidden h-screen w-[230px] shrink-0 flex-col overflow-hidden border-r border-black/10 bg-white shadow-[2px_0_12px_rgba(0,0,0,0.06)] sm:flex">
-    <div class="relative flex items-center gap-3 border-b border-black/10 px-5 py-5">
-        <a href="{{ route('dashboard') }}">
-            <img src="{{ asset('images/dailyops-logo.png') }}" alt="DailyOps" class="h-9 w-auto max-w-full">
+    <div class="relative flex items-center gap-3 border-b border-black/10 px-3 py-5">
+        <a href="{{ route('dashboard') }}" class="block w-full">
+            <img src="{{ asset('images/dailyops-logo.svg') }}" alt="DailyOps" class="h-auto w-full">
         </a>
     </div>
 
@@ -85,8 +85,8 @@
 
     <aside x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 z-50 flex h-screen w-[82vw] max-w-[300px] flex-col overflow-hidden border-r border-black/10 bg-white shadow-xl">
         <div class="flex items-center gap-3 border-b border-black/10 px-5 py-5 pl-16">
-            <a href="{{ route('dashboard') }}">
-                <img src="{{ asset('images/dailyops-logo.png') }}" alt="DailyOps" class="h-9 w-auto max-w-full">
+            <a href="{{ route('dashboard') }}" class="block w-full">
+                <img src="{{ asset('images/dailyops-logo.svg') }}" alt="DailyOps" class="h-auto w-full">
             </a>
         </div>
 

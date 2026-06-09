@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\ProjectInvitation;
+use App\Services\ProjectInvitationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +13,10 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    public function __construct(
+        private readonly ProjectInvitationService $invitationService,
+    ) {}
+
     /**
      * Display the login view.
      */
@@ -27,6 +33,18 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        $invitation = ProjectInvitation::find(
+            $request->session()->get('pending_project_invitation_id')
+        );
+
+        if ($invitation && $this->invitationService->acceptInvitation($invitation, $request->user())) {
+            $request->session()->forget('pending_project_invitation_id');
+
+            return redirect()
+                ->route('projects.show', $invitation->project)
+                ->with('success', 'Invitation acceptee. Vous etes maintenant collaborateur du projet.');
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

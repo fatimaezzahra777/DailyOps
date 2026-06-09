@@ -230,30 +230,55 @@ const updateTaskAssigneeOptions = (root = document) => {
     root.querySelectorAll('[data-task-project-select]').forEach((projectField) => {
         const form = projectField.closest('form') ?? root;
         const assigneeField = form.querySelector('[data-task-assignee-select]');
+        const helpText = form.querySelector('[data-task-assignee-help]');
 
         if (!assigneeField) {
             return;
         }
 
-        const projectId = projectField.value;
-        let selectedOptionIsVisible = assigneeField.value === '';
+        const previousValue = assigneeField.value || assigneeField.dataset.fieldDefault || '';
+        const selectedProject = projectField.selectedOptions[0];
+        let collaborators = [];
 
-        Array.from(assigneeField.options).forEach((option) => {
-            if (!option.value) {
-                option.hidden = false;
-                return;
+        if (selectedProject?.value && selectedProject.dataset.collaborators) {
+            try {
+                collaborators = JSON.parse(selectedProject.dataset.collaborators);
+            } catch (error) {
+                collaborators = [];
             }
+        }
 
-            const isVisible = option.dataset.projectId === projectId;
-            option.hidden = !isVisible;
+        assigneeField.replaceChildren();
 
-            if (isVisible && option.selected) {
-                selectedOptionIsVisible = true;
-            }
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = !selectedProject?.value
+            ? 'Select a project first'
+            : collaborators.length === 0
+                ? 'No collaborators for this project'
+                : 'Unassigned';
+        assigneeField.appendChild(placeholder);
+
+        collaborators.forEach((collaborator) => {
+            const option = document.createElement('option');
+            option.value = String(collaborator.id);
+            option.textContent = `${collaborator.name} — ${collaborator.email}`;
+            assigneeField.appendChild(option);
         });
 
-        if (!selectedOptionIsVisible) {
-            assigneeField.value = '';
+        const canRestoreSelection = collaborators.some(
+            (collaborator) => String(collaborator.id) === String(previousValue),
+        );
+
+        assigneeField.value = canRestoreSelection ? String(previousValue) : '';
+        assigneeField.disabled = !selectedProject?.value || collaborators.length === 0;
+
+        if (helpText) {
+            helpText.textContent = !selectedProject?.value
+                ? 'Select a project to display its accepted collaborators.'
+                : collaborators.length === 0
+                    ? 'This project has no accepted collaborators yet.'
+                    : `${collaborators.length} collaborator${collaborators.length > 1 ? 's' : ''} available for this project.`;
         }
     });
 };

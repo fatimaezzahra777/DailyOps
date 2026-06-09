@@ -24,7 +24,7 @@
 
         <!-- Logo -->
         <div class="flex items-center justify-center mb-6">
-            <img src="{{ asset('images/dailyops-logo.png') }}" alt="DailyOps" class="h-16 w-auto max-w-full">
+            <img src="{{ asset('images/dailyops-logo.svg') }}" alt="DailyOps" class="h-auto w-[340px] max-w-full">
         </div>
 
         <div class="flex justify-center gap-2 mb-8 flex-wrap">

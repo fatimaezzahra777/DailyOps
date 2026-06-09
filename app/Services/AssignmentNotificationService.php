@@ -23,7 +23,15 @@ class AssignmentNotificationService
             return;
         }
 
-        Mail::to($user->email)->send(new TaskAssignedMail($task));
+        try {
+            Mail::to($user->email)->send(new TaskAssignedMail($task));
+        } catch (Throwable $exception) {
+            Log::warning('Task assignment email could not be sent.', [
+                'task_id' => $task->id,
+                'user_id' => $user->id,
+                'message' => $exception->getMessage(),
+            ]);
+        }
 
         $this->broadcast($user, [
             'type' => 'task',

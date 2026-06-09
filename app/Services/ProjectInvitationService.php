@@ -6,6 +6,7 @@ use App\Mail\ProjectInvitationMail;
 use App\Models\Project;
 use App\Models\ProjectInvitation;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -13,6 +14,33 @@ use Throwable;
 
 class ProjectInvitationService
 {
+    public function acceptInvitation(ProjectInvitation $invitation, User $user): bool
+    {
+        if (
+            ! $invitation->isPending()
+            || strcasecmp($invitation->email, $user->email) !== 0
+        ) {
+            return false;
+        }
+
+        DB::transaction(function () use ($invitation, $user) {
+            $invitation->project->collaborators()->syncWithoutDetaching([
+                $user->id => [
+                    'invited_by' => $invitation->invited_by,
+                    'accepted_at' => now(),
+                ],
+            ]);
+
+            $invitation->update([
+                'user_id' => $user->id,
+                'status' => ProjectInvitation::STATUS_ACCEPTED,
+                'responded_at' => now(),
+            ]);
+        });
+
+        return true;
+    }
+
     public function sendInvitation(Project $project, ?string $assignedTo, ?User $manager): ?ProjectInvitation
     {
         $email = $this->resolveInviteEmail($assignedTo);
@@ -47,7 +75,7 @@ class ProjectInvitationService
 
         return $invitation;
     }
-    // transformer ce que le manager ecrit dans assigned_to en email 
+    // transformer ce que le manager ecrit dans assigned_to en email
 
     protected function resolveInviteEmail(?string $assignedTo): ?string
     {
@@ -57,7 +85,7 @@ class ProjectInvitationService
             return null;
         }
         // Si M ecrit Maryem,on cherche un user avec name = Maryem, puis récupère son email
-        
+
         if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
             return mb_strtolower($value);
         }

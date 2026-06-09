@@ -17,7 +17,7 @@
         <div class="flex min-h-screen flex-col items-center justify-center bg-[#f7f7f7] px-4 py-8">
             <div class="mb-6">
                 <a href="/">
-                    <img src="{{ asset('images/dailyops-logo.png') }}" alt="DailyOps" class="h-14 w-auto">
+                    <img src="{{ asset('images/dailyops-logo.svg') }}" alt="DailyOps" class="h-auto w-[340px] max-w-full">
                 </a>
             </div>
 
