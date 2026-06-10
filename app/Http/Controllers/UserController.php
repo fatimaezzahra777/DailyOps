@@ -53,10 +53,10 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', Rule::in(['admin', 'member'])],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['role'] = 'member';
         $validated['email_verified_at'] = now();
 
         User::create($validated);
@@ -121,7 +121,15 @@ class UserController extends Controller
                 Rule::unique('users', 'email')->ignore($user),
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'role' => [
+                Rule::requiredIf(! $request->user()->is($user)),
+                Rule::in(['admin', 'member']),
+            ],
         ]);
+
+        if ($request->user()->is($user)) {
+            unset($validated['role']);
+        }
 
         if (blank($validated['password'])) {
             unset($validated['password']);
