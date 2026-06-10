@@ -68,6 +68,16 @@ class User extends Authenticatable
         return $this->hasMany(ProjectInvitation::class);
     }
 
+    public function organizedMeetings(): HasMany
+    {
+        return $this->hasMany(Meeting::class, 'organizer_id');
+    }
+
+    public function meetings(): BelongsToMany
+    {
+        return $this->belongsToMany(Meeting::class)->withTimestamps();
+    }
+
     public function projectColumns(): HasMany
     {
         return $this->hasMany(ProjectColumn::class);
