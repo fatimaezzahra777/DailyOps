@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Meeting;
 use App\Models\Project;
 use App\Models\ProjectColumn;
+use App\Models\User;
 use App\Services\ProjectService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -55,8 +57,20 @@ class ProjectController extends Controller
     {
         $projects = $this->projectService->getFilteredProjectCollection($request);
         $month = $this->resolveCalendarMonth($request);
+        $calendarStart = $month->copy()->startOfMonth()->startOfWeek();
+        $calendarEnd = $calendarStart->copy()->addDays(41)->endOfDay();
+        $meetings = Meeting::query()
+            ->visibleTo($request->user())
+            ->with(['organizer', 'participants'])
+            ->whereBetween('scheduled_at', [$calendarStart, $calendarEnd])
+            ->orderBy('scheduled_at')
+            ->get();
+        $meetingParticipants = User::query()
+            ->where('id', '!=', $request->user()->id)
+            ->orderBy('name')
+            ->get(['id', 'name', 'email']);
 
-        return view('projects.calendar', compact('projects', 'month'));
+        return view('projects.calendar', compact('projects', 'month', 'meetings', 'meetingParticipants'));
     }
 
     public function reports(Request $request)
