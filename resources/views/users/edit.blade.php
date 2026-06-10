@@ -10,7 +10,7 @@
                     Modifier<br>un user
                 </h1>
                 <p class="mt-5 text-[15px] text-[#6b7280] sm:text-base">
-                    Mettez a jour les informations de connexion de {{ $user->name }}.
+                    Mettez a jour les informations de connexion et le role de {{ $user->name }}.
                 </p>
             </div>
 

@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Mail\ProjectInvitationMail;
 use App\Models\ProjectInvitation;
 use App\Models\ProjectColumn;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -373,6 +374,33 @@ class ProjectFeatureTest extends TestCase
             '<textarea id="create-task-description" name="create_description" rows="6"'."\n".'            placeholder="Describe the task clearly for the team..." class="w-full px-4 py-3"'."\n".'            data-field-default="Should not prefill create modal"',
             $response->getContent()
         );
+    }
+
+    public function test_project_task_board_shows_only_fifteen_tasks_before_expanding(): void
+    {
+        $user = User::factory()->create();
+        $project = Project::create([
+            'manager_id' => $user->id,
+            'name' => 'Limited Task Board',
+            'status' => 'pending',
+        ]);
+
+        for ($taskNumber = 1; $taskNumber <= 17; $taskNumber++) {
+            Task::create([
+                'project_id' => $project->id,
+                'title' => "Board Task {$taskNumber}",
+                'status' => 'todo',
+                'priority' => 'medium',
+            ]);
+        }
+
+        $response = $this->actingAs($user)->get(route('projects.show', $project));
+
+        $response->assertOk()
+            ->assertSee('Voir 2 tâches de plus')
+            ->assertSee('data-task-list-toggle', false);
+
+        $this->assertSame(2, substr_count($response->getContent(), 'data-task-overflow'));
     }
 
     public function test_user_can_add_a_board_column_and_create_project_inside_it(): void

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProjectInvitationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects/gantt', [ProjectController::class, 'gantt'])->name('projects.gantt');
     Route::get('/projects/calendar', [ProjectController::class, 'calendar'])->name('projects.calendar');
     Route::get('/projects/reports', [ProjectController::class, 'reports'])->name('projects.reports');
+    Route::resource('meetings', MeetingController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::post('/projects/columns', [ProjectController::class, 'storeColumn'])->name('projects.columns.store');
     Route::post('/projects/{project}/invitations', [ProjectInvitationController::class, 'store'])->name('project-invitations.store');
     Route::patch('/projects/{project}/move', [ProjectController::class, 'move'])->name('projects.move');

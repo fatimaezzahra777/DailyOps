@@ -26,6 +26,48 @@
         </div>
     </section>
 
+    @if (! isset($user) || ! auth()->user()->is($user))
+        <section>
+            <div class="mb-5 flex items-center gap-3">
+                <span class="h-7 w-[3px] rounded-full bg-[#c90068]"></span>
+                <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c90068]">Role utilisateur</p>
+            </div>
+
+            @php($selectedRole = old('role', $user->role ?? 'member'))
+
+            <fieldset>
+                <legend class="mb-3 text-[13px] font-semibold text-[#374151]">
+                    Choisissez le niveau d'acces
+                </legend>
+
+                <div class="grid grid-cols-2 gap-1 rounded-full bg-[#efe2cd] p-1.5">
+                    <div>
+                        <input id="role-member" name="role" type="radio" value="member"
+                            class="peer sr-only" @checked($selectedRole === 'member')>
+                        <label for="role-member"
+                            class="flex cursor-pointer items-center justify-center rounded-full px-4 py-3 text-[15px] font-bold text-[#80613c] transition peer-checked:bg-white peer-checked:text-[#c90068] peer-checked:shadow-[0_3px_8px_rgba(91,65,31,0.14)]">
+                            Membre
+                        </label>
+                    </div>
+
+                    <div>
+                        <input id="role-admin" name="role" type="radio" value="admin"
+                            class="peer sr-only" @checked($selectedRole === 'admin')>
+                        <label for="role-admin"
+                            class="flex cursor-pointer items-center justify-center rounded-full px-4 py-3 text-[15px] font-bold text-[#80613c] transition peer-checked:bg-white peer-checked:text-[#c90068] peer-checked:shadow-[0_3px_8px_rgba(91,65,31,0.14)]">
+                            Administrateur
+                        </label>
+                    </div>
+                </div>
+
+                <p class="mt-3 text-[12px] leading-5 text-[#6b7280]">
+                    Un administrateur peut gerer les utilisateurs. Un membre accede uniquement a son espace de travail.
+                </p>
+                <x-input-error class="mt-2" :messages="$errors->get('role')" />
+            </fieldset>
+        </section>
+    @endif
+
     <section>
         <div class="mb-5 flex items-center gap-3">
             <span class="h-7 w-[3px] rounded-full bg-[#c90068]"></span>

@@ -83,8 +83,7 @@ const resetModalFields = (modal) => {
         return;
     }
 
-    const form = modal.querySelector('form');
-    form?.reset();
+    modal.querySelectorAll('form').forEach((form) => form.reset());
 
     modal.querySelectorAll('[data-field-default]').forEach((field) => {
         field.value = field.dataset.fieldDefault ?? '';
@@ -191,6 +190,45 @@ const applyCreateProjectDefaults = (trigger, modal = document) => {
             field.value = trigger.dataset.createDate;
             field.dispatchEvent(new Event('input', { bubbles: true }));
         });
+    }
+};
+
+const setCalendarEventType = (modal, type) => {
+    if (!modal?.matches('[data-calendar-event-modal]')) {
+        return;
+    }
+
+    modal.querySelectorAll('[data-calendar-event-type]').forEach((button) => {
+        const isSelected = button.dataset.calendarEventType === type;
+        button.dataset.selected = String(isSelected);
+        button.classList.toggle('bg-white', isSelected);
+        button.classList.toggle('text-[var(--accent)]', isSelected);
+        button.classList.toggle('shadow-[0_3px_8px_rgba(91,65,31,0.14)]', isSelected);
+        button.classList.toggle('text-[#80613c]', !isSelected);
+        button.setAttribute('aria-pressed', String(isSelected));
+    });
+
+    modal.querySelectorAll('[data-calendar-event-form]').forEach((form) => {
+        form.classList.toggle('hidden', form.dataset.calendarEventForm !== type);
+    });
+};
+
+const applyCalendarEventDefaults = (trigger, modal = document) => {
+    if (!modal?.matches('[data-calendar-event-modal]')) {
+        return;
+    }
+
+    setCalendarEventType(modal, 'project');
+
+    if (!trigger.dataset.createDate) {
+        return;
+    }
+
+    const scheduledAtField = modal.querySelector('[name="meeting_scheduled_at"]');
+
+    if (scheduledAtField) {
+        scheduledAtField.value = `${trigger.dataset.createDate}T09:00`;
+        scheduledAtField.dispatchEvent(new Event('input', { bubbles: true }));
     }
 };
 
@@ -447,6 +485,29 @@ const setupTaskBoardDragAndDrop = () => {
     });
 };
 
+const setupTaskListToggles = () => {
+    document.querySelectorAll('[data-task-list-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const column = button.closest('.board-column');
+            const overflowTasks = Array.from(column?.querySelectorAll('[data-task-overflow]') ?? []);
+            const label = button.querySelector('[data-task-list-toggle-label]');
+            const icon = button.querySelector('[data-task-list-toggle-icon]');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+            overflowTasks.forEach((task) => task.classList.toggle('hidden', isExpanded));
+            button.setAttribute('aria-expanded', String(!isExpanded));
+
+            if (label) {
+                label.textContent = isExpanded
+                    ? `Voir ${overflowTasks.length} tâches de plus`
+                    : 'Voir moins';
+            }
+
+            icon?.classList.toggle('rotate-180', !isExpanded);
+        });
+    });
+};
+
 const setupCalendarDayCreate = () => {
     document.querySelectorAll('[data-calendar-create-date]').forEach((day) => {
         day.addEventListener('click', (event) => {
@@ -454,12 +515,17 @@ const setupCalendarDayCreate = () => {
                 return;
             }
 
-            openModalById('create-project-modal', (modal) => applyCreateProjectDefaults({
-                dataset: {
-                    modalOpen: 'create-project-modal',
-                    createDate: day.dataset.calendarCreateDate,
-                },
-            }, modal));
+            openModalById('create-project-modal', (modal) => {
+                const trigger = {
+                    dataset: {
+                        modalOpen: 'create-project-modal',
+                        createDate: day.dataset.calendarCreateDate,
+                    },
+                };
+
+                applyCalendarEventDefaults(trigger, modal);
+                applyCreateProjectDefaults(trigger, modal);
+            });
         });
     });
 };
@@ -468,6 +534,7 @@ document.addEventListener('click', (event) => {
     const openTrigger = event.target.closest('[data-modal-open]');
     if (openTrigger) {
         openModalById(openTrigger.dataset.modalOpen, (modal) => {
+            applyCalendarEventDefaults(openTrigger, modal);
             applyCreateProjectDefaults(openTrigger, modal);
             applyCreateTaskDefaults(openTrigger, modal);
         });
@@ -483,6 +550,15 @@ document.addEventListener('click', (event) => {
     const switchTrigger = event.target.closest('[data-modal-switch]');
     if (switchTrigger) {
         openModalById(switchTrigger.dataset.modalSwitch);
+        return;
+    }
+
+    const eventTypeTrigger = event.target.closest('[data-calendar-event-type]');
+    if (eventTypeTrigger) {
+        setCalendarEventType(
+            eventTypeTrigger.closest('[data-calendar-event-modal]'),
+            eventTypeTrigger.dataset.calendarEventType,
+        );
     }
 });
 
@@ -494,9 +570,15 @@ document.addEventListener('change', (event) => {
 
 setupBoardDragAndDrop();
 setupTaskBoardDragAndDrop();
+setupTaskListToggles();
 setupCalendarDayCreate();
 resetClosedModals();
 updateTaskAssigneeOptions();
+document.querySelectorAll('[data-calendar-event-modal]').forEach((modal) => {
+    const selectedType = modal.querySelector('[data-calendar-event-type][data-selected="true"]')
+        ?.dataset.calendarEventType ?? 'project';
+    setCalendarEventType(modal, selectedType);
+});
 
 window.addEventListener('pageshow', () => {
     resetClosedModals();

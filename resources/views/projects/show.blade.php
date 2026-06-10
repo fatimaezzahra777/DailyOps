@@ -139,14 +139,15 @@
                             @endif
                         </div>
 
-                        <div class="board-drop-zone space-y-3" data-task-drop-zone data-task-status="{{ $status }}">
+                        <div class="board-drop-zone space-y-3" data-task-drop-zone data-task-list data-task-status="{{ $status }}">
                             @forelse ($columnTasks as $task)
                                 @php
                                     $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
                                     $assigneeInitial = $assigneeName ? strtoupper(substr($assigneeName, 0, 1)) : null;
                                 @endphp
-                                <article class="task-card project-card {{ $taskColumn['cardAccent'] }}"
+                                <article class="task-card project-card {{ $taskColumn['cardAccent'] }} {{ $loop->index >= 15 ? 'hidden' : '' }}"
                                     @if ($canManageProject) draggable="true" data-draggable-task @endif
+                                    @if ($loop->index >= 15) data-task-overflow @endif
                                     data-task-id="{{ $task->id }}">
                                     <div class="flex items-start justify-between gap-3">
                                         <a href="{{ route('tasks.show', $task) }}" class="task-title text-left hover:text-[#e8007d]">{{ $task->title }}</a>
@@ -192,6 +193,13 @@
                                 </p>
                             @endforelse
                         </div>
+
+                        @if ($columnTasks->count() > 15)
+                            <button type="button" class="kanban-show-more" data-task-list-toggle aria-expanded="false">
+                                <span data-task-list-toggle-label>Voir {{ $columnTasks->count() - 15 }} tâches de plus</span>
+                                <i class="ti ti-chevron-down" data-task-list-toggle-icon></i>
+                            </button>
+                        @endif
                     </section>
                 @endforeach
 
@@ -231,14 +239,15 @@
                             @endif
                         </div>
 
-                        <div class="board-drop-zone space-y-3" data-task-drop-zone data-task-column-id="{{ $taskColumn->id }}">
+                        <div class="board-drop-zone space-y-3" data-task-drop-zone data-task-list data-task-column-id="{{ $taskColumn->id }}">
                             @forelse ($columnTasks as $task)
                                 @php
                                     $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
                                     $assigneeInitial = $assigneeName ? strtoupper(substr($assigneeName, 0, 1)) : null;
                                 @endphp
-                                <article class="task-card project-card project-card-accent-empty"
+                                <article class="task-card project-card project-card-accent-empty {{ $loop->index >= 15 ? 'hidden' : '' }}"
                                     @if ($canManageProject) draggable="true" data-draggable-task @endif
+                                    @if ($loop->index >= 15) data-task-overflow @endif
                                     data-task-id="{{ $task->id }}">
                                     <div class="flex items-start justify-between gap-3">
                                         <a href="{{ route('tasks.show', $task) }}" class="task-title text-left hover:text-[#e8007d]">{{ $task->title }}</a>
@@ -282,6 +291,13 @@
                                 <p class="empty-column-card">No tasks in this column.</p>
                             @endforelse
                         </div>
+
+                        @if ($columnTasks->count() > 15)
+                            <button type="button" class="kanban-show-more" data-task-list-toggle aria-expanded="false">
+                                <span data-task-list-toggle-label>Voir {{ $columnTasks->count() - 15 }} tâches de plus</span>
+                                <i class="ti ti-chevron-down" data-task-list-toggle-icon></i>
+                            </button>
+                        @endif
                     </section>
                 @endforeach
 

@@ -10,7 +10,7 @@
                     Ajouter<br>un user
                 </h1>
                 <p class="mt-5 text-[15px] text-[#6b7280] sm:text-base">
-                    Creez un acces membre pour lui assigner des projets et des taches.
+                    Creez un compte membre ou administrateur selon ses responsabilites.
                 </p>
             </div>
 

@@ -8,6 +8,7 @@
         ['label' => 'Table', 'icon' => 'table', 'route' => 'projects.table', 'active' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'chart', 'route' => 'projects.gantt', 'active' => 'projects.gantt'],
         ['label' => 'Calendar', 'icon' => 'calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
+        ['label' => 'Réunions', 'icon' => 'meeting', 'route' => 'meetings.index', 'active' => 'meetings.*'],
         ['label' => 'Reports', 'icon' => 'report', 'route' => 'projects.reports', 'active' => 'projects.reports'],
     ];
     $navItems = array_filter($navItems);
@@ -61,6 +62,8 @@
                                 <i class="ti ti-chart-bar"></i>
                             @elseif ($item['icon'] === 'calendar')
                                 <i class="ti ti-calendar"></i>
+                            @elseif ($item['icon'] === 'meeting')
+                                <i class="ti ti-video"></i>
                             @else
                                 <i class="ti ti-report"></i>
                             @endif

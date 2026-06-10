@@ -4,6 +4,7 @@
         ['label' => 'Table', 'icon' => 'ti-table', 'route' => 'projects.table', 'active' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'ti-chart-bar', 'route' => 'projects.gantt', 'active' => 'projects.gantt'],
         ['label' => 'Calendar', 'icon' => 'ti-calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
+        ['label' => 'Réunions', 'icon' => 'ti-video', 'route' => 'meetings.index', 'active' => 'meetings.*'],
         ['label' => 'Reports', 'icon' => 'ti-report', 'route' => 'projects.reports', 'active' => 'projects.reports'],
     ];
 @endphp
