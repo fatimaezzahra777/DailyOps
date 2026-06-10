@@ -28,17 +28,17 @@
         </div>
 
         <div class="flex justify-center gap-2 mb-8 flex-wrap">
-            <div class="px-3 py-1 rounded-full border border-[#e8007d]/20 bg-[#e8007d]/10 text-[#e8007d] text-xs flex items-center gap-1">
+            <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
                 <i class="ti ti-shield-check"></i>
                 Secure
             </div>
 
-            <div class="px-3 py-1 rounded-full border border-[#e8007d]/20 bg-[#e8007d]/10 text-[#e8007d] text-xs flex items-center gap-1">
+            <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
                 <i class="ti ti-bolt"></i>
                 Fast
             </div>
 
-            <div class="px-3 py-1 rounded-full border border-[#e8007d]/20 bg-[#e8007d]/10 text-[#e8007d] text-xs flex items-center gap-1">
+            <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
                 <i class="ti ti-users"></i>
                 Collaborative
             </div>
@@ -78,7 +78,7 @@
                         required
                         autofocus
                         placeholder="admin@dailyops.com"
-                        class="w-full px-4 py-3 rounded-md border border-black/10 bg-[#f4f4f4] focus:border-[#e8007d] focus:ring-4 focus:ring-[#e8007d]/10 outline-none transition"
+                        class="w-full px-4 py-3 rounded-md border border-black/10 bg-[#f4f4f4] focus:border-[#c50064] focus:ring-4 focus:ring-[#c50064]/10 outline-none transition"
                     >
 
                     @error('email')
@@ -101,7 +101,7 @@
                         name="password"
                         required
                         placeholder="Enter your password"
-                        class="w-full px-4 py-3 rounded-md border border-black/10 bg-[#f4f4f4] focus:border-[#e8007d] focus:ring-4 focus:ring-[#e8007d]/10 outline-none transition"
+                        class="w-full px-4 py-3 rounded-md border border-black/10 bg-[#f4f4f4] focus:border-[#c50064] focus:ring-4 focus:ring-[#c50064]/10 outline-none transition"
                     >
 
                     @error('password')
@@ -120,7 +120,7 @@
                         <input
                             type="checkbox"
                             name="remember"
-                            class="rounded border-gray-300 text-[#e8007d] focus:ring-[#e8007d]"
+                            class="rounded border-gray-300 text-[#c50064] focus:ring-[#c50064]"
                         >
 
                         Remember me
@@ -130,7 +130,7 @@
                     @if (Route::has('password.request'))
 
                         <a href="{{ route('password.request') }}"
-                            class="text-sm text-[#e8007d] hover:text-[#ff1a8c] transition">
+                            class="text-sm text-[#c50064] hover:text-[#a90056] transition">
                             Forgot password?
                         </a>
 
@@ -141,7 +141,7 @@
                 <!-- Submit -->
                 <button
                     type="submit"
-                    class="w-full py-3 rounded-md bg-[#e8007d] hover:bg-[#ff1a8c] transition text-white font-bold shadow-[0_2px_14px_rgba(232,0,125,0.3)]"
+                    class="w-full py-3 rounded-md bg-[#c50064] hover:bg-[#a90056] transition text-white font-bold shadow-[0_2px_14px_rgba(197,0,100,0.3)]"
                     style="font-family: 'Syne', sans-serif;"
                 >
                     Sign In

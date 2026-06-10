@@ -4,7 +4,7 @@
     @php
         $queryWithoutStatus = request()->except(['status', 'page']);
         $statusMeta = [
-            'pending' => ['label' => 'Draft', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#e8007d]'],
+            'pending' => ['label' => 'Draft', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#c50064]'],
             'in_progress' => ['label' => 'In progress', 'class' => 'status-tag-progress', 'progress' => 64, 'priority' => 'bg-[#d97706]'],
             'completed' => ['label' => 'Completed', 'class' => 'status-tag-completed', 'progress' => 100, 'priority' => 'bg-[#00a86b]'],
         ];
@@ -13,7 +13,7 @@
     <section>
         <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-3">
-                <span class="h-2 w-2 rounded-full bg-[#e8007d] shadow-[0_0_8px_rgba(232,0,125,0.5)]"></span>
+                <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
                     <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Tasks - Table view</h2>
                     <p class="mt-1 text-[12.5px] text-[#888888]">Vue compacte de tous les projets.</p>

@@ -41,7 +41,7 @@
                 'title' => 'Pending projects',
                 'status' => 'pending',
                 'column_id' => null,
-                'dot' => 'bg-[#e8007d]',
+                'dot' => 'bg-[#c50064]',
                 'empty' => 'No pending projects',
                 'description' => 'Ideas to validate and brief before production.',
                 'laneClass' => 'kanban-lane-pending',
@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="kanban-legend">
-                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#e8007d]"></span> Pending</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#c50064]"></span> Pending</span>
                     <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#f59e0b]"></span> In progress</span>
                     <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#00a86b]"></span> Completed</span>
                 </div>
@@ -202,7 +202,7 @@
                             <article class="task-card project-card {{ $column['cardAccent'] }}" draggable="true"
                                 data-draggable-project data-project-id="{{ $project->id }}">
                                 <div class="flex items-start justify-between gap-3">
-                                    <a href="{{ route('projects.show', $project) }}" class="task-title text-left hover:text-[#e8007d]">
+                                    <a href="{{ route('projects.show', $project) }}" class="task-title text-left hover:text-[#c50064]">
                                         {{ $project->name }}
                                     </a>
                                     @if ($canManageCard)

@@ -27,7 +27,7 @@
         </div>
 
         <div class="mt-4 flex items-center justify-end">
-            <a class="rounded-md text-sm text-[#555555] underline hover:text-[#0a0a0a] focus:outline-none focus:ring-2 focus:ring-[#e8007d] focus:ring-offset-2" href="{{ route('login') }}">
+            <a class="rounded-md text-sm text-[#555555] underline hover:text-[#0a0a0a] focus:outline-none focus:ring-2 focus:ring-[#c50064] focus:ring-offset-2" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>
 
