@@ -566,6 +566,22 @@
         background: transparent;
     }
 
+    .kanban-show-more {
+        @apply mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed bg-white/70 px-3 py-2.5 text-xs font-semibold transition;
+        border-color: var(--line);
+        color: var(--muted);
+    }
+
+    .kanban-show-more:hover {
+        border-color: var(--accent-line);
+        color: var(--accent);
+        background: white;
+    }
+
+    .kanban-show-more i {
+        @apply transition-transform duration-200;
+    }
+
     .board-add-card {
         @apply w-full rounded-[10px] border border-dashed px-4 py-3 text-sm transition;
         border-color: var(--line);
@@ -884,6 +900,12 @@
         color: var(--green);
     }
 
+    .calendar-event-meeting {
+        background: rgb(99 102 241 / 0.1);
+        border-color: rgb(99 102 241 / 0.16);
+        color: #4f46e5;
+    }
+
     .calendar-agenda-item {
         @apply flex items-center gap-3 rounded-md border border-[var(--line)] bg-white p-3 transition hover:border-[var(--accent-line)] hover:bg-[#f4f4f4];
     }
@@ -901,6 +923,194 @@
     .report-meter-fill {
         @apply h-full rounded-full;
         background: var(--accent);
+    }
+
+    .meetings-search {
+        @apply flex w-full items-center gap-3 rounded-lg border border-[var(--line)] bg-white px-3 py-2.5 shadow-sm transition focus-within:border-[var(--accent-line)] lg:max-w-xl;
+    }
+
+    .meetings-search-clear,
+    .meetings-search-submit {
+        @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition;
+    }
+
+    .meetings-search-clear {
+        @apply text-[var(--muted)] hover:bg-[#f1f1f1] hover:text-[var(--text-strong)];
+    }
+
+    .meetings-search-submit {
+        @apply bg-[#111111] text-white hover:bg-[var(--accent)];
+    }
+
+    .meeting-card-simple {
+        @apply relative min-h-[280px] overflow-hidden rounded-[10px] border border-[#dedede] bg-white p-4;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
+        animation: meeting-card-enter 0.4s both;
+        animation-delay: var(--meeting-card-delay, 0ms);
+        transform-style: preserve-3d;
+        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, border-color 0.25s ease;
+    }
+
+    .meeting-card-simple:hover {
+        transform: perspective(900px) translateY(-7px) rotateX(1.2deg) rotateY(-1.2deg);
+        border-color: rgb(232 0 125 / 0.35);
+        box-shadow: 0 18px 38px rgb(24 16 21 / 0.14);
+    }
+
+    .meeting-card-simple::after {
+        content: '';
+        @apply pointer-events-none absolute inset-0 opacity-0;
+        background: linear-gradient(115deg, transparent 28%, rgb(255 255 255 / 0.75) 47%, transparent 66%);
+        transform: translateX(-100%);
+        transition: opacity 0.2s ease, transform 0.7s ease;
+    }
+
+    .meeting-card-simple:hover::after {
+        @apply opacity-100;
+        transform: translateX(100%);
+    }
+
+    .meeting-card-side {
+        @apply absolute inset-y-0 left-0 w-1 bg-[#c90068];
+        transition: width 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .meeting-card-simple:hover .meeting-card-side {
+        @apply w-1.5;
+        box-shadow: 4px 0 18px rgb(201 0 104 / 0.2);
+    }
+
+    .meeting-card-side-today {
+        @apply bg-[#16863c];
+    }
+
+    .meeting-card-simple-past {
+        @apply bg-[#fafafa];
+    }
+
+    .meeting-card-status {
+        @apply inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-semibold;
+    }
+
+    .meeting-card-status-upcoming {
+        @apply bg-[#f2f2f2] text-[#555555];
+    }
+
+    .meeting-card-status-today {
+        @apply bg-[#dcefdc] text-[#236b33];
+    }
+
+    .meeting-card-status-past {
+        @apply bg-[#eeeeee] text-[#777777];
+    }
+
+    .meeting-card-live-dot {
+        @apply h-1.5 w-1.5 rounded-full bg-[#39a956];
+    }
+
+    .meeting-card-menu {
+        @apply flex h-8 w-8 items-center justify-center rounded-md text-lg text-[#555555] transition hover:bg-[#f2f2f2] hover:text-[#111111];
+    }
+
+    .meeting-card-simple-content,
+    .meeting-card-simple-footer {
+        position: relative;
+        z-index: 1;
+        transition: transform 0.35s ease;
+    }
+
+    .meeting-card-simple:hover .meeting-card-simple-content {
+        transform: translateX(3px);
+    }
+
+    .meeting-card-simple-footer {
+        transition: transform 0.35s ease, border-color 0.3s ease;
+    }
+
+    .meeting-card-simple:hover .meeting-card-simple-footer {
+        transform: translateY(-2px);
+        border-color: rgb(232 0 125 / 0.12);
+    }
+
+    .meeting-avatar-simple {
+        @apply flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#1d2a32] text-[8px] font-bold text-white shadow-sm;
+        transition: transform 0.3s ease;
+    }
+
+    .meeting-card-simple:hover .meeting-avatar-simple {
+        transform: translateY(-3px);
+    }
+
+    .meeting-card-simple:hover .meeting-avatar-simple:nth-child(2) {
+        transform: translateY(-5px);
+    }
+
+    .meeting-card-simple:hover .meeting-avatar-simple:nth-child(3) {
+        transform: translateY(-2px);
+    }
+
+    .meeting-avatar-simple:nth-child(2n) {
+        @apply bg-[#5d3029];
+    }
+
+    .meeting-avatar-simple-more {
+        @apply bg-[#eeeeee] text-[#555555];
+    }
+
+    .meeting-join-button-simple {
+        @apply inline-flex min-h-9 items-center justify-center rounded-md bg-[#c90068] px-4 text-[13px] font-semibold text-white transition hover:bg-[#e8007d];
+        position: relative;
+        overflow: hidden;
+    }
+
+    .meeting-join-button-simple::after {
+        content: '→';
+        @apply ml-0 max-w-0 overflow-hidden opacity-0;
+        transition: max-width 0.25s ease, margin-left 0.25s ease, opacity 0.25s ease;
+    }
+
+    .meeting-card-simple:hover .meeting-join-button-simple::after {
+        @apply ml-2 max-w-4 opacity-100;
+    }
+
+    .meeting-details-button {
+        @apply inline-flex min-h-9 items-center justify-center rounded-md border border-[#888888] bg-white px-4 text-[13px] font-semibold text-[#333333] transition hover:border-[#c90068] hover:text-[#c90068];
+    }
+
+    .meetings-empty-simple {
+        @apply flex min-h-[280px] flex-col items-center justify-center rounded-[10px] border border-dashed border-[#cccccc] bg-white p-8 text-center;
+    }
+
+    .meetings-empty-simple-icon {
+        @apply flex h-16 w-16 items-center justify-center rounded-full bg-[#c90068]/10 text-2xl text-[#c90068];
+    }
+
+    @keyframes meeting-card-enter {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .meeting-card-simple {
+            animation: none;
+        }
+
+        .meeting-card-simple {
+            transition-duration: 0.01ms;
+        }
+
+        .meeting-card-simple::after,
+        .meeting-card-simple-content,
+        .meeting-card-simple-footer,
+        .meeting-avatar-simple {
+            transition: none;
+        }
     }
 
     @media (max-width: 640px) {
