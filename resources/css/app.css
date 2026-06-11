@@ -582,6 +582,50 @@
         @apply transition-transform duration-200;
     }
 
+    .project-company-option {
+        @apply relative flex min-h-28 cursor-pointer items-center justify-center overflow-hidden rounded-xl border-2 border-[var(--line)] bg-white p-4 transition duration-200 hover:-translate-y-0.5 hover:border-black/20 hover:shadow-md;
+    }
+
+    .peer:checked + .project-company-option {
+        @apply border-[#c90068] bg-[#c90068]/[0.03] shadow-[0_8px_22px_rgba(201,0,104,0.12)];
+    }
+
+    .project-company-logo {
+        @apply flex h-16 w-full items-center justify-center;
+    }
+
+    .project-company-logo img {
+        @apply max-h-full max-w-full object-contain;
+    }
+
+    .project-company-name {
+        @apply sr-only;
+    }
+
+    .project-company-check {
+        @apply absolute right-3 top-3 scale-75 text-xl text-[#c90068] opacity-0 transition;
+    }
+
+    .peer:checked + .project-company-option .project-company-check {
+        @apply scale-100 opacity-100;
+    }
+
+    .project-company-circle {
+        @apply inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-black/10 bg-white p-1.5 shadow-sm;
+    }
+
+    .project-company-circle img {
+        @apply h-full w-full object-contain;
+    }
+
+    .project-company-circle-large {
+        @apply h-14 w-14 p-2;
+    }
+
+    .project-company-circle-small {
+        @apply h-8 w-8 p-1;
+    }
+
     .board-add-card {
         @apply w-full rounded-[10px] border border-dashed px-4 py-3 text-sm transition;
         border-color: var(--line);
