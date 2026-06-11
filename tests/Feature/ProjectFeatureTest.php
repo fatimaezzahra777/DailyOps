@@ -171,15 +171,114 @@ class ProjectFeatureTest extends TestCase
         $this->actingAs($user)
             ->post('/projects', [
                 'name' => 'Managed Project',
+                'company' => 'softart',
                 'status' => 'pending',
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('projects', [
             'name' => 'Managed Project',
+            'company' => 'softart',
             'manager_id' => $user->id,
             'assigned_to' => null,
         ]);
+    }
+
+    public function test_project_company_selector_is_visible_and_company_is_saved(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('projects.create'))
+            ->assertOk()
+            ->assertSee('images/companies/softart.png')
+            ->assertSee('images/companies/company-name.png')
+            ->assertSee('name="company"', false);
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), [
+                'name' => 'SoftArt Website',
+                'company' => 'softart',
+                'status' => 'pending',
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('projects', [
+            'name' => 'SoftArt Website',
+            'company' => 'softart',
+        ]);
+    }
+
+    public function test_project_company_must_be_one_of_the_available_companies(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), [
+                'name' => 'Invalid Company Project',
+                'company' => 'unknown_company',
+                'status' => 'pending',
+            ])
+            ->assertSessionHasErrors('company', errorBag: 'createProject');
+
+        $this->assertDatabaseMissing('projects', [
+            'name' => 'Invalid Company Project',
+        ]);
+    }
+
+    public function test_project_company_logo_is_displayed_in_table_board_and_project_information(): void
+    {
+        $user = User::factory()->create();
+        $project = Project::create([
+            'manager_id' => $user->id,
+            'name' => 'Branded Project',
+            'company' => 'softart',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('projects.table'))
+            ->assertOk()
+            ->assertSee('Entreprise')
+            ->assertDontSee('<th>Column</th>', false)
+            ->assertSee('project-company-circle', false)
+            ->assertSee('images/companies/softart.png');
+
+        $this->actingAs($user)
+            ->get(route('projects.index'))
+            ->assertOk()
+            ->assertSee('project-company-circle-small', false);
+
+        $this->actingAs($user)
+            ->get(route('projects.show', $project))
+            ->assertOk()
+            ->assertSee('Project information')
+            ->assertSee('project-company-circle-large', false)
+            ->assertSee('SoftArt');
+    }
+
+    public function test_project_table_can_be_filtered_by_company(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+
+        Project::create([
+            'name' => 'SoftArt Project',
+            'company' => 'softart',
+            'status' => 'pending',
+        ]);
+        Project::create([
+            'name' => 'Company Name Project',
+            'company' => 'company_name',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('projects.table', ['company' => 'softart']))
+            ->assertOk()
+            ->assertSee('SoftArt Project')
+            ->assertDontSee('Company Name Project')
+            ->assertSee('<option value="softart" selected>SoftArt</option>', false)
+            ->assertSee(route('projects.index', ['company' => 'softart']));
     }
 
     public function test_member_only_sees_and_manages_own_projects(): void
@@ -418,6 +517,7 @@ class ProjectFeatureTest extends TestCase
         $this->actingAs($user)
             ->post('/projects', [
                 'name' => 'Waiting Approval',
+                'company' => 'company_name',
                 'status' => 'pending',
                 'column_id' => $column->id,
             ])
@@ -425,6 +525,7 @@ class ProjectFeatureTest extends TestCase
 
         $this->assertDatabaseHas('projects', [
             'name' => 'Waiting Approval',
+            'company' => 'company_name',
             'column_id' => $column->id,
             'manager_id' => $user->id,
         ]);

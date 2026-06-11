@@ -145,12 +145,14 @@ class AssignmentNotificationTest extends TestCase
         $this->actingAs($manager)
             ->post(route('projects.store'), [
                 'name' => 'Website Refresh',
+                'company' => 'softart',
                 'status' => 'pending',
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('projects', [
             'name' => 'Website Refresh',
+            'company' => 'softart',
             'manager_id' => $manager->id,
             'assigned_to' => null,
         ]);

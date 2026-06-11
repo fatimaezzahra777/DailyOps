@@ -38,6 +38,12 @@
             autocomplete="off" data-field-default="{{ $project?->description ?? '' }}">{{ $fieldValue('description', $project?->description) }}</textarea>
     </div>
 
+    @include('projects.partials.company-selector', [
+        'companyFieldName' => $inputName('company'),
+        'companyPrefix' => $prefix,
+        'selectedCompany' => $fieldValue('company', $project?->company),
+    ])
+
     <div>
         <label for="{{ $prefix }}-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Status</label>
         <select id="{{ $prefix }}-status" name="{{ $inputName('status') }}" class="w-full px-4 py-3"
