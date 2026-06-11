@@ -333,7 +333,20 @@
                     {{ $project->description ?: 'No description has been added for this project yet.' }}
                 </p>
 
-                <div class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
+                        <p class="text-xs text-[var(--muted)]">Entreprise</p>
+                        <div class="mt-3 flex items-center gap-3">
+                            @if ($project->companyLogo())
+                                <span class="project-company-circle project-company-circle-large">
+                                    <img src="{{ asset($project->companyLogo()) }}" alt="{{ $project->companyLabel() }}">
+                                </span>
+                            @endif
+                            <p class="text-sm font-semibold text-[var(--text-strong)]">
+                                {{ $project->companyLabel() ?? 'Non définie' }}
+                            </p>
+                        </div>
+                    </div>
                     <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
                         <p class="text-xs text-[var(--muted)]">Start date</p>
                         <p class="mt-1 text-sm font-semibold text-[var(--text-strong)]">{{ $project->start_date?->format('d M Y') ?? 'Not set' }}</p>
