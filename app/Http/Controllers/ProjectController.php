@@ -96,6 +96,7 @@ class ProjectController extends Controller
         $input = [
             'name' => $request->input('create_name', $request->input('name')),
             'description' => $request->input('create_description', $request->input('description')),
+            'company' => $request->input('create_company', $request->input('company')),
             'status' => $request->input('create_status', $request->input('status')),
             'start_date' => $request->input('create_start_date', $request->input('start_date')),
             'end_date' => $request->input('create_end_date', $request->input('end_date')),
@@ -104,6 +105,7 @@ class ProjectController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'company' => 'required|in:softart,company_name',
             'status' => 'required|in:pending,in_progress,completed',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -237,6 +239,7 @@ class ProjectController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'company' => 'required|in:softart,company_name',
             'status' => 'required|in:pending,in_progress,completed',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
