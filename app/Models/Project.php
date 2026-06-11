@@ -13,6 +13,7 @@ class Project extends Model
     protected $fillable = [
         'manager_id',
         'company',
+        'logo_path',
         'column_id',
         'name',
         'description',
@@ -48,6 +49,13 @@ class Project extends Model
             'company_name' => 'images/companies/company-name.png',
             default => null,
         };
+    }
+
+    public function projectLogoUrl(): ?string
+    {
+        return $this->logo_path
+            ? asset('storage/'.$this->logo_path)
+            : null;
     }
 
     public function tasks(): HasMany
