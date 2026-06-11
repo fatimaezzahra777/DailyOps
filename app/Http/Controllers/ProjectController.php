@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -97,6 +98,7 @@ class ProjectController extends Controller
             'name' => $request->input('create_name', $request->input('name')),
             'description' => $request->input('create_description', $request->input('description')),
             'company' => $request->input('create_company', $request->input('company')),
+            'logo' => $request->file('create_logo', $request->file('logo')),
             'status' => $request->input('create_status', $request->input('status')),
             'start_date' => $request->input('create_start_date', $request->input('start_date')),
             'end_date' => $request->input('create_end_date', $request->input('end_date')),
@@ -106,6 +108,7 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'company' => 'required|in:softart,company_name',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'status' => 'required|in:pending,in_progress,completed',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -129,6 +132,10 @@ class ProjectController extends Controller
         }
 
         $validated = $validator->validated();
+        if (isset($validated['logo'])) {
+            $validated['logo_path'] = $validated['logo']->store('projects/logos', 'public');
+        }
+        unset($validated['logo']);
         $validated['manager_id'] = $request->user()->id;
 
         $this->projectService->createProject($validated);
@@ -236,10 +243,15 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $project = $this->projectService->getProjectById($id);
+        $this->authorizeProjectManagement($request, $project);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'company' => 'required|in:softart,company_name',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'remove_logo' => 'nullable|boolean',
             'status' => 'required|in:pending,in_progress,completed',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -253,8 +265,20 @@ class ProjectController extends Controller
         }
 
         $validated = $validator->validated();
-        $project = $this->projectService->getProjectById($id);
-        $this->authorizeProjectManagement($request, $project);
+
+        if ($request->boolean('remove_logo') && $project->logo_path) {
+            Storage::disk('public')->delete($project->logo_path);
+            $validated['logo_path'] = null;
+        }
+
+        if (isset($validated['logo'])) {
+            if ($project->logo_path) {
+                Storage::disk('public')->delete($project->logo_path);
+            }
+            $validated['logo_path'] = $validated['logo']->store('projects/logos', 'public');
+        }
+
+        unset($validated['logo'], $validated['remove_logo']);
 
         $this->projectService->updateProject($id, $validated);
 
@@ -268,6 +292,10 @@ class ProjectController extends Controller
     {
         $project = $this->projectService->getProjectById($id);
         $this->authorizeProjectManagement($request, $project);
+
+        if ($project->logo_path) {
+            Storage::disk('public')->delete($project->logo_path);
+        }
 
         $this->projectService->deleteProject($id);
 
