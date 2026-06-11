@@ -3,6 +3,7 @@
 @section('content')
     @php
         $queryWithoutStatus = request()->except(['status', 'page']);
+        $tableQuery = array_filter(request()->only(['search', 'status', 'company']), fn ($value) => filled($value));
         $statusMeta = [
             'pending' => ['label' => 'Draft', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#e8007d]'],
             'in_progress' => ['label' => 'In progress', 'class' => 'status-tag-progress', 'progress' => 64, 'priority' => 'bg-[#d97706]'],
@@ -27,8 +28,25 @@
             <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'pending'])) }}" class="filter-pill {{ request('status') === 'pending' ? 'filter-pill-active' : '' }}">Draft</a>
             <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'in_progress'])) }}" class="filter-pill {{ request('status') === 'in_progress' ? 'filter-pill-active' : '' }}">In progress</a>
             <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'completed'])) }}" class="filter-pill {{ request('status') === 'completed' ? 'filter-pill-active' : '' }}">Completed</a>
+
+            <form method="GET" action="{{ route('projects.table') }}" class="ml-0 sm:ml-2">
+                @if (request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
+                @if (request('status'))
+                    <input type="hidden" name="status" value="{{ request('status') }}">
+                @endif
+                <label for="company-filter" class="sr-only">Filtrer par entreprise</label>
+                <select id="company-filter" name="company" class="min-w-44 py-2 pl-3 pr-9 text-xs"
+                    onchange="this.form.submit()">
+                    <option value="">Toutes les entreprises</option>
+                    <option value="softart" @selected(request('company') === 'softart')>SoftArt</option>
+                    <option value="company_name" @selected(request('company') === 'company_name')>Company Name</option>
+                </select>
+            </form>
+
             <div class="ml-auto text-[12px] text-[#888888]">{{ $allFilteredProjects->count() }} tasks</div>
-            <a href="{{ route('projects.index', request()->only(['search', 'status'])) }}" class="btn-secondary">
+            <a href="{{ route('projects.index', $tableQuery) }}" class="btn-secondary">
                 <i class="ti ti-layout-kanban mr-1"></i>
                 Board
             </a>
@@ -39,7 +57,7 @@
                 <thead>
                     <tr>
                         <th>Task name <i class="ti ti-chevron-up text-[11px]"></i></th>
-                        <th>Column</th>
+                        <th>Entreprise</th>
                         <th>Status</th>
                         <th>Progress</th>
                         <th>Due date</th>
@@ -53,11 +71,6 @@
                             $meta = $statusMeta[$project->status] ?? $statusMeta['pending'];
                             $managerName = $project->manager?->name ?? $project->assigned_to;
                             $initial = strtoupper(substr($managerName ?: $project->name, 0, 1));
-                            $column = match ($project->status) {
-                                'completed' => 'Review',
-                                'in_progress' => 'Production',
-                                default => 'Research',
-                            };
                         @endphp
                         <tr>
                             <td>
@@ -72,7 +85,15 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ $column }}</td>
+                            <td>
+                                @if ($project->companyLogo())
+                                    <span class="project-company-circle" title="{{ $project->companyLabel() }}">
+                                        <img src="{{ asset($project->companyLogo()) }}" alt="{{ $project->companyLabel() }}">
+                                    </span>
+                                @else
+                                    <span class="text-xs text-[var(--muted)]">Non définie</span>
+                                @endif
+                            </td>
                             <td><span class="status-tag {{ $meta['class'] }}">{{ $meta['label'] }}</span></td>
                             <td>
                                 <div class="progress-mini">
