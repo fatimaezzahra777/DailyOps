@@ -255,10 +255,18 @@
                                 </div>
 
                                 <div class="mt-4 flex items-center justify-between gap-3 border-t border-[var(--line)] pt-4">
-                                    <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
-                                        aria-label="View project" title="View project">
-                                        <span class="material-symbols-rounded text-[18px]">visibility</span>
-                                    </a>
+                                    <div class="flex items-center gap-2">
+                                        <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
+                                            aria-label="View project" title="View project">
+                                            <span class="material-symbols-rounded text-[18px]">visibility</span>
+                                        </a>
+                                        @if ($project->companyLogo())
+                                            <span class="project-company-circle project-company-circle-small"
+                                                title="{{ $project->companyLabel() }}">
+                                                <img src="{{ asset($project->companyLogo()) }}" alt="{{ $project->companyLabel() }}">
+                                            </span>
+                                        @endif
+                                    </div>
 
                                     @if ($canManageCard)
                                         <button type="button" class="icon-button h-8 w-8 p-0"
@@ -357,6 +365,12 @@
                         <textarea id="create-project-description" name="create_description" rows="4" class="w-full px-4 py-3"
                             data-field-default="" autocomplete="off">{{ $openModal === 'create-project-modal' ? old('create_description') : '' }}</textarea>
                     </div>
+
+                    @include('projects.partials.company-selector', [
+                        'companyFieldName' => 'create_company',
+                        'companyPrefix' => 'create-project',
+                        'selectedCompany' => $openModal === 'create-project-modal' ? old('create_company') : null,
+                    ])
 
                     <div>
                         <label for="create-project-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Status</label>
@@ -462,6 +476,12 @@
                             <span class="{{ $tagPalette[$project->status] ?? 'tag-chip' }}">
                                 {{ str($project->status)->replace('_', ' ')->title() }}
                             </span>
+                            @if ($project->companyLogo())
+                                <span class="inline-flex h-10 w-24 items-center justify-center rounded-md border border-[var(--line)] bg-white px-2">
+                                    <img src="{{ asset($project->companyLogo()) }}" alt="{{ $project->companyLabel() }}"
+                                        class="max-h-7 max-w-full object-contain">
+                                </span>
+                            @endif
                         </div>
 
                         <p class="mt-4 text-sm leading-7 text-[var(--text)]">
