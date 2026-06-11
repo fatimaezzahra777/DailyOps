@@ -12,6 +12,7 @@ class Project extends Model
 {
     protected $fillable = [
         'manager_id',
+        'company',
         'column_id',
         'name',
         'description',
@@ -29,6 +30,24 @@ class Project extends Model
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function companyLabel(): ?string
+    {
+        return match ($this->company) {
+            'softart' => 'SoftArt',
+            'company_name' => 'Company Name',
+            default => null,
+        };
+    }
+
+    public function companyLogo(): ?string
+    {
+        return match ($this->company) {
+            'softart' => 'images/companies/softart.png',
+            'company_name' => 'images/companies/company-name.png',
+            default => null,
+        };
     }
 
     public function tasks(): HasMany
