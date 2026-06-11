@@ -80,6 +80,10 @@ class ProjectRepository implements ProjectRepositoryInterface
             $query->where('status', $request->status);
         }
 
+        if (in_array($request->company, ['softart', 'company_name'], true)) {
+            $query->where('company', $request->company);
+        }
+
         return $query;
     }
 }
