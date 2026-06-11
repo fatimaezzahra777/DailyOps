@@ -7,7 +7,7 @@
         default => 'projects.index',
     };
     $projectNavigationQuery = request()->routeIs('projects.*')
-        ? array_filter(request()->only(['search', 'status']), fn ($value) => filled($value))
+        ? array_filter(request()->only(['search', 'status', 'company']), fn ($value) => filled($value))
         : [];
 @endphp
 
@@ -51,6 +51,9 @@
                 <form method="GET" action="{{ route($projectSearchRoute) }}" class="relative min-w-0 flex-[1_1_100%] sm:flex-[1_1_220px] max-w-md">
                     @if (request('status'))
                         <input type="hidden" name="status" value="{{ request('status') }}">
+                    @endif
+                    @if (request('company'))
+                        <input type="hidden" name="company" value="{{ request('company') }}">
                     @endif
                     <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
