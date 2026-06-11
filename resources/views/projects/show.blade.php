@@ -61,7 +61,13 @@
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
                 <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Project workspace</p>
-                <h1 class="mt-2 text-3xl font-semibold">{{ $project->name }}</h1>
+                <div class="mt-2 flex items-center gap-3">
+                    @if ($project->projectLogoUrl())
+                        <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                            class="project-logo-circle project-logo-circle-large">
+                    @endif
+                    <h1 class="text-3xl font-semibold">{{ $project->name }}</h1>
+                </div>
                 <div class="mt-3 flex flex-wrap items-center gap-2">
                     <span class="{{ $statusClasses[$project->status] ?? 'tag-chip' }}">
                         {{ str($project->status)->replace('_', ' ')->title() }}

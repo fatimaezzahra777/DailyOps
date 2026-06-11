@@ -8,7 +8,7 @@
             <p class="mt-2 text-sm text-[var(--muted)]">Ajoute un nouveau projet depuis ce formulaire.</p>
         </div>
 
-        <form action="{{ route('projects.store') }}" method="POST" class="panel-dark space-y-5 p-6">
+        <form action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data" class="panel-dark space-y-5 p-6">
             @csrf
             @include('projects.partials.form')
 

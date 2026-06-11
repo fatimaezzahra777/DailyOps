@@ -77,6 +77,10 @@
                                 <div class="flex items-center gap-3">
                                     <div class="project-check"></div>
                                     <div class="priority-dot {{ $meta['priority'] }}"></div>
+                                    @if ($project->projectLogoUrl())
+                                        <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                                            class="project-logo-circle">
+                                    @endif
                                     <div>
                                         <div class="font-medium text-[#0a0a0a]">{{ $project->name }}</div>
                                         @if ($project->description)

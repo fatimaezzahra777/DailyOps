@@ -25,11 +25,35 @@
 @endif
 
 <div class="grid gap-5 md:grid-cols-2">
-    <div class="md:col-span-2">
+    <div>
         <label for="{{ $prefix }}-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Name</label>
         <input id="{{ $prefix }}-name" name="{{ $inputName('name') }}" type="text" class="w-full px-4 py-3"
             value="{{ $fieldValue('name', $project?->name) }}" data-field-default="{{ $project?->name ?? '' }}"
             autocomplete="{{ $disableAutofill ? 'new-password' : 'off' }}" required>
+    </div>
+
+    <div>
+        <label for="{{ $prefix }}-logo" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Logo du projet</label>
+        <div class="project-logo-upload project-logo-upload-compact">
+            @if ($project?->projectLogoUrl())
+                <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                    class="project-logo-preview">
+            @else
+                <span class="project-logo-placeholder material-symbols-rounded" aria-hidden="true">image</span>
+            @endif
+            <div class="min-w-0 flex-1">
+                <input id="{{ $prefix }}-logo" name="{{ $inputName('logo') }}" type="file"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    class="block w-full text-xs" data-project-logo-input>
+                <p class="mt-1 text-[11px] text-[var(--muted)]">JPG, PNG ou WebP — 2 Mo max.</p>
+            </div>
+        </div>
+        @if ($project?->logo_path)
+            <label class="mt-2 inline-flex items-center gap-2 text-xs text-[var(--muted)]">
+                <input name="remove_logo" type="checkbox" value="1" class="rounded border-[var(--line)] text-[var(--accent)]">
+                Supprimer le logo actuel
+            </label>
+        @endif
     </div>
 
     <div class="md:col-span-2">

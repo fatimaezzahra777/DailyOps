@@ -232,7 +232,7 @@
             </div>
 
             <div data-calendar-event-form="project" class="{{ $selectedEventType === 'project' ? '' : 'hidden' }}">
-                <form action="{{ route('projects.store') }}" method="POST" class="space-y-5" autocomplete="off" spellcheck="false">
+                <form action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5" autocomplete="off" spellcheck="false">
                     @csrf
                     <input type="text" tabindex="-1" autocomplete="username" class="hidden" aria-hidden="true">
                     <input type="password" tabindex="-1" autocomplete="new-password" class="hidden" aria-hidden="true">

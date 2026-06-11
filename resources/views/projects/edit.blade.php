@@ -17,7 +17,7 @@
             </form>
         </div>
 
-        <form action="{{ route('projects.update', $project) }}" method="POST" class="panel-dark space-y-5 p-6">
+        <form action="{{ route('projects.update', $project) }}" method="POST" enctype="multipart/form-data" class="panel-dark space-y-5 p-6">
             @csrf
             @method('PUT')
 

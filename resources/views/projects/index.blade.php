@@ -202,9 +202,15 @@
                             <article class="task-card project-card {{ $column['cardAccent'] }}" draggable="true"
                                 data-draggable-project data-project-id="{{ $project->id }}">
                                 <div class="flex items-start justify-between gap-3">
-                                    <a href="{{ route('projects.show', $project) }}" class="task-title text-left hover:text-[#e8007d]">
-                                        {{ $project->name }}
-                                    </a>
+                                    <div class="flex min-w-0 items-center gap-2">
+                                        @if ($project->projectLogoUrl())
+                                            <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                                                class="project-logo-circle">
+                                        @endif
+                                        <a href="{{ route('projects.show', $project) }}" class="task-title truncate text-left hover:text-[#e8007d]">
+                                            {{ $project->name }}
+                                        </a>
+                                    </div>
                                     @if ($canManageCard)
                                         <button type="button" class="icon-button h-8 w-8 p-0" aria-label="Edit project" title="Edit project"
                                             data-modal-open="edit-project-modal-{{ $project->id }}">
@@ -336,7 +342,7 @@
                 <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
             </div>
 
-            <form action="{{ route('projects.store') }}" method="POST" class="space-y-5" autocomplete="off" spellcheck="false">
+            <form action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5" autocomplete="off" spellcheck="false">
                 @csrf
                 <input type="text" tabindex="-1" autocomplete="username" class="hidden" aria-hidden="true">
                 <input type="password" tabindex="-1" autocomplete="new-password" class="hidden" aria-hidden="true">
@@ -353,11 +359,24 @@
                 @endif
 
                 <div class="grid gap-5 md:grid-cols-2">
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="create-project-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Name</label>
                         <input id="create-project-name" name="create_name" type="text" class="w-full px-4 py-3"
                             value="{{ $openModal === 'create-project-modal' ? old('create_name') : '' }}"
                             data-field-default="" autocomplete="new-password" required>
+                    </div>
+
+                    <div>
+                        <label for="create-project-logo" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Logo du projet</label>
+                        <div class="project-logo-upload project-logo-upload-compact">
+                            <span class="project-logo-placeholder material-symbols-rounded" aria-hidden="true">image</span>
+                            <div class="min-w-0 flex-1">
+                                <input id="create-project-logo" name="create_logo" type="file"
+                                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                    class="block w-full text-xs">
+                                <p class="mt-1 text-[11px] text-[var(--muted)]">JPG, PNG ou WebP — 2 Mo max.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="md:col-span-2">
@@ -540,7 +559,7 @@
                     <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
                 </div>
 
-                <form action="{{ route('projects.update', $project) }}" method="POST" class="space-y-5">
+                <form action="{{ route('projects.update', $project) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                     @csrf
                     @method('PUT')
                     @include('projects.partials.form', [

@@ -9,7 +9,9 @@ use App\Models\ProjectColumn;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
@@ -279,6 +281,61 @@ class ProjectFeatureTest extends TestCase
             ->assertDontSee('Company Name Project')
             ->assertSee('<option value="softart" selected>SoftArt</option>', false)
             ->assertSee(route('projects.index', ['company' => 'softart']));
+    }
+
+    public function test_project_logo_can_be_uploaded_and_replaced(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), [
+                'name' => 'Project With Logo',
+                'company' => 'softart',
+                'status' => 'pending',
+                'logo' => UploadedFile::fake()->image('first-logo.png', 300, 300),
+            ])
+            ->assertRedirect();
+
+        $project = Project::where('name', 'Project With Logo')->firstOrFail();
+        $firstLogoPath = $project->logo_path;
+
+        $this->assertNotNull($firstLogoPath);
+        Storage::disk('public')->assertExists($firstLogoPath);
+
+        $this->actingAs($user)
+            ->put(route('projects.update', $project), [
+                'name' => $project->name,
+                'company' => 'softart',
+                'status' => 'pending',
+                'logo' => UploadedFile::fake()->image('second-logo.webp', 400, 400),
+            ])
+            ->assertRedirect();
+
+        $project->refresh();
+
+        Storage::disk('public')->assertMissing($firstLogoPath);
+        Storage::disk('public')->assertExists($project->logo_path);
+        $this->assertNotSame($firstLogoPath, $project->logo_path);
+    }
+
+    public function test_project_logo_must_be_a_supported_image_under_two_megabytes(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), [
+                'name' => 'Invalid Logo Project',
+                'company' => 'softart',
+                'status' => 'pending',
+                'logo' => UploadedFile::fake()->create('document.pdf', 100, 'application/pdf'),
+            ])
+            ->assertSessionHasErrors('logo', errorBag: 'createProject');
+
+        $this->assertDatabaseMissing('projects', [
+            'name' => 'Invalid Logo Project',
+        ]);
     }
 
     public function test_member_only_sees_and_manages_own_projects(): void
