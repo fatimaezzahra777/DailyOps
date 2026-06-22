@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -53,6 +53,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'birth_date' => ['nullable', 'date', 'before_or_equal:today'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -71,7 +72,10 @@ class UserController extends Controller
      */
     public function show(User $user): View
     {
+        Project::archiveEligibleCompleted();
+
         $projectsQuery = Project::query()
+            ->active()
             ->with('manager')
             ->latest();
 
@@ -121,6 +125,7 @@ class UserController extends Controller
                 Rule::unique('users', 'email')->ignore($user),
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'birth_date' => ['nullable', 'date', 'before_or_equal:today'],
         ]);
 
         if (blank($validated['password'])) {

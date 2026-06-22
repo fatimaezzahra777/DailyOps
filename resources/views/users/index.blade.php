@@ -4,7 +4,7 @@
             <div class="flex items-center gap-3">
                 <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
-                    <h2 class="font-['Syne'] text-base font-bold tracking-wide text-[#0a0a0a]">Gestion des users</h2>
+                    <h2 class="font-['Syne'] text-base font-bold tracking-wide text-[#0a0a0a]">Gestion des utilisateurs</h2>
                     <p class="mt-1 text-[12.5px] text-[#888888]">Recherche, modification et suppression.</p>
                 </div>
             </div>
@@ -19,7 +19,8 @@
     <div class="p-5">
         <div class="mx-auto max-w-7xl">
             @if (session('status'))
-                <div class="mb-4 rounded-md border border-[#00a86b]/20 bg-[#00a86b]/10 p-4 text-[13px] font-medium text-[#00a86b]">
+                <div class="flash-message mb-4 rounded-md border border-[#00a86b]/20 bg-[#00a86b]/10 p-4 text-[13px] font-medium text-[#00a86b]"
+                    data-flash-message role="status">
                     {{ session('status') }}
                 </div>
             @endif
@@ -40,7 +41,7 @@
                         <div class="flex gap-2">
                             <x-primary-button>Filtrer</x-primary-button>
                             <a href="{{ route('users.index') }}" class="inline-flex items-center rounded-md border border-black/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-[#555555] hover:bg-[#f4f4f4]">
-                                Reset
+                                Réinitialiser
                             </a>
                         </div>
                     </form>
@@ -50,10 +51,10 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-[#f7f7f7]">
                             <tr>
-                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">User</th>
-                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Role</th>
-                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Verification</th>
-                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Cree le</th>
+                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Utilisateur</th>
+                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Rôle</th>
+                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Vérification</th>
+                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Créé le</th>
                                 <th class="px-6 py-3 text-right font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Actions</th>
                             </tr>
                         </thead>
@@ -76,18 +77,18 @@
                                     <td class="px-6 py-4 text-right text-[13px] font-medium">
                                         <div class="flex justify-end gap-2">
                                             <a href="{{ route('users.show', $user) }}" class="icon-button h-8 w-8 p-0"
-                                                aria-label="Voir user" title="Voir user">
+                                                aria-label="Voir l’utilisateur" title="Voir l’utilisateur">
                                                 <span class="material-symbols-rounded text-[18px]">visibility</span>
                                             </a>
                                             <a href="{{ route('users.edit', $user) }}" class="icon-button h-8 w-8 p-0"
-                                                aria-label="Modifier user" title="Modifier user">
+                                                aria-label="Modifier l’utilisateur" title="Modifier l’utilisateur">
                                                 <span class="material-symbols-rounded text-[18px]">edit</span>
                                             </a>
                                             <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="icon-button h-8 w-8 p-0"
-                                                    aria-label="Supprimer user" title="Supprimer user">
+                                                    aria-label="Supprimer l’utilisateur" title="Supprimer l’utilisateur">
                                                     <span class="material-symbols-rounded text-[18px]">delete</span>
                                                 </button>
                                             </form>

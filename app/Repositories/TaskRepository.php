@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Project;
 use App\Models\Task;
 use App\Repositories\Contracts\TaskRepositoryInterface;
 
@@ -40,10 +41,14 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function searchAndFilter($request)
     {
+        Project::archiveEligibleCompleted();
+
         $query = Task::with(['project', 'comments', 'assignedUser', 'column']);
 
         if ($request->user()) {
-            $query->whereHas('project', fn ($projectQuery) => $projectQuery->visibleTo($request->user()));
+            $query->whereHas('project', fn ($projectQuery) => $projectQuery
+                ->active()
+                ->visibleTo($request->user()));
         }
 
         if ($request->search) {

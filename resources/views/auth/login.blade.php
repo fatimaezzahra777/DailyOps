@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login | Daily_Ops</title>
+    <title>Connexion | Daily_Ops</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -30,45 +30,45 @@
         <div class="flex justify-center gap-2 mb-8 flex-wrap">
             <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
                 <i class="ti ti-shield-check"></i>
-                Secure
+                Sécurisé
             </div>
 
             <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
                 <i class="ti ti-bolt"></i>
-                Fast
+                Rapide
             </div>
 
             <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
                 <i class="ti ti-users"></i>
-                Collaborative
+                Collaboratif
             </div>
 
         </div>
 
-        <!-- Login Card -->
+        <!-- Connexion Card -->
         <div class="rounded-[10px] border border-black/10 bg-white p-8 shadow-sm">
 
             <h2 class="text-xl font-bold text-black mb-2"
                 style="font-family: 'Syne', sans-serif;">
-                Welcome back
+                Bon retour
             </h2>
 
             <p class="text-gray-500 mb-8 text-sm">
-                Sign in to access your workspace
+                Connectez-vous pour accéder à votre espace de travail.
             </p>
 
-            <!-- Session Status -->
+            <!-- Session Statut -->
             <x-auth-session-status class="mb-4" :status="session('status')" />
 
             <form method="POST" action="{{ route('login') }}">
 
                 @csrf
 
-                <!-- Email -->
+                <!-- E-mail -->
                 <div class="mb-5">
 
                     <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 font-semibold">
-                        Email Address
+                        Adresse e-mail
                     </label>
 
                     <input
@@ -89,18 +89,18 @@
 
                 </div>
 
-                <!-- Password -->
+                <!-- Mot de passe -->
                 <div class="mb-5">
 
                     <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 font-semibold">
-                        Password
+                        Mot de passe
                     </label>
 
                     <input
                         type="password"
                         name="password"
                         required
-                        placeholder="Enter your password"
+                        placeholder="Saisissez votre mot de passe"
                         class="w-full px-4 py-3 rounded-md border border-black/10 bg-[#f4f4f4] focus:border-[#c50064] focus:ring-4 focus:ring-[#c50064]/10 outline-none transition"
                     >
 
@@ -123,7 +123,7 @@
                             class="rounded border-gray-300 text-[#c50064] focus:ring-[#c50064]"
                         >
 
-                        Remember me
+                        Se souvenir de moi
 
                     </label>
 
@@ -131,7 +131,7 @@
 
                         <a href="{{ route('password.request') }}"
                             class="text-sm text-[#c50064] hover:text-[#a90056] transition">
-                            Forgot password?
+                            Mot de passe oublié ?
                         </a>
 
                     @endif
@@ -144,7 +144,7 @@
                     class="w-full py-3 rounded-md bg-[#c50064] hover:bg-[#a90056] transition text-white font-bold shadow-[0_2px_14px_rgba(197,0,100,0.3)]"
                     style="font-family: 'Syne', sans-serif;"
                 >
-                    Sign In
+                    Se connecter
                 </button>
 
             </form>
@@ -153,7 +153,7 @@
 
         <!-- Footer -->
         <p class="text-center text-sm text-gray-400 mt-6">
-            Daily_Ops Project Management Platform
+            Plateforme de gestion de projets DailyOps
         </p>
 
     </div>

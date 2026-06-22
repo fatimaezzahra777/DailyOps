@@ -3,8 +3,8 @@
 @section('content')
     <section class="mx-auto max-w-3xl space-y-6">
         <div>
-            <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Create project</p>
-            <h1 class="mt-2 text-3xl font-semibold">New project</h1>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Créer un projet</p>
+            <h1 class="mt-2 text-3xl font-semibold">Nouveau projet</h1>
             <p class="mt-2 text-sm text-[var(--muted)]">Ajoute un nouveau projet depuis ce formulaire.</p>
         </div>
 
@@ -13,8 +13,8 @@
             @include('projects.partials.form')
 
             <div class="flex flex-wrap items-center gap-3">
-                <button type="submit" class="btn-primary">Save project</button>
-                <a href="{{ route('projects.index') }}" class="btn-secondary">Back to board</a>
+                <button type="submit" class="btn-primary">Enregistrer le projet</button>
+                <a href="{{ route('projects.index') }}" class="btn-secondary">Retour au Kanban</a>
             </div>
         </form>
     </section>

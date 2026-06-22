@@ -104,7 +104,7 @@ class TaskController extends Controller
 
         $this->taskService->createTask($validated);
 
-        return back()->with('success', 'Task created successfully');
+        return back()->with('success', 'Tâche créée avec succès.');
     }
     // afficher details d'une tache
 
@@ -179,7 +179,7 @@ class TaskController extends Controller
 
         $this->taskService->updateTask($id, $validated);
 
-        return back()->with('success', 'Task updated successfully');
+        return back()->with('success', 'Tâche mise à jour avec succès.');
     }
 
     public function destroy($id)
@@ -189,7 +189,7 @@ class TaskController extends Controller
 
         $this->taskService->deleteTask($id);
 
-        return back()->with('success', 'Task deleted successfully');
+        return back()->with('success', 'Tâche supprimée avec succès.');
     }
 
     public function changeStatus(Request $request, $id)
@@ -219,7 +219,10 @@ class TaskController extends Controller
 
     protected function availableProjects(Request $request)
     {
+        Project::archiveEligibleCompleted();
+
         return Project::query()
+            ->active()
             ->with(['collaborators' => fn ($query) => $query->orderBy('name')])
             ->visibleTo($request->user())
             ->orderBy('name')

@@ -11,8 +11,11 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request): View
     {
+        Project::archiveEligibleCompleted();
+
         if (! $request->user()->isAdmin()) {
             $visibleProjectsQuery = Project::query()
+                ->active()
                 ->with('manager')
                 ->visibleTo($request->user());
 

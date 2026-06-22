@@ -39,6 +39,18 @@
         overflow-x: hidden;
     }
 
+    body[data-font-size='small'] {
+        --user-text-scale: 0.9;
+    }
+
+    body[data-font-size='normal'] {
+        --user-text-scale: 1;
+    }
+
+    body[data-font-size='large'] {
+        --user-text-scale: 1.12;
+    }
+
     ::selection {
         background: rgb(197 0 100 / 0.18);
         color: var(--text-strong);
@@ -157,6 +169,98 @@
 
     .sidebar-icon svg {
         @apply h-4 w-4;
+    }
+
+    .appearance-option {
+        @apply flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition;
+        border-color: var(--line);
+        background: var(--card);
+    }
+
+    .appearance-option:hover,
+    .appearance-option:has(input:checked) {
+        border-color: var(--accent-line);
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .appearance-color {
+        @apply flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-2 border-transparent p-1 transition;
+    }
+
+    .appearance-color:hover,
+    .appearance-color:has(input:checked) {
+        border-color: var(--text-strong);
+        transform: translateY(-2px);
+    }
+
+    .appearance-color-swatch {
+        @apply h-full w-full rounded-full;
+        background: var(--swatch);
+        box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+    }
+
+    .appearance-color-custom {
+        @apply h-auto w-auto gap-2 rounded-lg border px-3 py-2;
+        border-color: var(--line);
+    }
+
+    .appearance-color-custom input[type='color'] {
+        @apply h-8 w-8 cursor-pointer rounded-full border-0 bg-transparent p-0;
+    }
+
+    .appearance-preview {
+        @apply flex flex-col gap-4 rounded-lg border p-5 sm:flex-row sm:items-center sm:justify-between;
+        border-color: var(--accent-line);
+        background: var(--accent-soft);
+    }
+
+    /* Keep legacy utility colors connected to each user's selected accent. */
+    [class~='text-[#c50064]'] {
+        color: var(--accent) !important;
+    }
+
+    [class~='bg-[#c50064]'] {
+        background-color: var(--accent) !important;
+    }
+
+    [class~='bg-[#c50064]/10'] {
+        background-color: var(--accent-soft) !important;
+    }
+
+    [class~='bg-[#c50064]/20'] {
+        background-color: var(--accent-line) !important;
+    }
+
+    [class~='border-[#c50064]'],
+    [class~='border-[#c50064]/20'] {
+        border-color: var(--accent-line) !important;
+    }
+
+    [class~='hover:text-[#a90056]']:hover,
+    [class~='hover:text-[#c50064]']:hover {
+        color: var(--accent-strong) !important;
+    }
+
+    [class~='hover:bg-[#a90056]']:hover,
+    [class~='hover:bg-[#c50064]']:hover {
+        background-color: var(--accent-strong) !important;
+    }
+
+    [class~='hover:bg-[#c50064]/10']:hover {
+        background-color: var(--accent-soft) !important;
+    }
+
+    [class~='hover:border-[#c50064]/20']:hover {
+        border-color: var(--accent-line) !important;
+    }
+
+    [class~='from-[#c50064]'] {
+        --tw-gradient-from: var(--accent) var(--tw-gradient-from-position) !important;
+    }
+
+    [class~='to-[#850044]'] {
+        --tw-gradient-to: var(--accent-dark) var(--tw-gradient-to-position) !important;
     }
 
     .active-link .sidebar-icon {
@@ -581,10 +685,14 @@
 
     .modal-shell {
         @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+        opacity: 0;
+        transition: opacity 180ms ease;
     }
 
     .modal-backdrop {
         @apply absolute inset-0 bg-black/55 backdrop-blur-sm;
+        opacity: 0;
+        transition: opacity 220ms ease;
     }
 
     .modal-panel {
@@ -592,6 +700,24 @@
         border: 1px solid var(--line);
         background: var(--panel-strong);
         box-shadow: 0 30px 80px -40px rgb(0 0 0 / 0.35);
+        opacity: 0;
+        transform: translateY(18px) scale(0.975);
+        transition:
+            opacity 220ms ease,
+            transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .modal-shell.modal-visible {
+        opacity: 1;
+    }
+
+    .modal-shell.modal-visible .modal-backdrop {
+        opacity: 1;
+    }
+
+    .modal-shell.modal-visible .modal-panel {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 
     .modal-panel-form {
@@ -662,10 +788,22 @@
         @apply inline-flex shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium text-white transition duration-150;
         background: var(--accent);
         box-shadow: 0 2px 14px rgb(197 0 100 / 0.3);
+        transform: translateY(0) scale(1);
+        transition:
+            transform 150ms ease,
+            box-shadow 180ms ease,
+            background-color 180ms ease;
     }
 
     .btn-primary:hover {
         background: var(--accent-strong);
+        box-shadow: 0 7px 20px color-mix(in srgb, var(--accent) 30%, transparent);
+        transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+        box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 24%, transparent);
+        transform: translateY(1px) scale(0.97);
     }
 
     .btn-primary:focus {
@@ -678,17 +816,122 @@
         border: 1px solid var(--line);
         background: var(--panel);
         color: var(--text);
+        transform: translateY(0) scale(1);
+        transition:
+            transform 150ms ease,
+            box-shadow 180ms ease,
+            border-color 180ms ease,
+            color 180ms ease;
     }
 
     .btn-secondary:hover {
         color: var(--text-strong);
         border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+        box-shadow: 0 6px 18px rgb(0 0 0 / 0.07);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary:active,
+    .icon-button:active {
+        transform: translateY(1px) scale(0.94);
     }
 
     .btn-secondary-active {
         border-color: var(--accent-line);
         background: var(--accent-soft);
         color: var(--accent);
+    }
+
+    .icon-button {
+        transition:
+            transform 150ms ease,
+            border-color 180ms ease,
+            color 180ms ease,
+            background-color 180ms ease;
+    }
+
+    .icon-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .flash-message {
+        animation: flash-message-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        transform-origin: top center;
+    }
+
+    .flash-message.flash-message-leaving {
+        animation: flash-message-leave 300ms ease forwards;
+    }
+
+    .dashboard-animate .dashboard-card {
+        opacity: 0;
+        animation: dashboard-card-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: var(--animation-delay, 0ms);
+    }
+
+    .kanban-animate .kanban-overview,
+    .kanban-animate .metric-card,
+    .kanban-animate .kanban-toolbar,
+    .kanban-animate .kanban-lane {
+        opacity: 0;
+        animation: kanban-item-enter 480ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: var(--animation-delay, 0ms);
+    }
+
+    .kanban-animate .task-card {
+        animation: kanban-card-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-delay: var(--animation-delay, 0ms);
+    }
+
+    @keyframes flash-message-enter {
+        from {
+            opacity: 0;
+            transform: translateY(-14px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes flash-message-leave {
+        to {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+        }
+    }
+
+    @keyframes dashboard-card-enter {
+        from {
+            opacity: 0;
+            transform: translateY(18px) scale(0.985);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes kanban-item-enter {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes kanban-card-enter {
+        from {
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     .custom-scroll::-webkit-scrollbar {
@@ -950,6 +1193,26 @@
 
         .calendar-day {
             @apply min-h-28 p-2;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            scroll-behavior: auto !important;
+            animation-duration: 0.01ms !important;
+            animation-delay: 0ms !important;
+            transition-duration: 0.01ms !important;
+        }
+
+        .dashboard-animate .dashboard-card,
+        .kanban-animate .kanban-overview,
+        .kanban-animate .metric-card,
+        .kanban-animate .kanban-toolbar,
+        .kanban-animate .kanban-lane {
+            opacity: 1;
+            transform: none;
         }
     }
 }

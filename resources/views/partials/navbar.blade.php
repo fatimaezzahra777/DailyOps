@@ -4,6 +4,7 @@
         request()->routeIs('projects.gantt') => 'projects.gantt',
         request()->routeIs('projects.calendar') => 'projects.calendar',
         request()->routeIs('projects.reports') => 'projects.reports',
+        request()->routeIs('projects.archives') => 'projects.archives',
         default => 'projects.index',
     };
     $projectNavigationQuery = request()->routeIs('projects.*')
@@ -15,7 +16,7 @@
     <div class="flex flex-col gap-3 px-4 py-3 sm:px-5">
         <div class="flex items-center justify-between gap-4">
             <div class="flex min-w-0 items-center gap-3">
-                <button id="menu-btn" class="icon-button lg:hidden" type="button" aria-label="Open menu">
+                <button id="menu-btn" class="icon-button lg:hidden" type="button" aria-label="Ouvrir le menu">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                         <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
                     </svg>
@@ -24,15 +25,15 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
-                        <h1 class="truncate font-['Syne'] text-base font-bold text-[var(--text-strong)]">PH Marketing</h1>
+                        <h1 class="truncate font-['Syne'] text-base font-bold text-[var(--text-strong)]">DailyOps</h1>
                     </div>
-                    <p class="mt-1 text-[12.5px] text-[var(--muted)]">Projects workspace</p>
+                    <p class="mt-1 text-[12.5px] text-[var(--muted)]">Espace de gestion des projets</p>
                 </div>
             </div>
 
             <div class="hidden items-center gap-2 lg:flex">
                 <a href="{{ route('projects.index', $projectNavigationQuery) }}" class="topbar-chip {{ request()->routeIs('projects.index') ? 'topbar-chip-active' : '' }}">
-                    <i class="ti ti-layout-kanban mr-1"></i> Board
+                    <i class="ti ti-layout-kanban mr-1"></i> Kanban
                 </a>
                 <a href="{{ route('projects.table', $projectNavigationQuery) }}" class="topbar-chip {{ request()->routeIs('projects.table') ? 'topbar-chip-active' : '' }}">
                     <i class="ti ti-table mr-1"></i> Table
@@ -41,7 +42,10 @@
                     <i class="ti ti-timeline mr-1"></i> Gantt
                 </a>
                 <a href="{{ route('projects.calendar') }}" class="topbar-chip {{ request()->routeIs('projects.calendar') ? 'topbar-chip-active' : '' }}">
-                    <i class="ti ti-calendar mr-1"></i> Calendar
+                    <i class="ti ti-calendar mr-1"></i> Calendrier
+                </a>
+                <a href="{{ route('projects.archives') }}" class="topbar-chip {{ request()->routeIs('projects.archives') ? 'topbar-chip-active' : '' }}">
+                    <i class="ti ti-archive mr-1"></i> Archives
                 </a>
             </div>
         </div>
@@ -57,11 +61,11 @@
                         <circle cx="11" cy="11" r="7"></circle>
                         <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
                     </svg>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search projects..."
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher des projets..."
                         class="w-full px-4 py-2 pl-10 text-[13px]">
                 </form>
 
-                <button class="icon-button" type="button" aria-label="Filter">
+                <button class="icon-button" type="button" aria-label="Filtrer">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                         <path d="M4 6h16M7 12h10M10 18h4" stroke-linecap="round" />
                     </svg>
@@ -90,15 +94,20 @@
                 @endauth
             </div>
 
-            @if (request()->routeIs('projects.index') || request()->routeIs('projects.calendar'))
+            @if (request()->routeIs('projects.archives'))
+                <a href="{{ route('projects.index') }}" class="btn-secondary w-full sm:w-auto">
+                    <i class="ti ti-arrow-left text-base"></i>
+                    <span>Projets actifs</span>
+                </a>
+            @elseif (request()->routeIs('projects.index') || request()->routeIs('projects.calendar'))
                 <button type="button" class="btn-primary w-full sm:w-auto" data-modal-open="create-project-modal">
                     <i class="ti ti-plus text-base"></i>
-                    <span>Add project</span>
+                    <span>Ajouter un projet</span>
                 </button>
             @else
                 <a href="{{ route('projects.create') }}" class="btn-primary w-full sm:w-auto">
                     <i class="ti ti-plus text-base"></i>
-                    <span>Add project</span>
+                    <span>Ajouter un projet</span>
                 </a>
             @endif
         </div>

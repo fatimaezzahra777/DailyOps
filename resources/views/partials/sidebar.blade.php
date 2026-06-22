@@ -1,14 +1,15 @@
 @php
     $userInitials = strtoupper(substr(auth()->user()->name, 0, 2));
     $navItems = [
-        ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'dashboard', 'active' => 'dashboard'],
-        auth()->user()->isAdmin() ? ['label' => 'Users', 'icon' => 'users', 'route' => 'users.index', 'active' => 'users.*'] : null,
-        ['label' => 'Board', 'icon' => 'grid', 'route' => 'projects.index', 'active' => ['projects.index', 'projects.create', 'projects.show', 'projects.edit']],
-        ['label' => 'Tasks', 'icon' => 'checklist', 'route' => 'tasks.index', 'active' => 'tasks.*'],
-        ['label' => 'Table', 'icon' => 'table', 'route' => 'projects.table', 'active' => 'projects.table'],
+        ['label' => 'Tableau de bord', 'icon' => 'dashboard', 'route' => 'dashboard', 'active' => 'dashboard'],
+        auth()->user()->isAdmin() ? ['label' => 'Utilisateurs', 'icon' => 'users', 'route' => 'users.index', 'active' => 'users.*'] : null,
+        ['label' => 'Tableau Kanban', 'icon' => 'grid', 'route' => 'projects.index', 'active' => ['projects.index', 'projects.create', 'projects.show', 'projects.edit']],
+        ['label' => 'Tâches', 'icon' => 'checklist', 'route' => 'tasks.index', 'active' => 'tasks.*'],
+        ['label' => 'Tableau', 'icon' => 'table', 'route' => 'projects.table', 'active' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'chart', 'route' => 'projects.gantt', 'active' => 'projects.gantt'],
-        ['label' => 'Calendar', 'icon' => 'calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
-        ['label' => 'Reports', 'icon' => 'report', 'route' => 'projects.reports', 'active' => 'projects.reports'],
+        ['label' => 'Calendrier', 'icon' => 'calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
+        ['label' => 'Rapports', 'icon' => 'report', 'route' => 'projects.reports', 'active' => 'projects.reports'],
+        ['label' => 'Projets archivés', 'icon' => 'archive', 'route' => 'projects.archives', 'active' => 'projects.archives'],
     ];
     $navItems = array_filter($navItems);
 @endphp
@@ -29,7 +30,7 @@
             </div>
             <div class="min-w-0 flex-1">
                 <p class="truncate text-[12.5px] font-medium text-[var(--text-strong)]">DailyOps</p>
-                <p class="truncate text-[10.5px] text-[var(--muted)]">{{ auth()->user()->isAdmin() ? 'Admin workspace' : 'Member workspace' }}</p>
+                <p class="truncate text-[10.5px] text-[var(--muted)]">{{ auth()->user()->isAdmin() ? 'Espace administrateur' : 'Espace membre' }}</p>
             </div>
             <i class="ti ti-chevron-down text-[13px] text-[var(--muted)]"></i>
         </div>
@@ -61,6 +62,8 @@
                                 <i class="ti ti-chart-bar"></i>
                             @elseif ($item['icon'] === 'calendar')
                                 <i class="ti ti-calendar"></i>
+                            @elseif ($item['icon'] === 'archive')
+                                <i class="ti ti-archive"></i>
                             @else
                                 <i class="ti ti-report"></i>
                             @endif
@@ -80,11 +83,11 @@
             </div>
             <div class="min-w-0 flex-1">
                 <p class="truncate text-sm font-medium text-[var(--text-strong)]">{{ auth()->user()->name }}</p>
-                <p class="truncate text-xs text-[var(--muted)]">{{ auth()->user()->role }}</p>
+                <p class="truncate text-xs text-[var(--muted)]">{{ auth()->user()->isAdmin() ? 'Administrateur' : 'Membre' }}</p>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button class="icon-button h-8 w-8 p-0" type="submit" aria-label="Log out">
+                <button class="icon-button h-8 w-8 p-0" type="submit" aria-label="Se déconnecter">
                     <i class="ti ti-logout text-base"></i>
                 </button>
             </form>

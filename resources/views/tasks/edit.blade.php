@@ -4,14 +4,14 @@
     <section class="mx-auto max-w-5xl space-y-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Edit task</p>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Modifier la tâche</p>
                 <h1 class="mt-2 text-3xl font-semibold">{{ $task->title }}</h1>
-                <p class="mt-2 text-sm text-[var(--muted)]">Update status, deadline, assignee and description without changing the visual language of the workspace.</p>
+                <p class="mt-2 text-sm text-[var(--muted)]">Modifiez le statut, l’échéance, le responsable et la description de la tâche.</p>
             </div>
 
             <div class="flex gap-3">
-                <a href="{{ route('tasks.show', $task) }}" class="btn-secondary">View details</a>
-                <a href="{{ route('tasks.index') }}" class="btn-secondary">Back to tasks</a>
+                <a href="{{ route('tasks.show', $task) }}" class="btn-secondary">Voir les détails</a>
+                <a href="{{ route('tasks.index') }}" class="btn-secondary">Retour aux tâches</a>
             </div>
         </div>
 
@@ -22,8 +22,8 @@
                 @include('tasks.partials.form')
 
                 <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <button type="submit" class="btn-primary">Update task</button>
-                    <a href="{{ route('tasks.show', $task) }}" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">Mettre à jour la tâche</button>
+                    <a href="{{ route('tasks.show', $task) }}" class="btn-secondary">Annuler</a>
                 </div>
             </form>
         </div>

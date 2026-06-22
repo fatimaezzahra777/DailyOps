@@ -23,32 +23,32 @@
             'completed' => 'calendar-event-completed',
         ];
         $stats = [
-            ['label' => 'Deadlines', 'value' => $monthEvents->count(), 'meta' => $month->format('F Y')],
-            ['label' => 'Starting', 'value' => $startingThisMonth->count(), 'meta' => 'Projects beginning'],
-            ['label' => 'Overdue', 'value' => $overdueProjects->count(), 'meta' => 'Need follow-up'],
+            ['label' => 'Échéances', 'value' => $monthEvents->count(), 'meta' => $month->format('F Y')],
+            ['label' => 'Démarrages', 'value' => $startingThisMonth->count(), 'meta' => 'Projets démarrant ce mois'],
+            ['label' => 'En retard', 'value' => $overdueProjects->count(), 'meta' => 'Suivi nécessaire'],
         ];
     @endphp
 
     <section class="space-y-5">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div class="max-w-2xl">
-                <p class="kanban-eyebrow">Calendar view</p>
-                <h2 class="kanban-title">Projects - Calendar</h2>
-                <p class="kanban-subtitle">Track project deadlines by month and keep upcoming delivery dates visible.</p>
+                <p class="kanban-eyebrow">Calendrier view</p>
+                <h2 class="kanban-title">Projets - Calendrier</h2>
+                <p class="kanban-subtitle">Suivez les échéances des projets et les prochaines dates de livraison.</p>
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
                 <a href="{{ route('projects.calendar', array_merge($queryWithoutMonth, ['month' => $month->copy()->subMonth()->format('Y-m')])) }}"
                     class="btn-secondary">
                     <i class="ti ti-chevron-left"></i>
-                    Prev
+                    Précédent
                 </a>
                 <a href="{{ route('projects.calendar', $queryWithoutMonth) }}" class="btn-secondary">
-                    Today
+                    Aujourd’hui
                 </a>
                 <a href="{{ route('projects.calendar', array_merge($queryWithoutMonth, ['month' => $month->copy()->addMonth()->format('Y-m')])) }}"
                     class="btn-secondary">
-                    Next
+                    Suivant
                     <i class="ti ti-chevron-right"></i>
                 </a>
 
@@ -71,13 +71,13 @@
                     <div class="calendar-month-bar">
                         <div>
                             <h3 class="font-['Syne'] text-lg font-bold text-[var(--text-strong)]">{{ $month->format('F Y') }}</h3>
-                            <p class="text-[12.5px] text-[var(--muted)]">{{ $monthEvents->count() }} deadlines this month</p>
+                            <p class="text-[12.5px] text-[var(--muted)]">{{ $monthEvents->count() }} échéances ce mois-ci</p>
                         </div>
                         <span class="status-tag status-tag-pending">{{ now()->format('d M') }}</span>
                     </div>
 
                     <div class="calendar-grid">
-                        @foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $dayName)
+                        @foreach (['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'] as $dayName)
                             <div class="calendar-head">{{ $dayName }}</div>
                         @endforeach
 
@@ -97,7 +97,7 @@
                                         @if ($events->isNotEmpty())
                                             <span class="text-[10.5px] font-semibold text-[var(--muted)]">{{ $events->count() }}</span>
                                         @endif
-                                        <button type="button" class="calendar-day-add" aria-label="Add project on {{ $day->format('d M Y') }}"
+                                        <button type="button" class="calendar-day-add" aria-label="Ajouter un projet on {{ $day->format('d M Y') }}"
                                             data-modal-open="create-project-modal"
                                             data-create-date="{{ $dateKey }}">
                                             <i class="ti ti-plus"></i>
@@ -117,7 +117,7 @@
                                 </div>
 
                                 @if ($events->count() > 3)
-                                    <div class="mt-1 text-[11px] text-[#888888]">+{{ $events->count() - 3 }} more</div>
+                                    <div class="mt-1 text-[11px] text-[#888888]">+{{ $events->count() - 3 }} autres</div>
                                 @endif
                             </div>
                         @endforeach
@@ -128,8 +128,8 @@
             <aside class="space-y-4">
                 <article class="report-card p-4">
                     <div class="mb-4 flex items-center justify-between gap-3">
-                        <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Upcoming</h3>
-                        <span class="text-[11px] text-[var(--muted)]">Next deadlines</span>
+                        <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">À venir</h3>
+                        <span class="text-[11px] text-[var(--muted)]">Suivant deadlines</span>
                     </div>
 
                     <div class="space-y-3">
@@ -138,21 +138,21 @@
                                 <span class="calendar-agenda-date">{{ $project->end_date->format('d M') }}</span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-[13px] font-medium text-[var(--text-strong)]">{{ $project->name }}</span>
-                                    <span class="block truncate text-[11px] text-[var(--muted)]">{{ str($project->status)->replace('_', ' ')->title() }}</span>
+                                    <span class="block truncate text-[11px] text-[var(--muted)]">{{ ['pending' => 'En attente', 'in_progress' => 'En cours', 'completed' => 'Terminé'][$project->status] ?? $project->status }}</span>
                                 </span>
                             </a>
                         @empty
                             <p class="rounded-md border border-[var(--line)] bg-[#f4f4f4] p-3 text-[12px] text-[var(--muted)]">
-                                No upcoming deadlines.
+                                Aucune échéance à venir.
                             </p>
                         @endforelse
                     </div>
                 </article>
 
                 <article class="report-card p-4">
-                    <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Status mix</h3>
+                    <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Statut mix</h3>
                     <div class="mt-4 space-y-3">
-                        @foreach (['pending' => 'Pending', 'in_progress' => 'In progress', 'completed' => 'Completed'] as $status => $label)
+                        @foreach (['pending' => 'En attente', 'in_progress' => 'En cours', 'completed' => 'Terminé'] as $status => $label)
                             @php
                                 $count = $monthEvents->where('status', $status)->count();
                                 $percent = $monthEvents->count() ? round(($count / $monthEvents->count()) * 100) : 0;
@@ -180,11 +180,11 @@
         <div class="modal-panel modal-panel-form">
             <div class="modal-header">
                 <div>
-                    <p class="modal-eyebrow">Calendar project</p>
-                    <h2 class="modal-title">New project</h2>
-                    <p class="modal-subtitle">Create a project for the selected calendar day.</p>
+                    <p class="modal-eyebrow">Calendrier project</p>
+                    <h2 class="modal-title">Nouveau projet</h2>
+                    <p class="modal-subtitle">Créez un projet pour la date sélectionnée.</p>
                 </div>
-                <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
+                <button type="button" class="modal-close" data-modal-close aria-label="Fermer la fenêtre">×</button>
             </div>
 
             <form action="{{ route('projects.store') }}" method="POST" class="space-y-5" autocomplete="off" spellcheck="false">
@@ -202,8 +202,8 @@
                 ])
 
                 <div class="modal-actions">
-                    <button type="submit" class="btn-primary">Save project</button>
-                    <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
+                    <button type="submit" class="btn-primary">Enregistrer le projet</button>
+                    <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
                 </div>
             </form>
         </div>

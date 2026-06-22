@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\CarbonInterface;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,9 +24,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'birth_date',
         'email_verified_at',
         'password',
         'role',
+        'theme_color',
+        'font_size',
     ];
 
     /**
@@ -47,6 +51,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'birth_date' => 'date',
+            'birthday_reminder_sent_for' => 'date',
             'password' => 'hashed',
         ];
     }
@@ -81,5 +87,34 @@ class User extends Authenticatable
     public function isMember(): bool
     {
         return $this->role === 'member';
+    }
+
+    public function themeColor(): string
+    {
+        return preg_match('/^#[0-9a-fA-F]{6}$/', (string) $this->theme_color)
+            ? strtolower($this->theme_color)
+            : '#c50064';
+    }
+
+    public function fontScale(): float
+    {
+        return match ($this->font_size) {
+            'small' => 0.9,
+            'large' => 1.12,
+            default => 1,
+        };
+    }
+
+    public function hasBirthdayOn(CarbonInterface $date): bool
+    {
+        if (! $this->birth_date) {
+            return false;
+        }
+
+        if ($this->birth_date->format('m-d') === '02-29' && ! $date->isLeapYear()) {
+            return $date->format('m-d') === '02-28';
+        }
+
+        return $this->birth_date->format('m-d') === $date->format('m-d');
     }
 }

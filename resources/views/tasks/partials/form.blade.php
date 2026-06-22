@@ -22,7 +22,7 @@
 
 @if ($errorsBag->any())
     <div class="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-sm text-rose-200">
-        <p class="font-medium text-rose-100">Please fix the following errors:</p>
+        <p class="font-medium text-rose-100">Veuillez corriger les erreurs suivantes :</p>
         <ul class="mt-2 space-y-1">
             @foreach ($errorsBag->all() as $error)
                 <li>{{ $error }}</li>
@@ -36,9 +36,9 @@
         data-task-column-field data-field-default="{{ $defaultTaskColumnId }}">
 
     <div class="md:col-span-2">
-        <label for="{{ $prefix }}-title" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Task title</label>
+        <label for="{{ $prefix }}-title" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Titre de la tâche</label>
         <input id="{{ $prefix }}-title" type="text" name="{{ $inputName('title') }}"
-            value="{{ $fieldValue('title', $task->title ?? '') }}" placeholder="Enter a clear task title"
+            value="{{ $fieldValue('title', $task->title ?? '') }}" placeholder="Saisissez un titre clair"
             class="w-full px-4 py-3" data-field-default="{{ $task->title ?? '' }}"
             autocomplete="{{ $disableAutofill ? 'new-password' : 'off' }}">
         @if ($errorsBag->has('title'))
@@ -47,11 +47,11 @@
     </div>
 
     <div>
-        <label for="{{ $prefix }}-project" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Project</label>
+        <label for="{{ $prefix }}-project" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Projet</label>
         <select id="{{ $prefix }}-project" name="{{ $inputName('project_id') }}" class="w-full px-4 py-3"
             data-task-project-select
             data-field-default="{{ $defaultProjectId }}" autocomplete="off">
-            <option value="">Select project</option>
+            <option value="">Sélectionner un projet</option>
             @foreach ($projects as $project)
                 <option value="{{ $project->id }}"
                     data-collaborators="{{ $project->collaborators->map(fn ($collaborator) => [
@@ -68,12 +68,12 @@
     </div>
 
     <div>
-        <label for="{{ $prefix }}-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Status</label>
+        <label for="{{ $prefix }}-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Statut</label>
         <select id="{{ $prefix }}-status" name="{{ $inputName('status') }}" class="w-full px-4 py-3"
             data-field-default="{{ $task->status ?? 'todo' }}" autocomplete="off">
-            <option value="todo" @selected($fieldValue('status', $task->status ?? 'todo') === 'todo')>Todo</option>
-            <option value="in_progress" @selected($fieldValue('status', $task->status ?? '') === 'in_progress')>In progress</option>
-            <option value="done" @selected($fieldValue('status', $task->status ?? '') === 'done')>Done</option>
+            <option value="todo" @selected($fieldValue('status', $task->status ?? 'todo') === 'todo')>À faire</option>
+            <option value="in_progress" @selected($fieldValue('status', $task->status ?? '') === 'in_progress')>En cours</option>
+            <option value="done" @selected($fieldValue('status', $task->status ?? '') === 'done')>Terminée</option>
         </select>
         @if ($errorsBag->has('status'))
             <p class="mt-2 text-sm text-rose-300">{{ $errorsBag->first('status') }}</p>
@@ -81,12 +81,12 @@
     </div>
 
     <div>
-        <label for="{{ $prefix }}-priority" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Priority</label>
+        <label for="{{ $prefix }}-priority" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Priorité</label>
         <select id="{{ $prefix }}-priority" name="{{ $inputName('priority') }}" class="w-full px-4 py-3"
             data-field-default="{{ $task->priority ?? 'low' }}" autocomplete="off">
-            <option value="low" @selected($fieldValue('priority', $task->priority ?? 'low') === 'low')>Low</option>
-            <option value="medium" @selected($fieldValue('priority', $task->priority ?? 'medium') === 'medium')>Medium</option>
-            <option value="high" @selected($fieldValue('priority', $task->priority ?? '') === 'high')>High</option>
+            <option value="low" @selected($fieldValue('priority', $task->priority ?? 'low') === 'low')>Faible</option>
+            <option value="medium" @selected($fieldValue('priority', $task->priority ?? 'medium') === 'medium')>Moyenne</option>
+            <option value="high" @selected($fieldValue('priority', $task->priority ?? '') === 'high')>Élevée</option>
         </select>
         @if ($errorsBag->has('priority'))
             <p class="mt-2 text-sm text-rose-300">{{ $errorsBag->first('priority') }}</p>
@@ -99,7 +99,7 @@
             data-task-assignee-select data-field-default="{{ $task->assigned_user_id ?? '' }}"
             @disabled(! $selectedProject || $selectedProject->collaborators->isEmpty()) autocomplete="off">
             <option value="">
-                {{ ! $selectedProject ? 'Select a project first' : ($selectedProject->collaborators->isEmpty() ? 'No collaborators for this project' : 'Unassigned') }}
+                {{ ! $selectedProject ? 'Sélectionnez d’abord un projet' : ($selectedProject->collaborators->isEmpty() ? 'Aucun collaborateur pour ce projet' : 'Non assignée') }}
             </option>
             @foreach ($selectedProject?->collaborators ?? collect() as $collaborator)
                 <option value="{{ $collaborator->id }}" @selected((string) $selectedAssigneeId === (string) $collaborator->id)>
@@ -108,7 +108,7 @@
             @endforeach
         </select>
         <p class="mt-2 text-xs text-[var(--muted)]" data-task-assignee-help>
-            Select a project to display its accepted collaborators.
+            Sélectionnez un projet pour afficher ses collaborateurs.
         </p>
         @if ($errorsBag->has('assigned_user_id'))
             <p class="mt-2 text-sm text-rose-300">{{ $errorsBag->first('assigned_user_id') }}</p>
@@ -116,7 +116,7 @@
     </div>
 
     <div>
-        <label for="{{ $prefix }}-due-date" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Due date</label>
+        <label for="{{ $prefix }}-due-date" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Date d’échéance</label>
         <input id="{{ $prefix }}-due-date" type="date" name="{{ $inputName('due_date') }}"
             value="{{ $fieldValue('due_date', $task->due_date ?? '') }}" class="w-full px-4 py-3"
             data-field-default="{{ $task->due_date ?? '' }}" autocomplete="off">
@@ -128,7 +128,7 @@
     <div class="md:col-span-2">
         <label for="{{ $prefix }}-description" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Description</label>
         <textarea id="{{ $prefix }}-description" name="{{ $inputName('description') }}" rows="6"
-            placeholder="Describe the task clearly for the team..." class="w-full px-4 py-3"
+            placeholder="Décrivez clairement la tâche pour l’équipe..." class="w-full px-4 py-3"
             data-field-default="{{ $task->description ?? '' }}" autocomplete="off">{{ $fieldValue('description', $task->description ?? '') }}</textarea>
         @if ($errorsBag->has('description'))
             <p class="mt-2 text-sm text-rose-300">{{ $errorsBag->first('description') }}</p>

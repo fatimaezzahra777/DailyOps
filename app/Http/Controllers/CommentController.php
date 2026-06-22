@@ -25,13 +25,13 @@ class CommentController extends Controller
 
         $this->commentService->createComment($validated);
 
-        return back()->with('success','Comment added successfully');
+        return back()->with('success', 'Commentaire ajouté avec succès.');
     }
 
     public function destroy($id)
     {
         $this->commentService->deleteComment($id);
 
-        return back()->with('success','Comment deleted successfully');
+        return back()->with('success', 'Commentaire supprimé avec succès.');
     }
 }

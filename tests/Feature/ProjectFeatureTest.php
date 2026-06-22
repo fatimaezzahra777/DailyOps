@@ -116,6 +116,7 @@ class ProjectFeatureTest extends TestCase
         $this->get('/projects/gantt')->assertRedirect('/login');
         $this->get('/projects/calendar')->assertRedirect('/login');
         $this->get('/projects/reports')->assertRedirect('/login');
+        $this->get('/projects/archives')->assertRedirect('/login');
         $this->post('/projects', [
             'name' => 'Guest Project',
             'status' => 'pending',
@@ -134,10 +135,10 @@ class ProjectFeatureTest extends TestCase
             'end_date' => now()->addWeek(),
         ]);
 
-        $this->get('/projects/table')->assertOk()->assertSee('Tasks - Table view');
-        $this->get('/projects/gantt')->assertOk()->assertSee('Projects - Gantt view');
-        $this->get('/projects/calendar')->assertOk()->assertSee('Projects - Calendar');
-        $this->get('/projects/reports')->assertOk()->assertSee('Projects - Reports');
+        $this->get('/projects/table')->assertOk()->assertSee('Tâches - Vue tableau');
+        $this->get('/projects/gantt')->assertOk()->assertSee('Projets - Vue Gantt');
+        $this->get('/projects/calendar')->assertOk()->assertSee('Projets - Calendrier');
+        $this->get('/projects/reports')->assertOk()->assertSee('Projets - Rapports');
     }
 
     public function test_calendar_create_form_is_not_prefilled_from_an_upcoming_project(): void
@@ -433,6 +434,63 @@ class ProjectFeatureTest extends TestCase
             'status' => 'completed',
             'column_id' => null,
         ]);
+        $this->assertNotNull($project->fresh()->completed_at);
+    }
+
+    public function test_completed_project_is_automatically_archived_after_five_days(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $oldProject = Project::create([
+            'manager_id' => $user->id,
+            'name' => 'Ancien projet terminé',
+            'status' => 'completed',
+            'completed_at' => now()->subDays(6),
+        ]);
+        Project::create([
+            'manager_id' => $user->id,
+            'name' => 'Projet terminé récemment',
+            'status' => 'completed',
+            'completed_at' => now()->subDays(4),
+        ]);
+
+        $this->get('/projects')
+            ->assertOk()
+            ->assertDontSee('Ancien projet terminé')
+            ->assertSee('Projet terminé récemment');
+
+        $this->assertNotNull($oldProject->fresh()->archived_at);
+
+        $this->get('/projects/archives')
+            ->assertOk()
+            ->assertSee('Ancien projet terminé')
+            ->assertDontSee('Projet terminé récemment');
+    }
+
+    public function test_project_manager_can_restore_an_archived_project(): void
+    {
+        $user = User::factory()->create();
+        $project = Project::create([
+            'manager_id' => $user->id,
+            'name' => 'Projet à restaurer',
+            'status' => 'completed',
+            'completed_at' => now()->subDays(6),
+            'archived_at' => now()->subDay(),
+        ]);
+
+        $this->actingAs($user)
+            ->patch(route('projects.restore', $project))
+            ->assertRedirect(route('projects.archives'));
+
+        $project->refresh();
+
+        $this->assertNull($project->archived_at);
+        $this->assertTrue($project->completed_at->greaterThan(now()->subMinute()));
+
+        $this->get('/projects')
+            ->assertOk()
+            ->assertSee('Projet à restaurer');
     }
 
     public function test_user_can_move_project_to_custom_column(): void

@@ -15,8 +15,26 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        @auth
+            @php
+                $themeColor = auth()->user()->themeColor();
+                $fontSize = auth()->user()->font_size ?: 'normal';
+                $rootFontSize = 16 * auth()->user()->fontScale();
+            @endphp
+            <style>
+                :root {
+                    --accent: {{ $themeColor }};
+                    --accent-strong: color-mix(in srgb, {{ $themeColor }}, black 14%);
+                    --accent-dark: color-mix(in srgb, {{ $themeColor }}, black 32%);
+                    --accent-soft: color-mix(in srgb, {{ $themeColor }} 8%, transparent);
+                    --accent-line: color-mix(in srgb, {{ $themeColor }} 22%, transparent);
+                    font-size: {{ $rootFontSize }}px;
+                }
+            </style>
+        @endauth
     </head>
-    <body class="antialiased font-['DM_Sans'] text-[var(--text-strong)]">
+    <body class="antialiased font-['DM_Sans'] text-[var(--text-strong)]" @auth data-font-size="{{ $fontSize }}" @endauth>
         @isset($slot)
             <div id="sidebar-overlay" class="fixed inset-0 z-30 hidden bg-black/50 backdrop-blur-sm lg:hidden"></div>
 
@@ -27,7 +45,7 @@
                     @isset($header)
                         <header class="border-b border-black/10 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
                             <div class="px-4 py-4 pl-16 sm:px-5 sm:pl-5">
-                                <button id="menu-btn" class="icon-button fixed left-4 top-3 z-20 lg:hidden" type="button" aria-label="Open menu">
+                                <button id="menu-btn" class="icon-button fixed left-4 top-3 z-20 lg:hidden" type="button" aria-label="Ouvrir le menu">
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                         <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
                                     </svg>
@@ -54,7 +72,8 @@
 
                     <main class="custom-scroll min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                         @if (session('success'))
-                            <div class="mb-6 rounded-md border border-[#00a86b]/20 bg-[#00a86b]/10 px-4 py-3 text-sm font-medium text-[#00a86b]">
+                            <div class="flash-message mb-6 rounded-md border border-[#00a86b]/20 bg-[#00a86b]/10 px-4 py-3 text-sm font-medium text-[#00a86b]"
+                                data-flash-message role="status">
                                 {{ session('success') }}
                             </div>
                         @endif
