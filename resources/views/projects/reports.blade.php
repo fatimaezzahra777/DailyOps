@@ -5,16 +5,18 @@
         $navigationQuery = array_filter(request()->only(['search', 'status']), fn ($value) => filled($value));
         $total = max($projects->count(), 1);
         $completed = $projects->where('status', 'completed')->count();
+        $testing = $projects->where('status', 'testing')->count();
         $inProgress = $projects->where('status', 'in_progress')->count();
         $pending = $projects->where('status', 'pending')->count();
         $overdue = $projects
             ->filter(fn ($project) => $project->end_date && $project->end_date->isPast() && $project->status !== 'completed')
             ->count();
         $rows = [
-            ['label' => 'Completed', 'value' => $completed, 'color' => '#00a86b'],
-            ['label' => 'In progress', 'value' => $inProgress, 'color' => '#d97706'],
-            ['label' => 'Draft', 'value' => $pending, 'color' => '#e8007d'],
-            ['label' => 'Overdue', 'value' => $overdue, 'color' => '#dc2626'],
+            ['label' => 'Déploiement', 'value' => $completed, 'color' => '#00a86b'],
+            ['label' => 'Teste', 'value' => $testing, 'color' => '#4f46e5'],
+            ['label' => 'Développement', 'value' => $inProgress, 'color' => '#d97706'],
+            ['label' => 'Cahier charge', 'value' => $pending, 'color' => '#e8007d'],
+            ['label' => 'En retard', 'value' => $overdue, 'color' => '#dc2626'],
         ];
     @endphp
 
@@ -40,12 +42,12 @@
                 <p class="mt-2 text-xs text-[#888888]">All workspace projects</p>
             </article>
             <article class="metric-card">
-                <p class="metric-label">Completed</p>
+                <p class="metric-label">Déploiement</p>
                 <p class="metric-value mt-3">{{ $completed }}</p>
                 <p class="mt-2 text-xs text-[#00a86b]">{{ round(($completed / $total) * 100) }}% of total</p>
             </article>
             <article class="metric-card">
-                <p class="metric-label">In progress</p>
+                <p class="metric-label">Développement</p>
                 <p class="metric-value mt-3">{{ $inProgress }}</p>
                 <p class="mt-2 text-xs text-[#d97706]">Active work</p>
             </article>

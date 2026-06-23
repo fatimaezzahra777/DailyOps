@@ -88,13 +88,14 @@
                     $projectCard = function ($project) {
                         $statusClass = match ($project->status) {
                             'completed' => 'border-[#00a86b]/20 bg-[#00a86b]/10 text-[#00a86b]',
+                            'testing' => 'border-[#4f46e5]/20 bg-[#4f46e5]/10 text-[#4f46e5]',
                             'in_progress' => 'border-[#f59e0b]/20 bg-[#f59e0b]/10 text-[#b45309]',
                             default => 'border-[#c90068]/20 bg-[#c90068]/10 text-[#c90068]',
                         };
 
                         return [
                             'statusClass' => $statusClass,
-                            'statusLabel' => str($project->status)->replace('_', ' ')->title(),
+                            'statusLabel' => \App\Models\Project::statusLabel($project->status),
                             'deadline' => $project->end_date?->format('d M Y') ?? 'No deadline',
                         ];
                     };

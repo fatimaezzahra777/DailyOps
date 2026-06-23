@@ -22,6 +22,7 @@
         $eventClass = [
             'pending' => 'calendar-event-pending',
             'in_progress' => 'calendar-event-progress',
+            'testing' => 'calendar-event-testing',
             'completed' => 'calendar-event-completed',
         ];
         $stats = [
@@ -168,7 +169,7 @@
                                 <span class="calendar-agenda-date">{{ $project->end_date->format('d M') }}</span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-[13px] font-medium text-[var(--text-strong)]">{{ $project->name }}</span>
-                                    <span class="block truncate text-[11px] text-[var(--muted)]">{{ str($project->status)->replace('_', ' ')->title() }}</span>
+                                    <span class="block truncate text-[11px] text-[var(--muted)]">{{ \App\Models\Project::statusLabel($project->status) }}</span>
                                 </span>
                             </a>
                         @empty
@@ -182,7 +183,7 @@
                 <article class="report-card p-4">
                     <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Status mix</h3>
                     <div class="mt-4 space-y-3">
-                        @foreach (['pending' => 'Pending', 'in_progress' => 'In progress', 'completed' => 'Completed'] as $status => $label)
+                        @foreach (\App\Models\Project::statusOptions() as $status => $label)
                             @php
                                 $count = $monthEvents->where('status', $status)->count();
                                 $percent = $monthEvents->count() ? round(($count / $monthEvents->count()) * 100) : 0;

@@ -11,6 +11,7 @@
     $fieldValue = function (string $field, $default = null) use ($useOldValues, $inputName) {
         return $useOldValues ? old($inputName($field), old($field, $default)) : $default;
     };
+    $statusOptions = \App\Models\Project::statusOptions();
 @endphp
 
 @if ($errorsBag->any())
@@ -69,10 +70,19 @@
     ])
 
     <div>
-        <label for="{{ $prefix }}-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Status</label>
+        <label for="{{ $prefix }}-client_email" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Email client</label>
+        <input id="{{ $prefix }}-client_email" name="{{ $inputName('client_email') }}" type="email" class="w-full px-4 py-3"
+            value="{{ $fieldValue('client_email', $project?->client_email) }}"
+            placeholder="client@example.com"
+            autocomplete="off" data-field-default="{{ $project?->client_email ?? '' }}">
+        <p class="mt-2 text-xs text-[var(--muted)]">Le client reçoit un email quand le projet change d'étape.</p>
+    </div>
+
+    <div>
+        <label for="{{ $prefix }}-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Étape</label>
         <select id="{{ $prefix }}-status" name="{{ $inputName('status') }}" class="w-full px-4 py-3"
             autocomplete="off" data-field-default="{{ $project?->status ?? 'pending' }}">
-            @foreach (['pending' => 'Pending', 'in_progress' => 'In progress', 'completed' => 'Completed'] as $value => $label)
+            @foreach ($statusOptions as $value => $label)
                 <option value="{{ $value }}" @selected($fieldValue('status', $project?->status ?? 'pending') === $value)>
                     {{ $label }}
                 </option>

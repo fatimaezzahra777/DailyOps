@@ -5,9 +5,10 @@
         $navigationQuery = array_filter(request()->only(['search', 'status']), fn ($value) => filled($value));
         $weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'];
         $statusMeta = [
-            'pending' => ['label' => 'Draft', 'class' => 'status-tag-pending', 'width' => 24, 'offset' => 1],
-            'in_progress' => ['label' => 'In progress', 'class' => 'status-tag-progress', 'width' => 52, 'offset' => 2],
-            'completed' => ['label' => 'Completed', 'class' => 'status-tag-completed', 'width' => 92, 'offset' => 1],
+            'pending' => ['label' => 'Cahier charge', 'class' => 'status-tag-pending', 'width' => 24, 'offset' => 1],
+            'in_progress' => ['label' => 'Développement', 'class' => 'status-tag-progress', 'width' => 52, 'offset' => 2],
+            'testing' => ['label' => 'Teste', 'class' => 'status-tag-testing', 'width' => 72, 'offset' => 2],
+            'completed' => ['label' => 'Déploiement', 'class' => 'status-tag-completed', 'width' => 92, 'offset' => 1],
         ];
     @endphp
 
@@ -40,7 +41,12 @@
                     @php
                         $meta = $statusMeta[$project->status] ?? $statusMeta['pending'];
                         $start = min(($loop->index % 4) + $meta['offset'], 5);
-                        $span = $project->status === 'completed' ? 3 : ($project->status === 'in_progress' ? 2 : 1);
+                        $span = match ($project->status) {
+                            'completed' => 3,
+                            'testing' => 3,
+                            'in_progress' => 2,
+                            default => 1,
+                        };
                     @endphp
                     <div class="gantt-cell">
                         <div class="font-medium text-[#0a0a0a]">{{ $project->name }}</div>

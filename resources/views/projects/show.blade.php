@@ -5,6 +5,7 @@
         $statusClasses = [
             'pending' => 'tag-chip tag-chip-violet',
             'in_progress' => 'tag-chip tag-chip-amber',
+            'testing' => 'tag-chip tag-chip-indigo',
             'completed' => 'tag-chip tag-chip-emerald',
         ];
         $canManageProject = $project->isManagedBy(auth()->user());
@@ -70,7 +71,7 @@
                 </div>
                 <div class="mt-3 flex flex-wrap items-center gap-2">
                     <span class="{{ $statusClasses[$project->status] ?? 'tag-chip' }}">
-                        {{ str($project->status)->replace('_', ' ')->title() }}
+                        {{ \App\Models\Project::statusLabel($project->status) }}
                     </span>
                     @if ($project->manager)
                         <span class="tag-chip tag-chip-violet">Manager: {{ $project->manager->name }}</span>
@@ -339,7 +340,7 @@
                     {{ $project->description ?: 'No description has been added for this project yet.' }}
                 </p>
 
-                <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                     <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
                         <p class="text-xs text-[var(--muted)]">Entreprise</p>
                         <div class="mt-3 flex items-center gap-3">
@@ -352,6 +353,10 @@
                                 {{ $project->companyLabel() ?? 'Non définie' }}
                             </p>
                         </div>
+                    </div>
+                    <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
+                        <p class="text-xs text-[var(--muted)]">Email client</p>
+                        <p class="mt-1 break-words text-sm font-semibold text-[var(--text-strong)]">{{ $project->client_email ?: 'Non défini' }}</p>
                     </div>
                     <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
                         <p class="text-xs text-[var(--muted)]">Start date</p>

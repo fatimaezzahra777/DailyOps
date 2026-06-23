@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Project;
+use App\Mail\ProjectStatusUpdatedMail;
 use App\Mail\ProjectInvitationMail;
 use App\Models\ProjectInvitation;
 use App\Models\ProjectColumn;
@@ -69,6 +70,24 @@ class ProjectFeatureTest extends TestCase
         $response->assertOk();
         $response->assertSee('/projects?search=Alpha&amp;status=pending', false);
         $response->assertSee('/projects?search=Alpha&amp;page=2', false);
+    }
+
+    public function test_project_board_shows_the_four_project_steps(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'admin']));
+
+        Project::create(['name' => 'Brief Project', 'status' => 'pending']);
+        Project::create(['name' => 'Dev Project', 'status' => 'in_progress']);
+        Project::create(['name' => 'Testing Project', 'status' => 'testing']);
+        Project::create(['name' => 'Deploy Project', 'status' => 'completed']);
+
+        $this->get(route('projects.index'))
+            ->assertOk()
+            ->assertSee('Cahier charge')
+            ->assertSee('Développement')
+            ->assertSee('Teste')
+            ->assertSee('Déploiement')
+            ->assertSee('value="testing"', false);
     }
 
     public function test_project_search_form_keeps_the_current_view(): void
@@ -183,6 +202,25 @@ class ProjectFeatureTest extends TestCase
             'company' => 'softart',
             'manager_id' => $user->id,
             'assigned_to' => null,
+        ]);
+    }
+
+    public function test_project_client_email_is_saved(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), [
+                'name' => 'Client Email Project',
+                'company' => 'softart',
+                'client_email' => 'client@example.com',
+                'status' => 'pending',
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('projects', [
+            'name' => 'Client Email Project',
+            'client_email' => 'client@example.com',
         ]);
     }
 
@@ -619,6 +657,37 @@ class ProjectFeatureTest extends TestCase
             'status' => 'completed',
             'column_id' => null,
         ]);
+    }
+
+    public function test_client_receives_email_when_project_status_changes(): void
+    {
+        Mail::fake();
+
+        $user = User::factory()->create(['role' => 'admin']);
+        $project = Project::create([
+            'manager_id' => $user->id,
+            'name' => 'Client Notified Project',
+            'status' => 'pending',
+            'client_email' => 'client@example.com',
+        ]);
+
+        $this->actingAs($user)
+            ->patchJson(route('projects.move', $project), [
+                'status' => 'in_progress',
+                'column_id' => null,
+            ])
+            ->assertOk();
+
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            'status' => 'in_progress',
+        ]);
+
+        Mail::assertSent(ProjectStatusUpdatedMail::class, function (ProjectStatusUpdatedMail $mail) use ($project) {
+            return $mail->project->is($project)
+                && $mail->previousStatus === 'pending'
+                && $mail->hasTo('client@example.com');
+        });
     }
 
     public function test_user_can_move_project_to_custom_column(): void

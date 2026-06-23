@@ -5,9 +5,10 @@
         $queryWithoutStatus = request()->except(['status', 'page']);
         $tableQuery = array_filter(request()->only(['search', 'status', 'company']), fn ($value) => filled($value));
         $statusMeta = [
-            'pending' => ['label' => 'Draft', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#e8007d]'],
-            'in_progress' => ['label' => 'In progress', 'class' => 'status-tag-progress', 'progress' => 64, 'priority' => 'bg-[#d97706]'],
-            'completed' => ['label' => 'Completed', 'class' => 'status-tag-completed', 'progress' => 100, 'priority' => 'bg-[#00a86b]'],
+            'pending' => ['label' => 'Cahier charge', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#e8007d]'],
+            'in_progress' => ['label' => 'Développement', 'class' => 'status-tag-progress', 'progress' => 64, 'priority' => 'bg-[#d97706]'],
+            'testing' => ['label' => 'Teste', 'class' => 'status-tag-testing', 'progress' => 82, 'priority' => 'bg-[#4f46e5]'],
+            'completed' => ['label' => 'Déploiement', 'class' => 'status-tag-completed', 'progress' => 100, 'priority' => 'bg-[#00a86b]'],
         ];
     @endphp
 
@@ -24,10 +25,10 @@
         </div>
 
         <div class="view-toolbar">
-            <a href="{{ route('projects.table', $queryWithoutStatus) }}" class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">All</a>
-            <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'pending'])) }}" class="filter-pill {{ request('status') === 'pending' ? 'filter-pill-active' : '' }}">Draft</a>
-            <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'in_progress'])) }}" class="filter-pill {{ request('status') === 'in_progress' ? 'filter-pill-active' : '' }}">In progress</a>
-            <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => 'completed'])) }}" class="filter-pill {{ request('status') === 'completed' ? 'filter-pill-active' : '' }}">Completed</a>
+            <a href="{{ route('projects.table', $queryWithoutStatus) }}" class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">Tous</a>
+            @foreach (\App\Models\Project::statusOptions() as $status => $label)
+                <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => $status])) }}" class="filter-pill {{ request('status') === $status ? 'filter-pill-active' : '' }}">{{ $label }}</a>
+            @endforeach
 
             <form method="GET" action="{{ route('projects.table') }}" class="ml-0 sm:ml-2">
                 @if (request('search'))
