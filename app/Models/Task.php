@@ -22,6 +22,13 @@ class Task extends Model
         'due_date' => 'date',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Task $task) {
+            $task->attachments()->get()->each->delete();
+        });
+    }
+
     /**
      * Relation with project
      */
@@ -43,5 +50,10 @@ class Task extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(TaskAttachment::class);
     }
 }
