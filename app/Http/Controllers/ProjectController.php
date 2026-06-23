@@ -99,6 +99,7 @@ class ProjectController extends Controller
             'description' => $request->input('create_description', $request->input('description')),
             'company' => $request->input('create_company', $request->input('company')),
             'logo' => $request->file('create_logo', $request->file('logo')),
+            'client_email' => $request->input('create_client_email', $request->input('client_email')),
             'status' => $request->input('create_status', $request->input('status')),
             'start_date' => $request->input('create_start_date', $request->input('start_date')),
             'end_date' => $request->input('create_end_date', $request->input('end_date')),
@@ -109,7 +110,8 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'company' => 'required|in:softart,company_name',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'status' => 'required|in:pending,in_progress,completed',
+            'client_email' => 'nullable|email|max:255',
+            'status' => ['required', Rule::in(Project::statusValues())],
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ];
@@ -176,7 +178,7 @@ class ProjectController extends Controller
         $this->authorizeProjectManagement($request, $project);
 
         $rules = [
-            'status' => 'required_without:column_id|nullable|in:pending,in_progress,completed',
+            'status' => ['required_without:column_id', 'nullable', Rule::in(Project::statusValues())],
         ];
 
         if (Schema::hasTable('project_columns') && Schema::hasColumn('projects', 'column_id')) {
@@ -201,7 +203,7 @@ class ProjectController extends Controller
             $data['status'] = $validated['status'] ?? 'pending';
         }
 
-        $project->update($data);
+        $this->projectService->updateProject($project->id, $data);
 
         return response()->json([
             'message' => 'Project moved successfully.',
@@ -252,7 +254,8 @@ class ProjectController extends Controller
             'company' => 'required|in:softart,company_name',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'remove_logo' => 'nullable|boolean',
-            'status' => 'required|in:pending,in_progress,completed',
+            'client_email' => 'nullable|email|max:255',
+            'status' => ['required', Rule::in(Project::statusValues())],
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
