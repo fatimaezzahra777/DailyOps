@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Mail\ProjectStatusUpdatedMail;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectService
 {
@@ -44,6 +46,7 @@ class ProjectService
     {
         $project = $this->projectRepository->findById($id);
         $previousAssignedTo = $project->assigned_to;
+        $previousStatus = $project->status;
 
         $project = $this->projectRepository->update($id, $data);
 
@@ -54,6 +57,14 @@ class ProjectService
                 $project->assigned_to,
                 $project->manager,
             );
+        }
+
+        if (
+            array_key_exists('status', $data)
+            && ($data['status'] ?? null) !== $previousStatus
+            && filled($project->client_email)
+        ) {
+            Mail::to($project->client_email)->send(new ProjectStatusUpdatedMail($project, $previousStatus));
         }
 
         return $project;
