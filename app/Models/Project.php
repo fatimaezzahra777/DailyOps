@@ -14,6 +14,7 @@ class Project extends Model
         'manager_id',
         'company',
         'logo_path',
+        'client_email',
         'column_id',
         'name',
         'description',
@@ -31,6 +32,26 @@ class Project extends Model
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public static function statusOptions(): array
+    {
+        return [
+            'pending' => 'Cahier charge',
+            'in_progress' => 'Développement',
+            'testing' => 'Teste',
+            'completed' => 'Déploiement',
+        ];
+    }
+
+    public static function statusLabel(?string $status): string
+    {
+        return self::statusOptions()[$status] ?? str((string) $status)->replace('_', ' ')->title();
+    }
+
+    public static function statusValues(): array
+    {
+        return array_keys(self::statusOptions());
     }
 
     public function companyLabel(): ?string
