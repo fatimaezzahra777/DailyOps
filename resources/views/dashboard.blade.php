@@ -34,21 +34,21 @@
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">En cours</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Développement</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['in_progress'] }}</p>
-                        <p class="mt-2 text-[11px] text-[#d97706]">Active tasks</p>
+                        <p class="mt-2 text-[11px] text-[#d97706]">Projets actifs</p>
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Termines</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Déploiement</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['completed'] }}</p>
-                        <p class="mt-2 text-[11px] text-[#00a86b]">Completed work</p>
+                        <p class="mt-2 text-[11px] text-[#00a86b]">Projets livrés</p>
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">A faire</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Cahier charge</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['pending'] }}</p>
-                        <p class="mt-2 text-[11px] text-[#999999]">Pending projects</p>
+                        <p class="mt-2 text-[11px] text-[#999999]">Projets en cadrage</p>
                     </div>
                 </div>
 
@@ -73,8 +73,8 @@
                                             {{ $project->end_date ? 'Deadline: '.$project->end_date->format('d/m/Y') : 'Aucune deadline' }}
                                         </div>
                                     </div>
-                                    <span class="inline-flex w-fit rounded-full border px-2.5 py-1 text-[10.5px] font-medium {{ $project->status === 'completed' ? 'border-[#00a86b]/20 bg-[#00a86b]/10 text-[#00a86b]' : ($project->status === 'in_progress' ? 'border-[#d97706]/20 bg-[#d97706]/10 text-[#d97706]' : 'border-[#e8007d]/20 bg-[#e8007d]/10 text-[#e8007d]') }}">
-                                        {{ str($project->status)->replace('_', ' ')->title() }}
+                                    <span class="inline-flex w-fit rounded-full border px-2.5 py-1 text-[10.5px] font-medium {{ $project->status === 'completed' ? 'border-[#00a86b]/20 bg-[#00a86b]/10 text-[#00a86b]' : ($project->status === 'testing' ? 'border-[#4f46e5]/20 bg-[#4f46e5]/10 text-[#4f46e5]' : ($project->status === 'in_progress' ? 'border-[#d97706]/20 bg-[#d97706]/10 text-[#d97706]' : 'border-[#e8007d]/20 bg-[#e8007d]/10 text-[#e8007d]')) }}">
+                                        {{ \App\Models\Project::statusLabel($project->status) }}
                                     </span>
                                 </div>
                             @empty
