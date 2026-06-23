@@ -54,6 +54,8 @@ class Project extends Model
         return array_keys(self::statusOptions());
     }
 
+    // changer le nom de 2 eme entreprise 
+
     public function companyLabel(): ?string
     {
         return match ($this->company) {
@@ -62,7 +64,7 @@ class Project extends Model
             default => null,
         };
     }
-
+    // changer logo 2 man ba3d 
     public function companyLogo(): ?string
     {
         return match ($this->company) {
