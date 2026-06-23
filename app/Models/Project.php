@@ -108,6 +108,8 @@ class Project extends Model
         return $this->hasMany(ProjectInvitation::class);
     }
 
+    // filtrer les projet de chaque user 
+    
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
         if ($user->isAdmin()) {
