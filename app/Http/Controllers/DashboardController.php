@@ -28,6 +28,7 @@ class DashboardController extends Controller
                 'memberStats' => [
                     'total_projects' => $allProjects->count(),
                     'in_progress' => $allProjects->where('status', 'in_progress')->count(),
+                    'testing' => $allProjects->where('status', 'testing')->count(),
                     'completed' => $allProjects->where('status', 'completed')->count(),
                     'pending' => $allProjects->where('status', 'pending')->count(),
                 ],
