@@ -9,12 +9,18 @@ class TaskRepository implements TaskRepositoryInterface
 {
     public function getAll()
     {
-        return Task::with(['project', 'comments', 'assignedUser', 'column'])->latest()->paginate(10)->withQueryString();
+        return Task::with(['project', 'comments', 'attachments', 'assignedUser', 'column'])->latest()->paginate(10)->withQueryString();
     }
 
     public function findById($id)
     {
-        return Task::with(['project.collaborators', 'comments' => fn ($query) => $query->latest(), 'assignedUser', 'column'])->findOrFail($id);
+        return Task::with([
+            'project.collaborators',
+            'comments' => fn ($query) => $query->latest(),
+            'attachments' => fn ($query) => $query->with('user')->latest(),
+            'assignedUser',
+            'column',
+        ])->findOrFail($id);
     }
 
     public function store(array $data)
@@ -40,7 +46,7 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function searchAndFilter($request)
     {
-        $query = Task::with(['project', 'comments', 'assignedUser', 'column']);
+        $query = Task::with(['project', 'comments', 'attachments', 'assignedUser', 'column']);
 
         if ($request->user()) {
             $query->whereHas('project', fn ($projectQuery) => $projectQuery->visibleTo($request->user()));
