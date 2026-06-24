@@ -52,6 +52,84 @@
                 <section class="panel-dark p-6">
                     <div class="flex items-center justify-between gap-4">
                         <div>
+                            <h2 class="text-lg font-semibold">Fichiers</h2>
+                            <p class="mt-1 text-sm text-[var(--muted)]">Ajoutez les images, documents ou livrables liés à cette tâche.</p>
+                        </div>
+                        <span class="tag-chip">{{ $task->attachments->count() }} fichiers</span>
+                    </div>
+
+                    <form action="{{ route('tasks.attachments.store', $task) }}" method="POST" enctype="multipart/form-data"
+                        class="mt-6 rounded-2xl border border-dashed border-[var(--line)] bg-[var(--card-soft)] p-4">
+                        @csrf
+                        <label for="task-attachments" class="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl bg-white/70 px-4 py-7 text-center transition hover:bg-white">
+                            <span class="material-symbols-rounded text-[34px] text-[#e8007d]">upload_file</span>
+                            <span>
+                                <span class="block text-sm font-semibold text-[var(--text-strong)]">Glissez vos fichiers ou cliquez ici</span>
+                                <span class="mt-1 block text-xs text-[var(--muted)]">Images, PDF, Office, ZIP — max 10 Mo par fichier.</span>
+                            </span>
+                            <input id="task-attachments" name="attachments[]" type="file" multiple class="sr-only">
+                        </label>
+                        @error('attachments')
+                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
+                        @enderror
+                        @error('attachments.*')
+                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
+                        @enderror
+                        <div class="mt-4 flex flex-wrap items-center gap-3">
+                            <button type="submit" class="btn-primary">Ajouter fichier</button>
+                            <span class="text-xs text-[var(--muted)]">Vous pouvez sélectionner plusieurs fichiers.</span>
+                        </div>
+                    </form>
+
+                    <div class="mt-6 grid gap-3 md:grid-cols-2">
+                        @forelse ($task->attachments as $attachment)
+                            <article class="group rounded-2xl border border-[var(--line)] bg-[var(--card-soft)] p-4 transition hover:border-[#e8007d]/30 hover:bg-white">
+                                <div class="flex items-start gap-3">
+                                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#e8007d] shadow-sm">
+                                        <span class="material-symbols-rounded text-[24px]">
+                                            {{ $attachment->isImage() ? 'image' : 'description' }}
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <a href="{{ route('task-attachments.download', $attachment) }}"
+                                            class="block truncate text-sm font-semibold text-[var(--text-strong)] hover:text-[#e8007d]">
+                                            {{ $attachment->original_name }}
+                                        </a>
+                                        <p class="mt-1 text-xs text-[var(--muted)]">
+                                            {{ $attachment->humanSize() }}
+                                            @if ($attachment->user)
+                                                · ajouté par {{ $attachment->user->name }}
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 flex items-center justify-between gap-3">
+                                    <a href="{{ route('task-attachments.download', $attachment) }}" class="btn-secondary py-2 text-xs">
+                                        Télécharger
+                                    </a>
+
+                                    @if ($canManageTask || $attachment->user_id === auth()->id())
+                                        <form action="{{ route('task-attachments.destroy', $attachment) }}" method="POST"
+                                            onsubmit="return confirm('Supprimer ce fichier ?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-xs font-medium text-rose-400 hover:text-rose-300">Supprimer</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </article>
+                        @empty
+                            <div class="empty-column-card min-h-32 md:col-span-2">
+                                <p>Aucun fichier pour cette tâche. Ajoutez le premier attachment.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </section>
+
+                <section class="panel-dark p-6">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
                             <h2 class="text-lg font-semibold">Comments</h2>
                             <p class="mt-1 text-sm text-[var(--muted)]">Keep the context of the task in one place.</p>
                         </div>
