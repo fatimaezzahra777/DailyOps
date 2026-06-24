@@ -42,7 +42,7 @@
                 'title' => 'Cahier charge',
                 'status' => 'pending',
                 'column_id' => null,
-                'dot' => 'bg-[#e8007d]',
+                'dot' => 'bg-[#c50064]',
                 'empty' => 'Aucun projet en cahier charge',
                 'description' => 'Brief, besoins et cadrage à valider.',
                 'laneClass' => 'kanban-lane-pending',
@@ -114,7 +114,7 @@
                 </div>
 
                 <div class="kanban-legend">
-                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#e8007d]"></span> Cahier charge</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#c50064]"></span> Cahier charge</span>
                     <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#f59e0b]"></span> Développement</span>
                     <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#6366f1]"></span> Teste</span>
                     <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#00a86b]"></span> Déploiement</span>
@@ -220,7 +220,7 @@
                                             <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
                                                 class="project-logo-circle">
                                         @endif
-                                        <a href="{{ route('projects.show', $project) }}" class="task-title truncate text-left hover:text-[#e8007d]">
+                                        <a href="{{ route('projects.show', $project) }}" class="task-title truncate text-left hover:text-[#c50064]">
                                             {{ $project->name }}
                                         </a>
                                     </div>

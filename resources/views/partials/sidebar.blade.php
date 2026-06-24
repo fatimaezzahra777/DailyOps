@@ -25,7 +25,7 @@
     <div class="shrink-0 px-3">
         <div class="workspace-switcher">
             <div
-                class="flex h-8 w-8 items-center justify-center rounded-md border border-[#e8007d]/20 bg-[#e8007d]/10 text-xs font-semibold text-[#e8007d]">
+                class="flex h-8 w-8 items-center justify-center rounded-md border border-[#c50064]/20 bg-[#c50064]/10 text-xs font-semibold text-[#c50064]">
                 DO
             </div>
             <div class="min-w-0 flex-1">
@@ -78,7 +78,7 @@
     <div class="shrink-0 border-t border-[var(--line)] p-4">
         <div class="flex items-center gap-3">
             <div
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#e8007d] to-[#a0005a] font-['Syne'] text-xs font-semibold text-white shadow-[0_0_12px_rgba(232,0,125,0.3)]">
+                class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#c50064] to-[#850044] font-['Syne'] text-xs font-semibold text-white shadow-[0_0_12px_rgba(197,0,100,0.3)]">
                 {{ $userInitials }}
             </div>
             <div class="min-w-0 flex-1">

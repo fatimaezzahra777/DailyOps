@@ -15,7 +15,7 @@
             ['label' => 'Déploiement', 'value' => $completed, 'color' => '#00a86b'],
             ['label' => 'Teste', 'value' => $testing, 'color' => '#4f46e5'],
             ['label' => 'Développement', 'value' => $inProgress, 'color' => '#d97706'],
-            ['label' => 'Cahier charge', 'value' => $pending, 'color' => '#e8007d'],
+            ['label' => 'Cahier charge', 'value' => $pending, 'color' => '#c50064'],
             ['label' => 'En retard', 'value' => $overdue, 'color' => '#dc2626'],
         ];
     @endphp
@@ -23,7 +23,7 @@
     <section>
         <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-3">
-                <span class="h-2 w-2 rounded-full bg-[#e8007d] shadow-[0_0_8px_rgba(232,0,125,0.5)]"></span>
+                <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
                     <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projects - Reports</h2>
                     <p class="mt-1 text-[12.5px] text-[#888888]">Synthese du workspace.</p>
@@ -65,7 +65,7 @@
                         <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Status breakdown</h3>
                         <p class="mt-1 text-[12.5px] text-[#888888]">Distribution des projets par statut.</p>
                     </div>
-                    <i class="ti ti-chart-bar text-xl text-[#e8007d]"></i>
+                    <i class="ti ti-chart-bar text-xl text-[#c50064]"></i>
                 </div>
 
                 <div class="space-y-4">
@@ -88,7 +88,7 @@
                 <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Recent activity</h3>
                 <div class="mt-4 space-y-3">
                     @forelse ($projects->take(5) as $project)
-                        <a href="{{ route('projects.show', $project) }}" class="flex items-center justify-between rounded-md border border-black/10 px-3 py-3 text-[13px] transition hover:border-[#e8007d]/20 hover:bg-[#e8007d]/10">
+                        <a href="{{ route('projects.show', $project) }}" class="flex items-center justify-between rounded-md border border-black/10 px-3 py-3 text-[13px] transition hover:border-[#c50064]/20 hover:bg-[#c50064]/10">
                             <span class="truncate text-[#555555]">{{ $project->name }}</span>
                             <span class="ml-3 text-[11px] text-[#999999]">{{ $project->created_at->format('d M') }}</span>
                         </a>

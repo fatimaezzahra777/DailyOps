@@ -16,11 +16,11 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased font-['DM_Sans'] text-[#0a0a0a]">
+    <body class="antialiased font-['DM_Sans'] text-[var(--text-strong)]">
         @isset($slot)
             <div id="sidebar-overlay" class="fixed inset-0 z-30 hidden bg-black/50 backdrop-blur-sm lg:hidden"></div>
 
-            <div class="flex h-screen overflow-hidden bg-[#f7f7f7]">
+            <div class="flex h-screen overflow-hidden bg-[var(--page-alt)]">
                 @include('partials.sidebar')
 
                 <div class="flex min-w-0 flex-1 flex-col overflow-hidden">

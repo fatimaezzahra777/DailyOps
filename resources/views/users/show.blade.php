@@ -23,8 +23,8 @@
 
             <section>
                 <div class="mb-5 flex items-center gap-3">
-                    <span class="h-7 w-[3px] rounded-full bg-[#c90068]"></span>
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c90068]">Informations personnelles</p>
+                    <span class="h-7 w-[3px] rounded-full bg-[#c50064]"></span>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">Informations personnelles</p>
                 </div>
 
                 <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -41,15 +41,15 @@
 
             <section class="mt-10">
                 <div class="mb-5 flex items-center gap-3">
-                    <span class="h-7 w-[3px] rounded-full bg-[#c90068]"></span>
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c90068]">Acces au compte</p>
+                    <span class="h-7 w-[3px] rounded-full bg-[#c50064]"></span>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">Acces au compte</p>
                 </div>
 
                 <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4">
                         <dt class="text-[12px] font-semibold text-[#6b7280]">Role</dt>
                         <dd class="mt-2">
-                            <span class="inline-flex rounded-full border border-[#c90068]/20 bg-[#c90068]/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.1em] text-[#c90068]">
+                            <span class="inline-flex rounded-full border border-[#c50064]/20 bg-[#c50064]/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.1em] text-[#c50064]">
                                 {{ $user->role }}
                             </span>
                         </dd>
@@ -74,8 +74,8 @@
             <section class="mt-10">
                 <div class="mb-5 flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
-                        <span class="h-7 w-[3px] rounded-full bg-[#c90068]"></span>
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c90068]">
+                        <span class="h-7 w-[3px] rounded-full bg-[#c50064]"></span>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">
                             {{ $user->isAdmin() ? 'Tous les projets' : 'Projets de cette personne' }}
                         </p>
                     </div>
@@ -90,7 +90,7 @@
                             'completed' => 'border-[#00a86b]/20 bg-[#00a86b]/10 text-[#00a86b]',
                             'testing' => 'border-[#4f46e5]/20 bg-[#4f46e5]/10 text-[#4f46e5]',
                             'in_progress' => 'border-[#f59e0b]/20 bg-[#f59e0b]/10 text-[#b45309]',
-                            default => 'border-[#c90068]/20 bg-[#c90068]/10 text-[#c90068]',
+                            default => 'border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064]',
                         };
 
                         return [

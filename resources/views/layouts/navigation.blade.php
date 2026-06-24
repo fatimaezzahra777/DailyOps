@@ -17,7 +17,7 @@
     </div>
 
     <div class="mx-3 mt-4 flex items-center gap-3 rounded-[10px] border border-black/10 bg-[#f4f4f4] px-3 py-3">
-        <span class="flex h-7 w-7 items-center justify-center rounded-md border border-[#e8007d]/20 bg-[#e8007d]/10 text-[#e8007d]">
+        <span class="flex h-7 w-7 items-center justify-center rounded-md border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064]">
             <i class="ti ti-building text-sm"></i>
         </span>
         <div class="min-w-0">
@@ -29,13 +29,13 @@
     <nav class="custom-scroll min-h-0 flex-1 overflow-y-auto py-4">
         <div class="px-5 pb-2 font-['Syne'] text-[10px] uppercase tracking-[0.1em] text-[#bbbbbb]">Navigation</div>
 
-        <a href="{{ route('dashboard') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ request()->routeIs('dashboard') ? 'border border-[#e8007d]/20 bg-[#e8007d]/10 font-semibold text-[#e8007d] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#e8007d]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('dashboard')) aria-current="page" @endif>
+        <a href="{{ route('dashboard') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ request()->routeIs('dashboard') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('dashboard')) aria-current="page" @endif>
             <i class="ti ti-layout-dashboard text-base"></i>
             <span class="flex-1">Dashboard</span>
         </a>
 
         @if (Auth::user()->role === 'admin')
-            <a href="{{ route('users.index') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ request()->routeIs('users.*') ? 'border border-[#e8007d]/20 bg-[#e8007d]/10 font-semibold text-[#e8007d] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#e8007d]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('users.*')) aria-current="page" @endif>
+            <a href="{{ route('users.index') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ request()->routeIs('users.*') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('users.*')) aria-current="page" @endif>
                 <i class="ti ti-users text-base"></i>
                 <span class="flex-1">Users</span>
             </a>
@@ -45,7 +45,7 @@
             @php
                 $isActive = request()->routeIs(...(array) $item['active']);
             @endphp
-            <a href="{{ route($item['route']) }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ $isActive ? 'border border-[#e8007d]/20 bg-[#e8007d]/10 font-semibold text-[#e8007d] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#e8007d]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if ($isActive) aria-current="page" @endif>
+            <a href="{{ route($item['route']) }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ $isActive ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if ($isActive) aria-current="page" @endif>
                 <i class="ti {{ $item['icon'] }} text-base"></i>
                 <span class="flex-1">{{ $item['label'] }}</span>
             </a>
@@ -60,16 +60,16 @@
 
     <div class="border-t border-black/10 p-4">
         <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#e8007d] to-[#a0005a] font-['Syne'] text-xs font-semibold text-white shadow-[0_0_12px_rgba(232,0,125,0.3)]">
+            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#c50064] to-[#850044] font-['Syne'] text-xs font-semibold text-white shadow-[0_0_12px_rgba(197,0,100,0.3)]">
                 {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
             </div>
             <div class="min-w-0 flex-1">
                 <div class="truncate text-[12.5px] font-medium text-[#0a0a0a]">{{ Auth::user()->name }}</div>
-                <div class="text-[11px] text-[#e8007d]">{{ Auth::user()->role }}</div>
+                <div class="text-[11px] text-[#c50064]">{{ Auth::user()->role }}</div>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="text-[#999999] transition hover:text-[#e8007d]" title="Log out">
+                <button type="submit" class="text-[#999999] transition hover:text-[#c50064]" title="Log out">
                     <i class="ti ti-logout text-lg"></i>
                 </button>
             </form>
@@ -92,7 +92,7 @@
         </div>
 
         <div class="mx-3 mt-4 flex items-center gap-3 rounded-[10px] border border-black/10 bg-[#f4f4f4] px-3 py-3">
-            <span class="flex h-8 w-8 items-center justify-center rounded-md border border-[#e8007d]/20 bg-[#e8007d]/10 text-xs font-semibold text-[#e8007d]">
+            <span class="flex h-8 w-8 items-center justify-center rounded-md border border-[#c50064]/20 bg-[#c50064]/10 text-xs font-semibold text-[#c50064]">
                 DO
             </span>
             <div class="min-w-0">
@@ -104,13 +104,13 @@
         <nav class="custom-scroll min-h-0 flex-1 overflow-y-auto py-4">
             <div class="px-5 pb-2 font-['Syne'] text-[10px] uppercase tracking-[0.1em] text-[#bbbbbb]">Navigation</div>
 
-            <a href="{{ route('dashboard') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ request()->routeIs('dashboard') ? 'border border-[#e8007d]/20 bg-[#e8007d]/10 font-semibold text-[#e8007d]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('dashboard')) aria-current="page" @endif>
+            <a href="{{ route('dashboard') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ request()->routeIs('dashboard') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('dashboard')) aria-current="page" @endif>
                 <i class="ti ti-layout-dashboard text-base"></i>
                 <span>Dashboard</span>
             </a>
 
             @if (Auth::user()->role === 'admin')
-                <a href="{{ route('users.index') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ request()->routeIs('users.*') ? 'border border-[#e8007d]/20 bg-[#e8007d]/10 font-semibold text-[#e8007d]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('users.*')) aria-current="page" @endif>
+                <a href="{{ route('users.index') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ request()->routeIs('users.*') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('users.*')) aria-current="page" @endif>
                     <i class="ti ti-users text-base"></i>
                     <span>Users</span>
                 </a>
@@ -120,7 +120,7 @@
                 @php
                     $isActive = request()->routeIs(...(array) $item['active']);
                 @endphp
-                <a href="{{ route($item['route']) }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ $isActive ? 'border border-[#e8007d]/20 bg-[#e8007d]/10 font-semibold text-[#e8007d]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if ($isActive) aria-current="page" @endif>
+                <a href="{{ route($item['route']) }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ $isActive ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if ($isActive) aria-current="page" @endif>
                     <i class="ti {{ $item['icon'] }} text-base"></i>
                     <span>{{ $item['label'] }}</span>
                 </a>
@@ -134,16 +134,16 @@
 
         <div class="border-t border-black/10 p-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#e8007d] to-[#a0005a] font-['Syne'] text-xs font-semibold text-white shadow-[0_0_12px_rgba(232,0,125,0.3)]">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#c50064] to-[#850044] font-['Syne'] text-xs font-semibold text-white shadow-[0_0_12px_rgba(197,0,100,0.3)]">
                     {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="truncate text-[12.5px] font-medium text-[#0a0a0a]">{{ Auth::user()->name }}</div>
-                    <div class="truncate text-[11px] text-[#e8007d]">{{ Auth::user()->role }}</div>
+                    <div class="truncate text-[11px] text-[#c50064]">{{ Auth::user()->role }}</div>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-[#999999] transition hover:text-[#e8007d]" title="Log out">
+                    <button type="submit" class="text-[#999999] transition hover:text-[#c50064]" title="Log out">
                         <i class="ti ti-logout text-lg"></i>
                     </button>
                 </form>

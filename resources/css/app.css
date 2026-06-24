@@ -7,20 +7,21 @@
         --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
             'Segoe UI Symbol', 'Noto Color Emoji';
         --page: #ffffff;
-        --page-alt: #f7f7f7;
+        --page-alt: #fbf8fa;
         --panel: #ffffff;
         --panel-strong: #ffffff;
-        --card-soft: #f4f4f4;
+        --card-soft: #f7f3f5;
         --card: #ffffff;
-        --line: rgb(0 0 0 / 0.08);
-        --line-strong: rgb(0 0 0 / 0.13);
-        --text: #555555;
-        --text-strong: #0a0a0a;
-        --muted: #999999;
-        --accent: #e8007d;
-        --accent-strong: #ff1a8c;
-        --accent-soft: rgb(232 0 125 / 0.07);
-        --accent-line: rgb(232 0 125 / 0.22);
+        --line: rgb(7 8 5 / 0.08);
+        --line-strong: rgb(7 8 5 / 0.14);
+        --text: #5f5b66;
+        --text-strong: #070805;
+        --muted: #817d87;
+        --accent: #c50064;
+        --accent-strong: #a90056;
+        --accent-dark: #850044;
+        --accent-soft: rgb(197 0 100 / 0.07);
+        --accent-line: rgb(197 0 100 / 0.2);
         --green: #00a86b;
         --amber: #d97706;
         --red: #dc2626;
@@ -39,8 +40,8 @@
     }
 
     ::selection {
-        background: rgb(255 10 138 / 0.18);
-        color: #2a1321;
+        background: rgb(197 0 100 / 0.18);
+        color: var(--text-strong);
     }
 
     h1,
@@ -69,8 +70,8 @@
     select:focus,
     textarea:focus {
         @apply ring-4;
-        --tw-ring-color: rgb(227 0 140 / 0.14);
-        border-color: rgb(227 0 140 / 0.28);
+        --tw-ring-color: rgb(197 0 100 / 0.14);
+        border-color: rgb(197 0 100 / 0.28);
     }
 
     input::placeholder,
@@ -195,7 +196,7 @@
 
     .metric-card-featured {
         background:
-            radial-gradient(circle at top right, rgb(232 0 125 / 0.12), transparent 30%),
+            radial-gradient(circle at top right, rgb(197 0 100 / 0.12), transparent 30%),
             var(--panel);
     }
 
@@ -203,7 +204,7 @@
         @apply rounded-[10px] border p-5;
         border-color: var(--line);
         background:
-            linear-gradient(135deg, rgb(232 0 125 / 0.04) 0%, transparent 36%),
+            linear-gradient(135deg, rgb(197 0 100 / 0.04) 0%, transparent 36%),
             linear-gradient(180deg, #ffffff 0%, #fcfcfc 100%);
         box-shadow: 0 6px 22px rgb(0 0 0 / 0.04);
     }
@@ -379,7 +380,7 @@
     }
 
     .kanban-count-pending {
-        background: rgb(232 0 125 / 0.12);
+        background: rgb(197 0 100 / 0.12);
         color: var(--accent);
     }
 
@@ -434,7 +435,7 @@
     }
 
     .project-card-accent-pending::before {
-        background: linear-gradient(180deg, #ff2f98 0%, #e8007d 100%);
+        background: linear-gradient(180deg, #d71876 0%, #c50064 100%);
     }
 
     .project-card-accent-progress::before {
@@ -536,9 +537,9 @@
     }
 
     .tag-chip-violet {
-        background: rgb(227 0 140 / 0.1);
+        background: rgb(197 0 100 / 0.1);
         color: var(--accent);
-        border-color: rgb(227 0 140 / 0.2);
+        border-color: rgb(197 0 100 / 0.2);
     }
 
     .tag-chip-amber {
@@ -770,12 +771,16 @@
     .btn-primary {
         @apply inline-flex shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium text-white transition duration-150;
         background: var(--accent);
-        box-shadow: 0 2px 14px rgb(232 0 125 / 0.3);
+        box-shadow: 0 2px 14px rgb(197 0 100 / 0.3);
+    }
+
+    .btn-primary:hover {
+        background: var(--accent-strong);
     }
 
     .btn-primary:focus {
         @apply ring-4 outline-none;
-        --tw-ring-color: rgb(227 0 140 / 0.18);
+        --tw-ring-color: rgb(197 0 100 / 0.18);
     }
 
     .btn-secondary {
@@ -803,7 +808,7 @@
 
     .custom-scroll::-webkit-scrollbar-thumb {
         border-radius: 9999px;
-        background: rgb(227 0 140 / 0.22);
+        background: rgb(197 0 100 / 0.22);
     }
 
     .custom-scroll::-webkit-scrollbar-track {
@@ -866,8 +871,8 @@
     }
 
     .status-tag-pending {
-        background: rgb(232 0 125 / 0.1);
-        border-color: rgb(232 0 125 / 0.2);
+        background: rgb(197 0 100 / 0.1);
+        border-color: rgb(197 0 100 / 0.2);
         color: var(--accent);
     }
 
@@ -891,7 +896,7 @@
 
     .assignee-dot {
         @apply flex h-6 w-6 items-center justify-center rounded-full font-['Syne'] text-[9px] font-semibold text-white;
-        background: linear-gradient(135deg, var(--accent), #a0005a);
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
     }
 
     .gantt-shell,
@@ -921,8 +926,8 @@
 
     .gantt-bar {
         @apply h-7 rounded-md;
-        background: linear-gradient(90deg, #a0005a, var(--accent));
-        box-shadow: 0 0 12px rgb(232 0 125 / 0.18);
+        background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+        box-shadow: 0 0 12px rgb(197 0 100 / 0.18);
     }
 
     .calendar-grid {
@@ -937,7 +942,7 @@
 
     .calendar-month-bar {
         @apply mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-[var(--line)] p-3;
-        background: linear-gradient(135deg, rgb(232 0 125 / 0.06), transparent 42%), var(--page-alt);
+        background: linear-gradient(135deg, rgb(197 0 100 / 0.06), transparent 42%), var(--page-alt);
     }
 
     .calendar-day {
@@ -953,7 +958,7 @@
     }
 
     .calendar-day-today {
-        @apply bg-[#e8007d] text-white;
+        @apply bg-[#c50064] text-white;
     }
 
     .calendar-day-add {
@@ -983,8 +988,8 @@
     }
 
     .calendar-event-pending {
-        background: rgb(232 0 125 / 0.1);
-        border-color: rgb(232 0 125 / 0.15);
+        background: rgb(197 0 100 / 0.1);
+        border-color: rgb(197 0 100 / 0.15);
         color: var(--accent);
     }
 

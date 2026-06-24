@@ -23,7 +23,7 @@
 
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="h-2 w-2 rounded-full bg-[#e8007d] shadow-[0_0_8px_rgba(232,0,125,0.5)]"></span>
+                        <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                         <h1 class="truncate font-['Syne'] text-base font-bold text-[var(--text-strong)]">PH Marketing</h1>
                     </div>
                     <p class="mt-1 text-[12.5px] text-[var(--muted)]">Projects workspace</p>

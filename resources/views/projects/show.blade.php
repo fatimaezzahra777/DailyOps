@@ -27,7 +27,7 @@
                 'title' => 'To do',
                 'empty' => 'No tasks to start.',
                 'description' => 'Ideas, specs, and tasks ready to pick up.',
-                'dot' => 'bg-[#e8007d]',
+                'dot' => 'bg-[#c50064]',
                 'laneClass' => 'kanban-lane-pending',
                 'badgeClass' => 'kanban-count-pending',
                 'cardAccent' => 'project-card-accent-pending',
@@ -157,7 +157,7 @@
                                     @if ($loop->index >= 15) data-task-overflow @endif
                                     data-task-id="{{ $task->id }}">
                                     <div class="flex items-start justify-between gap-3">
-                                        <a href="{{ route('tasks.show', $task) }}" class="task-title text-left hover:text-[#e8007d]">{{ $task->title }}</a>
+                                        <a href="{{ route('tasks.show', $task) }}" class="task-title text-left hover:text-[#c50064]">{{ $task->title }}</a>
                                         <span class="{{ $taskStatusClasses[$task->status] ?? 'tag-chip' }}">
                                             {{ str($task->status)->replace('_', ' ')->title() }}
                                         </span>
@@ -257,7 +257,7 @@
                                     @if ($loop->index >= 15) data-task-overflow @endif
                                     data-task-id="{{ $task->id }}">
                                     <div class="flex items-start justify-between gap-3">
-                                        <a href="{{ route('tasks.show', $task) }}" class="task-title text-left hover:text-[#e8007d]">{{ $task->title }}</a>
+                                        <a href="{{ route('tasks.show', $task) }}" class="task-title text-left hover:text-[#c50064]">{{ $task->title }}</a>
                                         <span class="{{ $taskStatusClasses[$task->status] ?? 'tag-chip' }}">
                                             {{ str($task->status)->replace('_', ' ')->title() }}
                                         </span>

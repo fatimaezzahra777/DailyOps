@@ -2,14 +2,14 @@
     <x-slot name="header">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-3">
-                <span class="h-2 w-2 rounded-full bg-[#e8007d] shadow-[0_0_8px_rgba(232,0,125,0.5)]"></span>
+                <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
                     <h2 class="font-['Syne'] text-base font-bold tracking-wide text-[#0a0a0a]">Gestion des users</h2>
                     <p class="mt-1 text-[12.5px] text-[#888888]">Recherche, modification et suppression.</p>
                 </div>
             </div>
 
-            <a href="{{ route('users.create') }}" class="inline-flex items-center justify-center gap-2 rounded-md bg-[#e8007d] px-4 py-2 text-[13px] font-medium text-white shadow-[0_2px_14px_rgba(232,0,125,0.3)] transition hover:bg-[#ff1a8c]">
+            <a href="{{ route('users.create') }}" class="inline-flex items-center justify-center gap-2 rounded-md bg-[#c50064] px-4 py-2 text-[13px] font-medium text-white shadow-[0_2px_14px_rgba(197,0,100,0.3)] transition hover:bg-[#a90056]">
                 <i class="ti ti-plus text-base"></i>
                 Ajouter
             </a>
@@ -34,7 +34,7 @@
                 <div class="border-b border-black/10 p-4">
                     <form method="GET" action="{{ route('users.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <div class="sm:col-span-2">
-                            <x-text-input name="search" type="search" class="block w-full border-black/10 bg-[#f4f4f4] text-[13px] focus:border-[#e8007d] focus:ring-[#e8007d]" placeholder="Chercher par nom ou email" :value="$filters['search'] ?? ''" />
+                            <x-text-input name="search" type="search" class="block w-full border-black/10 bg-[#f4f4f4] text-[13px] focus:border-[#c50064] focus:ring-[#c50064]" placeholder="Chercher par nom ou email" :value="$filters['search'] ?? ''" />
                         </div>
 
                         <div class="flex gap-2">
@@ -65,7 +65,7 @@
                                         <div class="text-[12.5px] text-[#888888]">{{ $user->email }}</div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="inline-flex rounded-full border px-2.5 py-1 text-[10.5px] font-medium {{ $user->role === 'admin' ? 'border-[#e8007d]/20 bg-[#e8007d]/10 text-[#e8007d]' : 'border-black/10 bg-[#eeeeee] text-[#555555]' }}">
+                                        <span class="inline-flex rounded-full border px-2.5 py-1 text-[10.5px] font-medium {{ $user->role === 'admin' ? 'border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064]' : 'border-black/10 bg-[#eeeeee] text-[#555555]' }}">
                                             {{ $user->role }}
                                         </span>
                                     </td>
