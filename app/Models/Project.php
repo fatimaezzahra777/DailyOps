@@ -22,12 +22,57 @@ class Project extends Model
         'assigned_to',
         'start_date',
         'end_date',
+        'completed_at',
+        'archived_at',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'completed_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Project $project) {
+            if ($project->status === 'completed') {
+                if (! $project->completed_at) {
+                    $project->completed_at = now();
+                }
+
+                return;
+            }
+
+            $project->completed_at = null;
+            $project->archived_at = null;
+        });
+    }
+
+    public static function archiveEligibleCompleted(): int
+    {
+        $now = now();
+
+        return static::query()
+            ->where('status', 'completed')
+            ->whereNull('archived_at')
+            ->whereNotNull('completed_at')
+            ->where('completed_at', '<=', $now->copy()->subDays(5))
+            ->update([
+                'archived_at' => $now,
+                'updated_at' => $now,
+            ]);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->whereNull('archived_at');
+    }
+
+    public function scopeArchived(Builder $query): Builder
+    {
+        return $query->whereNotNull('archived_at');
+    }
 
     public function manager(): BelongsTo
     {

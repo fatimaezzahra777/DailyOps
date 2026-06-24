@@ -4,7 +4,7 @@
     <section>
         <div class="mb-5 flex items-center gap-3">
             <span class="h-7 w-[3px] rounded-full bg-[#c50064]"></span>
-            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">Vos coordonnees</p>
+            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">Vos coordonnées</p>
         </div>
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -17,11 +17,20 @@
             </div>
 
             <div>
-                <label for="email" class="mb-2 block text-[13px] font-semibold text-[#374151]">Email</label>
+                <label for="email" class="mb-2 block text-[13px] font-semibold text-[#374151]">E-mail</label>
                 <input id="email" name="email" type="email"
                     class="block w-full rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4 text-[15px] text-[#0a0a0a] placeholder:text-[#94a3b8] transition focus:border-[#c50064] focus:bg-white focus:ring-4 focus:ring-[#c50064]/10"
-                    value="{{ old('email', $user->email ?? '') }}" placeholder="Votre email *" required>
+                    value="{{ old('email', $user->email ?? '') }}" placeholder="Votre e-mail *" required>
                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
+            </div>
+
+            <div>
+                <label for="birth_date" class="mb-2 block text-[13px] font-semibold text-[#374151]">Date de naissance</label>
+                <input id="birth_date" name="birth_date" type="date"
+                    class="block w-full rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4 text-[15px] text-[#0a0a0a] transition focus:border-[#c50064] focus:bg-white focus:ring-4 focus:ring-[#c50064]/10"
+                    value="{{ old('birth_date', isset($user) ? $user->birth_date?->format('Y-m-d') : '') }}"
+                    max="{{ today()->format('Y-m-d') }}">
+                <x-input-error class="mt-2" :messages="$errors->get('birth_date')" />
             </div>
         </div>
     </section>
@@ -71,7 +80,7 @@
     <section>
         <div class="mb-5 flex items-center gap-3">
             <span class="h-7 w-[3px] rounded-full bg-[#c50064]"></span>
-            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">Acces au compte</p>
+            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">Accès au compte</p>
         </div>
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">

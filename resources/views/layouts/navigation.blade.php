@@ -1,11 +1,12 @@
 @php
     $projectNavItems = [
-        ['label' => 'Board', 'icon' => 'ti-layout-dashboard', 'route' => 'projects.index', 'active' => ['projects.index', 'projects.create', 'projects.show', 'projects.edit']],
-        ['label' => 'Table', 'icon' => 'ti-table', 'route' => 'projects.table', 'active' => 'projects.table'],
+        ['label' => 'Kanban', 'icon' => 'ti-layout-dashboard', 'route' => 'projects.index', 'active' => ['projects.index', 'projects.create', 'projects.show', 'projects.edit']],
+        ['label' => 'Tableau', 'icon' => 'ti-table', 'route' => 'projects.table', 'active' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'ti-chart-bar', 'route' => 'projects.gantt', 'active' => 'projects.gantt'],
-        ['label' => 'Calendar', 'icon' => 'ti-calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
+        ['label' => 'Calendrier', 'icon' => 'ti-calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
         ['label' => 'Réunions', 'icon' => 'ti-video', 'route' => 'meetings.index', 'active' => 'meetings.*'],
-        ['label' => 'Reports', 'icon' => 'ti-report', 'route' => 'projects.reports', 'active' => 'projects.reports'],
+        ['label' => 'Rapports', 'icon' => 'ti-report', 'route' => 'projects.reports', 'active' => 'projects.reports'],
+        ['label' => 'Archives', 'icon' => 'ti-archive', 'route' => 'projects.archives', 'active' => 'projects.archives'],
     ];
 @endphp
 
@@ -22,7 +23,7 @@
         </span>
         <div class="min-w-0">
             <div class="truncate text-[12.5px] font-medium text-[#0a0a0a]">DailyOps</div>
-            <div class="text-[10.5px] text-[#888888]">{{ Auth::user()->role === 'admin' ? 'Admin workspace' : 'Member workspace' }}</div>
+            <div class="text-[10.5px] text-[#888888]">{{ Auth::user()->role === 'admin' ? 'Espace administrateur' : 'Espace membre' }}</div>
         </div>
     </div>
 
@@ -31,13 +32,13 @@
 
         <a href="{{ route('dashboard') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ request()->routeIs('dashboard') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('dashboard')) aria-current="page" @endif>
             <i class="ti ti-layout-dashboard text-base"></i>
-            <span class="flex-1">Dashboard</span>
+            <span class="flex-1">Tableau de bord</span>
         </a>
 
         @if (Auth::user()->role === 'admin')
             <a href="{{ route('users.index') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition {{ request()->routeIs('users.*') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064] before:absolute before:-left-2 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded before:bg-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('users.*')) aria-current="page" @endif>
                 <i class="ti ti-users text-base"></i>
-                <span class="flex-1">Users</span>
+                <span class="flex-1">Utilisateurs</span>
             </a>
         @endif
 
@@ -69,7 +70,7 @@
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="text-[#999999] transition hover:text-[#c50064]" title="Log out">
+                <button type="submit" class="text-[#999999] transition hover:text-[#c50064]" title="Se déconnecter">
                     <i class="ti ti-logout text-lg"></i>
                 </button>
             </form>
@@ -97,7 +98,7 @@
             </span>
             <div class="min-w-0">
                 <div class="truncate text-[12.5px] font-medium text-[#0a0a0a]">DailyOps</div>
-                <div class="truncate text-[10.5px] text-[#888888]">{{ Auth::user()->role === 'admin' ? 'Admin workspace' : 'Member workspace' }}</div>
+                <div class="truncate text-[10.5px] text-[#888888]">{{ Auth::user()->role === 'admin' ? 'Espace administrateur' : 'Espace membre' }}</div>
             </div>
         </div>
 
@@ -106,13 +107,13 @@
 
             <a href="{{ route('dashboard') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ request()->routeIs('dashboard') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('dashboard')) aria-current="page" @endif>
                 <i class="ti ti-layout-dashboard text-base"></i>
-                <span>Dashboard</span>
+                <span>Tableau de bord</span>
             </a>
 
             @if (Auth::user()->role === 'admin')
                 <a href="{{ route('users.index') }}" class="relative mx-2 mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] transition {{ request()->routeIs('users.*') ? 'border border-[#c50064]/20 bg-[#c50064]/10 font-semibold text-[#c50064]' : 'text-[#555555] hover:bg-[#f4f4f4] hover:text-[#0a0a0a]' }}" @if (request()->routeIs('users.*')) aria-current="page" @endif>
                     <i class="ti ti-users text-base"></i>
-                    <span>Users</span>
+                    <span>Utilisateurs</span>
                 </a>
             @endif
 
@@ -143,7 +144,7 @@
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-[#999999] transition hover:text-[#c50064]" title="Log out">
+                    <button type="submit" class="text-[#999999] transition hover:text-[#c50064]" title="Se déconnecter">
                         <i class="ti ti-logout text-lg"></i>
                     </button>
                 </form>

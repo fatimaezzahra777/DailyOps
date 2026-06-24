@@ -54,6 +54,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', Rule::in(['admin', 'member'])],
+            'birth_date' => ['nullable', 'date', 'before_or_equal:today'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -71,7 +72,10 @@ class UserController extends Controller
      */
     public function show(User $user): View
     {
+        Project::archiveEligibleCompleted();
+
         $projectsQuery = Project::query()
+            ->active()
             ->with('manager')
             ->latest();
 
@@ -125,6 +129,7 @@ class UserController extends Controller
                 Rule::requiredIf(! $request->user()->is($user)),
                 Rule::in(['admin', 'member']),
             ],
+            'birth_date' => ['nullable', 'date', 'before_or_equal:today'],
         ]);
 
         if ($request->user()->is($user)) {

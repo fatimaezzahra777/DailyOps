@@ -30,6 +30,7 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'birth_date' => '1994-08-17',
             ]);
 
         $response
@@ -40,6 +41,7 @@ class ProfileTest extends TestCase
 
         $this->assertSame('Test User', $user->name);
         $this->assertSame('test@example.com', $user->email);
+        $this->assertSame('1994-08-17', $user->birth_date->format('Y-m-d'));
         $this->assertNull($user->email_verified_at);
     }
 
@@ -59,6 +61,49 @@ class ProfileTest extends TestCase
             ->assertRedirect('/profile');
 
         $this->assertNotNull($user->refresh()->email_verified_at);
+    }
+
+    public function test_appearance_preferences_can_be_updated(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile/appearance', [
+                'theme_color' => '#2563eb',
+                'font_size' => 'large',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'appearance-updated')
+            ->assertRedirect('/profile');
+
+        $user->refresh();
+
+        $this->assertSame('#2563eb', $user->theme_color);
+        $this->assertSame('large', $user->font_size);
+
+        $this->actingAs($user)
+            ->get('/profile')
+            ->assertOk()
+            ->assertSee('--accent: #2563eb', false)
+            ->assertSee('data-font-size="large"', false);
+    }
+
+    public function test_appearance_preferences_must_be_valid(): void
+    {
+        $user = User::factory()->create();
+
+        $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->patch('/profile/appearance', [
+                'theme_color' => 'red',
+                'font_size' => 'huge',
+            ])
+            ->assertSessionHasErrors(['theme_color', 'font_size'])
+            ->assertRedirect('/profile');
     }
 
     public function test_user_can_delete_their_account(): void

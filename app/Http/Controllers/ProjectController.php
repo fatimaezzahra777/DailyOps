@@ -81,6 +81,39 @@ class ProjectController extends Controller
         return view('projects.reports', compact('projects'));
     }
 
+    public function archives(Request $request)
+    {
+        Project::archiveEligibleCompleted();
+
+        $projects = Project::query()
+            ->archived()
+            ->with(['manager', 'collaborators'])
+            ->visibleTo($request->user())
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('name', 'like', '%' . trim((string) $request->input('search')) . '%');
+            })
+            ->orderByDesc('archived_at')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('projects.archives', compact('projects'));
+    }
+
+    public function restore(Request $request, Project $project): RedirectResponse
+    {
+        $this->authorizeProjectManagement($request, $project);
+
+        $project->update([
+            'status' => 'completed',
+            'completed_at' => now(),
+            'archived_at' => null,
+        ]);
+
+        return redirect()
+            ->route('projects.archives')
+            ->with('success', 'Projet restauré avec succès');
+    }
+
     /**
      * Show create form
      */
@@ -206,7 +239,7 @@ class ProjectController extends Controller
         $this->projectService->updateProject($project->id, $data);
 
         return response()->json([
-            'message' => 'Project moved successfully.',
+            'message' => 'Projet déplacé avec succès.',
         ]);
     }
 

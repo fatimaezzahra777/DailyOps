@@ -23,7 +23,7 @@ class TaskColumnController extends Controller
             'position' => $project->taskColumns()->max('position') + 1,
         ]);
 
-        return back()->with('success', 'Colonne ajoutee avec succes.');
+        return back()->with('success', 'Colonne ajoutée avec succès.');
     }
 
     public function update(Request $request, TaskColumn $taskColumn): RedirectResponse
@@ -36,7 +36,7 @@ class TaskColumnController extends Controller
 
         $taskColumn->update($validated);
 
-        return back()->with('success', 'Colonne mise a jour avec succes.');
+        return back()->with('success', 'Colonne mise à jour avec succès.');
     }
 
     public function destroy(Request $request, TaskColumn $taskColumn): RedirectResponse
@@ -50,6 +50,6 @@ class TaskColumnController extends Controller
 
         $taskColumn->delete();
 
-        return back()->with('success', 'Colonne supprimee avec succes.');
+        return back()->with('success', 'Colonne supprimée avec succès.');
     }
 }

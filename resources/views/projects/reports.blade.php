@@ -25,13 +25,13 @@
             <div class="flex items-center gap-3">
                 <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
-                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projects - Reports</h2>
+                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projets - Rapports</h2>
                     <p class="mt-1 text-[12.5px] text-[#888888]">Synthese du workspace.</p>
                 </div>
             </div>
             <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary">
                 <i class="ti ti-table mr-1"></i>
-                Open table
+                Ouvrir le tableau
             </a>
         </div>
 
@@ -49,7 +49,7 @@
             <article class="metric-card">
                 <p class="metric-label">Développement</p>
                 <p class="metric-value mt-3">{{ $inProgress }}</p>
-                <p class="mt-2 text-xs text-[#d97706]">Active work</p>
+                <p class="mt-2 text-xs text-[#d97706]">Travail actif</p>
             </article>
             <article class="metric-card">
                 <p class="metric-label">Overdue</p>
@@ -62,7 +62,7 @@
             <article class="report-card p-5 lg:col-span-2">
                 <div class="mb-5 flex items-center justify-between">
                     <div>
-                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Status breakdown</h3>
+                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Répartition des statuts</h3>
                         <p class="mt-1 text-[12.5px] text-[#888888]">Distribution des projets par statut.</p>
                     </div>
                     <i class="ti ti-chart-bar text-xl text-[#c50064]"></i>

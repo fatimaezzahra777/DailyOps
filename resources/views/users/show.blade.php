@@ -96,7 +96,7 @@
                         return [
                             'statusClass' => $statusClass,
                             'statusLabel' => \App\Models\Project::statusLabel($project->status),
-                            'deadline' => $project->end_date?->format('d M Y') ?? 'No deadline',
+                            'deadline' => $project->end_date?->format('d M Y') ?? 'Aucune échéance',
                         ];
                     };
                 @endphp

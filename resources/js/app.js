@@ -13,6 +13,8 @@ const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
 const taskSearchRoot = document.querySelector('[data-task-search]');
 const realtimeNotificationsRoot = document.querySelector('[data-realtime-notifications]');
+const appearanceForm = document.querySelector('[data-appearance-form]');
+const modalHideTimers = new WeakMap();
 
 let activeModal = null;
 
@@ -27,7 +29,7 @@ const applyTheme = (theme) => {
         themeToggle.setAttribute('aria-pressed', String(isDark));
         const label = themeToggle.querySelector('[data-theme-label]');
         if (label) {
-            label.textContent = isDark ? 'Dark' : 'Light';
+            label.textContent = isDark ? 'Sombre' : 'Clair';
         }
     }
 };
@@ -39,6 +41,59 @@ applyTheme(savedTheme ?? (systemPrefersDark ? 'dark' : 'light'));
 themeToggle?.addEventListener('click', () => {
     applyTheme(html.classList.contains('dark') ? 'light' : 'dark');
 });
+
+if (appearanceForm) {
+    const themeColorField = appearanceForm.querySelector('[data-theme-color-field]');
+    const customThemeColor = appearanceForm.querySelector('[data-custom-theme-color]');
+    const themeColorOptions = appearanceForm.querySelectorAll('[data-theme-color-option]');
+    const fontSizeOptions = appearanceForm.querySelectorAll('[data-font-size-option]');
+
+    const applyAccentPreview = (color) => {
+        if (!/^#[0-9a-f]{6}$/i.test(color)) {
+            return;
+        }
+
+        themeColorField.value = color.toLowerCase();
+        customThemeColor.value = color;
+        html.style.setProperty('--accent', color);
+        html.style.setProperty('--accent-strong', `color-mix(in srgb, ${color}, black 14%)`);
+        html.style.setProperty('--accent-dark', `color-mix(in srgb, ${color}, black 32%)`);
+        html.style.setProperty('--accent-soft', `color-mix(in srgb, ${color} 8%, transparent)`);
+        html.style.setProperty('--accent-line', `color-mix(in srgb, ${color} 22%, transparent)`);
+    };
+
+    themeColorOptions.forEach((option) => {
+        option.addEventListener('change', () => {
+            if (option.checked) {
+                themeColorOptions.forEach((otherOption) => {
+                    if (otherOption !== option) {
+                        otherOption.checked = false;
+                    }
+                });
+                applyAccentPreview(option.value);
+            }
+        });
+    });
+
+    customThemeColor?.addEventListener('input', () => {
+        themeColorOptions.forEach((option) => {
+            option.checked = false;
+        });
+        applyAccentPreview(customThemeColor.value);
+    });
+
+    fontSizeOptions.forEach((option) => {
+        option.addEventListener('change', () => {
+            if (!option.checked) {
+                return;
+            }
+
+            const sizes = { small: 14.4, normal: 16, large: 17.92 };
+            html.style.fontSize = `${sizes[option.value] ?? sizes.normal}px`;
+            document.body.dataset.fontSize = option.value;
+        });
+    });
+}
 
 const closeSidebar = () => {
     sidebar?.classList.add('-translate-x-full');
@@ -122,21 +177,33 @@ const setModalState = (modal, open) => {
         return;
     }
 
-    modal.classList.toggle('hidden', !open);
-    modal.setAttribute('aria-hidden', String(!open));
-
     if (open) {
+        clearTimeout(modalHideTimers.get(modal));
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
         activeModal = modal;
         document.body.classList.add('overflow-hidden');
-        modal.querySelector('input, textarea, select, button')?.focus();
+
+        requestAnimationFrame(() => {
+            modal.classList.add('modal-visible');
+            modal.querySelector('input, textarea, select, button')?.focus();
+        });
         return;
     }
+
+    modal.classList.remove('modal-visible');
+    modal.setAttribute('aria-hidden', 'true');
+
+    const hideTimer = setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 260);
+    modalHideTimers.set(modal, hideTimer);
 
     if (activeModal === modal) {
         activeModal = null;
     }
 
-    if (!getModalRoots().some((item) => !item.classList.contains('hidden'))) {
+    if (!getModalRoots().some((item) => item.classList.contains('modal-visible'))) {
         document.body.classList.remove('overflow-hidden');
     }
 };
@@ -291,10 +358,10 @@ const updateTaskAssigneeOptions = (root = document) => {
         const placeholder = document.createElement('option');
         placeholder.value = '';
         placeholder.textContent = !selectedProject?.value
-            ? 'Select a project first'
+            ? 'Sélectionnez d’abord un projet'
             : collaborators.length === 0
-                ? 'No collaborators for this project'
-                : 'Unassigned';
+                ? 'Aucun collaborateur pour ce projet'
+                : 'Non assigné';
         assigneeField.appendChild(placeholder);
 
         collaborators.forEach((collaborator) => {
@@ -313,10 +380,10 @@ const updateTaskAssigneeOptions = (root = document) => {
 
         if (helpText) {
             helpText.textContent = !selectedProject?.value
-                ? 'Select a project to display its accepted collaborators.'
+                ? 'Sélectionnez un projet pour afficher ses collaborateurs acceptés.'
                 : collaborators.length === 0
-                    ? 'This project has no accepted collaborators yet.'
-                    : `${collaborators.length} collaborator${collaborators.length > 1 ? 's' : ''} available for this project.`;
+                    ? 'Ce projet n’a pas encore de collaborateur accepté.'
+                    : `${collaborators.length} collaborateur${collaborators.length > 1 ? 's' : ''} disponible${collaborators.length > 1 ? 's' : ''} pour ce projet.`;
         }
     });
 };
@@ -392,7 +459,7 @@ const setupBoardDragAndDrop = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Move failed');
+                    throw new Error('Déplacement impossible');
                 }
 
                 window.location.reload();
@@ -411,6 +478,12 @@ const setupTaskBoardDragAndDrop = () => {
     }
 
     document.querySelectorAll('[data-task-board]').forEach((board) => {
+        if (board.dataset.dragDropReady === 'true') {
+            return;
+        }
+
+        board.dataset.dragDropReady = 'true';
+
         const cards = Array.from(board.querySelectorAll('[data-draggable-task]'));
         const zones = Array.from(board.querySelectorAll('[data-task-drop-zone]'));
         let draggedCard = null;
@@ -473,7 +546,7 @@ const setupTaskBoardDragAndDrop = () => {
                     });
 
                     if (!response.ok) {
-                        throw new Error('Task move failed');
+                        throw new Error('Déplacement de la tâche impossible');
                     }
 
                     window.location.reload();
@@ -579,6 +652,38 @@ document.querySelectorAll('[data-calendar-event-modal]').forEach((modal) => {
         ?.dataset.calendarEventType ?? 'project';
     setCalendarEventType(modal, selectedType);
 });
+
+getModalRoots()
+    .filter((modal) => !modal.classList.contains('hidden'))
+    .forEach((modal) => requestAnimationFrame(() => modal.classList.add('modal-visible')));
+
+document.querySelectorAll('[data-flash-message]').forEach((message) => {
+    setTimeout(() => {
+        message.classList.add('flash-message-leaving');
+        message.addEventListener('animationend', () => message.remove(), { once: true });
+    }, 4200);
+});
+
+const dashboard = document.querySelector('[data-dashboard]');
+if (dashboard) {
+    const dashboardCards = dashboard.querySelectorAll('[class*="rounded-[10px]"]');
+    dashboardCards.forEach((card, index) => {
+        card.classList.add('dashboard-card');
+        card.style.setProperty('--animation-delay', `${Math.min(index * 70, 560)}ms`);
+    });
+    dashboard.classList.add('dashboard-animate');
+    setTimeout(() => dashboard.classList.remove('dashboard-animate'), 1300);
+}
+
+const kanban = document.querySelector('[data-kanban-animate]');
+if (kanban) {
+    const animatedItems = kanban.querySelectorAll('.kanban-overview, .metric-card, .kanban-toolbar, .kanban-lane, .task-card');
+    animatedItems.forEach((item, index) => {
+        item.style.setProperty('--animation-delay', `${Math.min(index * 55, 660)}ms`);
+    });
+    kanban.classList.add('kanban-animate');
+    setTimeout(() => kanban.classList.remove('kanban-animate'), 1500);
+}
 
 window.addEventListener('pageshow', () => {
     resetClosedModals();
@@ -723,6 +828,7 @@ if (taskSearchRoot) {
         const data = await response.json();
         tasksContainer.innerHTML = data.results;
         tasksPagination.innerHTML = data.pagination;
+        setupTaskBoardDragAndDrop();
         window.history.replaceState({}, '', targetUrl);
     };
 

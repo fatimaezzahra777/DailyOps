@@ -17,7 +17,7 @@
             <div class="flex items-center gap-3">
                 <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
-                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Tasks - Table view</h2>
+                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projets - Vue tableau</h2>
                     <p class="mt-1 text-[12.5px] text-[#888888]">Vue compacte de tous les projets.</p>
                 </div>
             </div>
@@ -46,10 +46,10 @@
                 </select>
             </form>
 
-            <div class="ml-auto text-[12px] text-[#888888]">{{ $allFilteredProjects->count() }} tasks</div>
+            <div class="ml-auto text-[12px] text-[#888888]">{{ $allFilteredProjects->count() }} projets</div>
             <a href="{{ route('projects.index', $tableQuery) }}" class="btn-secondary">
                 <i class="ti ti-layout-kanban mr-1"></i>
-                Board
+                Kanban
             </a>
         </div>
 
@@ -57,11 +57,11 @@
             <table class="view-table min-w-full">
                 <thead>
                     <tr>
-                        <th>Task name <i class="ti ti-chevron-up text-[11px]"></i></th>
+                        <th>Nom du projet <i class="ti ti-chevron-up text-[11px]"></i></th>
                         <th>Entreprise</th>
-                        <th>Status</th>
-                        <th>Progress</th>
-                        <th>Due date</th>
+                        <th>Statut</th>
+                        <th>Progression</th>
+                        <th>Date d’échéance</th>
                         <th>Manager</th>
                         <th class="text-right">Actions</th>
                     </tr>
@@ -109,18 +109,18 @@
                                 </div>
                             </td>
                             <td class="{{ $project->end_date && $project->end_date->isPast() && $project->status !== 'completed' ? 'text-[#dc2626]' : '' }}">
-                                {{ $project->end_date ? $project->end_date->format('d M') : 'No deadline' }}
+                                {{ $project->end_date ? $project->end_date->format('d M') : 'Aucune échéance' }}
                             </td>
                             <td>
                                 <div class="flex items-center gap-2">
                                     <div class="assignee-dot">{{ $initial }}</div>
-                                    <span class="text-[12px] text-[#888888]">{{ $managerName ?: 'No manager' }}</span>
+                                    <span class="text-[12px] text-[#888888]">{{ $managerName ?: 'Aucun responsable' }}</span>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
-                                        aria-label="View project" title="View project">
+                                        aria-label="Voir le projet" title="Voir le projet">
                                         <span class="material-symbols-rounded text-[18px]">visibility</span>
                                     </a>
                                     <a href="{{ route('projects.edit', $project) }}" class="icon-button h-8 w-8 p-0"

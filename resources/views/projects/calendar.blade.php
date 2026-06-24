@@ -26,10 +26,10 @@
             'completed' => 'calendar-event-completed',
         ];
         $stats = [
-            ['label' => 'Deadlines', 'value' => $monthEvents->count(), 'meta' => $month->format('F Y')],
-            ['label' => 'Meetings', 'value' => $monthMeetings->count(), 'meta' => 'Scheduled this month'],
-            ['label' => 'Starting', 'value' => $startingThisMonth->count(), 'meta' => 'Projects beginning'],
-            ['label' => 'Overdue', 'value' => $overdueProjects->count(), 'meta' => 'Need follow-up'],
+            ['label' => 'Échéances', 'value' => $monthEvents->count(), 'meta' => $month->format('F Y')],
+            ['label' => 'Réunions', 'value' => $monthMeetings->count(), 'meta' => 'Planifiées ce mois-ci'],
+            ['label' => 'Démarrages', 'value' => $startingThisMonth->count(), 'meta' => 'Projets démarrant ce mois'],
+            ['label' => 'En retard', 'value' => $overdueProjects->count(), 'meta' => 'Suivi nécessaire'],
         ];
         $openModal = session('open_modal');
         $selectedEventType = session('calendar_event_type', 'project');
@@ -38,8 +38,8 @@
     <section class="space-y-5">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div class="max-w-2xl">
-                <p class="kanban-eyebrow">Calendar view</p>
-                <h2 class="kanban-title">Projects - Calendar</h2>
+                <p class="kanban-eyebrow">Vue calendrier</p>
+                <h2 class="kanban-title">Projets - Calendrier</h2>
                 <p class="kanban-subtitle">Track project deadlines by month and keep upcoming delivery dates visible.</p>
             </div>
 
@@ -113,7 +113,7 @@
                                         @if ($events->isNotEmpty())
                                             <span class="text-[10.5px] font-semibold text-[var(--muted)]">{{ $events->count() }}</span>
                                         @endif
-                                        <button type="button" class="calendar-day-add" aria-label="Add an event on {{ $day->format('d M Y') }}"
+                                        <button type="button" class="calendar-day-add" aria-label="Ajouter un événement le {{ $day->format('d M Y') }}"
                                             data-modal-open="create-project-modal"
                                             data-create-date="{{ $dateKey }}">
                                             <i class="ti ti-plus"></i>
@@ -181,7 +181,7 @@
                 </article>
 
                 <article class="report-card p-4">
-                    <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Status mix</h3>
+                    <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Répartition des statuts</h3>
                     <div class="mt-4 space-y-3">
                         @foreach (\App\Models\Project::statusOptions() as $status => $label)
                             @php
@@ -212,9 +212,9 @@
         <div class="modal-panel modal-panel-form">
             <div class="modal-header">
                 <div>
-                    <p class="modal-eyebrow">Calendar event</p>
-                    <h2 class="modal-title">New event</h2>
-                    <p class="modal-subtitle">Create a project or schedule a meeting for the selected day.</p>
+                    <p class="modal-eyebrow">Événement calendrier</p>
+                    <h2 class="modal-title">Nouvel événement</h2>
+                    <p class="modal-subtitle">Créez un projet ou planifiez une réunion pour la date sélectionnée.</p>
                 </div>
                 <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
             </div>
@@ -248,8 +248,8 @@
                     ])
 
                     <div class="modal-actions">
-                        <button type="submit" class="btn-primary">Save project</button>
-                        <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
+                        <button type="submit" class="btn-primary">Enregistrer le projet</button>
+                        <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
                     </div>
                 </form>
             </div>
@@ -260,7 +260,7 @@
 
                     @if ($errors->getBag('createMeeting')->any())
                         <div class="rounded-md border border-red-600/20 bg-red-600/10 p-4 text-sm text-red-600">
-                            <p class="font-medium text-red-700">Please fix the following errors:</p>
+                            <p class="font-medium text-red-700">Veuillez corriger les erreurs suivantes :</p>
                             <ul class="mt-2 space-y-1">
                                 @foreach ($errors->getBag('createMeeting')->all() as $error)
                                     <li>{{ $error }}</li>
@@ -277,7 +277,7 @@
 
                     <div class="modal-actions">
                         <button type="submit" class="btn-primary">Créer la réunion</button>
-                        <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
+                        <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
                     </div>
                 </form>
             </div>

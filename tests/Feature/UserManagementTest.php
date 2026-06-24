@@ -19,6 +19,7 @@ class UserManagementTest extends TestCase
             ->post('/users', [
                 'name' => 'Member Ready',
                 'email' => 'member-ready@example.com',
+                'birth_date' => '1992-04-12',
                 'password' => 'password',
                 'password_confirmation' => 'password',
                 'role' => 'member',
@@ -28,6 +29,7 @@ class UserManagementTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => 'member-ready@example.com',
             'role' => 'member',
+            'birth_date' => '1992-04-12 00:00:00',
         ]);
 
         $createdUser = User::where('email', 'member-ready@example.com')->firstOrFail();

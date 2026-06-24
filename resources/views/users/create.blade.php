@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-['Syne'] text-base font-bold tracking-wide text-[#0a0a0a]">Ajouter un user</h2>
+        <h2 class="font-['Syne'] text-base font-bold tracking-wide text-[#0a0a0a]">Ajouter un utilisateur</h2>
     </x-slot>
 
     <div class="bg-[#f7f7f7] px-4 py-6 sm:px-6 lg:px-8">

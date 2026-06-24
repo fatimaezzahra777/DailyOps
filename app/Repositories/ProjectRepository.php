@@ -12,7 +12,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 {
     public function getAll()
     {
-        return Project::latest()->paginate(10);
+        Project::archiveEligibleCompleted();
+
+        return Project::active()->latest()->paginate(10);
     }
 
     public function findById($id)
@@ -58,6 +60,8 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     protected function buildFilteredQuery($request): Builder
     {
+        Project::archiveEligibleCompleted();
+
         $relations = ['manager', 'collaborators'];
 
         if (Schema::hasColumn('projects', 'column_id')) {
@@ -65,6 +69,7 @@ class ProjectRepository implements ProjectRepositoryInterface
         }
 
         $query = Project::query()
+            ->active()
             ->with($relations)
             ->withCount('tasks');
 
