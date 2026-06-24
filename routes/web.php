@@ -6,6 +6,7 @@ use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProjectInvitationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskAttachmentController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskColumnController;
 use App\Http\Controllers\UserController;
@@ -41,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('tasks', TaskController::class);
     Route::patch('/tasks/{id}/change-status',[TaskController::class, 'changeStatus']);
+    Route::post('/tasks/{task}/attachments', [TaskAttachmentController::class, 'store'])->name('tasks.attachments.store');
+    Route::get('/task-attachments/{attachment}/download', [TaskAttachmentController::class, 'download'])->name('task-attachments.download');
+    Route::delete('/task-attachments/{attachment}', [TaskAttachmentController::class, 'destroy'])->name('task-attachments.destroy');
     Route::post('/projects/{project}/task-columns', [TaskColumnController::class, 'store'])->name('task-columns.store');
     Route::patch('/task-columns/{taskColumn}', [TaskColumnController::class, 'update'])->name('task-columns.update');
     Route::delete('/task-columns/{taskColumn}', [TaskColumnController::class, 'destroy'])->name('task-columns.destroy');
