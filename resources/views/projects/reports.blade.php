@@ -24,7 +24,7 @@
                 <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
                     <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projets - Rapports</h2>
-                    <p class="mt-1 text-[12.5px] text-[#888888]">Synthese du workspace.</p>
+                    <p class="mt-1 text-[12.5px] text-[#888888]">Synthèse de l’espace de travail.</p>
                 </div>
             </div>
             <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary">
@@ -37,7 +37,7 @@
             <article class="metric-card metric-card-featured">
                 <p class="metric-label">Total des projets</p>
                 <p class="metric-value mt-3">{{ $projects->count() }}</p>
-                <p class="mt-2 text-xs text-[#888888]">Tous workspace projects</p>
+                <p class="mt-2 text-xs text-[#888888]">Tous les projets de l’espace</p>
             </article>
             <article class="metric-card">
                 <p class="metric-label">Terminé</p>
@@ -47,7 +47,7 @@
             <article class="metric-card">
                 <p class="metric-label">En cours</p>
                 <p class="metric-value mt-3">{{ $inProgression }}</p>
-                <p class="mt-2 text-xs text-[#d97706]">Actifs work</p>
+                <p class="mt-2 text-xs text-[#d97706]">Travail actif</p>
             </article>
             <article class="metric-card">
                 <p class="metric-label">En retard</p>
@@ -60,7 +60,7 @@
             <article class="report-card p-5 lg:col-span-2">
                 <div class="mb-5 flex items-center justify-between">
                     <div>
-                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Statut breakdown</h3>
+                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Répartition par statut</h3>
                         <p class="mt-1 text-[12.5px] text-[#888888]">Distribution des projets par statut.</p>
                     </div>
                     <i class="ti ti-chart-bar text-xl text-[#c50064]"></i>
@@ -91,7 +91,7 @@
                             <span class="ml-3 text-[11px] text-[#999999]">{{ $project->created_at->format('d M') }}</span>
                         </a>
                     @empty
-                        <p class="py-6 text-center text-sm text-[#888888]">Aucune activite.</p>
+                        <p class="py-6 text-center text-sm text-[#888888]">Aucune activité.</p>
                     @endforelse
                 </div>
             </article>

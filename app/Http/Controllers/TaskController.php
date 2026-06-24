@@ -170,7 +170,7 @@ class TaskController extends Controller
 
         if (filled($validated['assigned_user_id']) && ! $project->collaborators->contains('id', (int) $validated['assigned_user_id'])) {
             return back()
-                ->withErrors(['assigned_user_id' => 'La personne choisie doit etre collaborateur du projet.'], "updateTask.{$id}")
+                ->withErrors(['assigned_user_id' => 'La personne choisie doit être collaborateur du projet.'], "updateTask.{$id}")
                 ->withInput()
                 ->with('open_modal', "edit-task-modal-{$id}");
         }

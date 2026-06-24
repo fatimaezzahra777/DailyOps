@@ -63,7 +63,7 @@
                     <div class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4">
                         <dt class="text-[12px] font-semibold text-[#6b7280]">Vérification de l’e-mail</dt>
                         <dd class="mt-2 text-[15px] font-bold text-[#111827]">
-                            {{ $user->email_verified_at ? $user->email_verified_at->format('d/m/Y H:i') : 'Non verifie' }}
+                            {{ $user->email_verified_at ? $user->email_verified_at->format('d/m/Y H:i') : 'Non vérifié' }}
                         </dd>
                     </div>
                     <div class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4">

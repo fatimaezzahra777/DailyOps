@@ -43,13 +43,13 @@
                 'column_id' => null,
                 'dot' => 'bg-[#c50064]',
                 'empty' => 'Aucun projet en attente',
-                'description' => 'Ideas to validate and brief before production.',
+                'description' => 'Idées à valider et à préparer avant la production.',
                 'laneClass' => 'kanban-lane-pending',
                 'badgeClass' => 'kanban-count-pending',
                 'cardAccent' => 'project-card-accent-pending',
             ],
             [
-                'title' => 'En cours projects',
+                'title' => 'Projets en cours',
                 'status' => 'in_progress',
                 'column_id' => null,
                 'dot' => 'bg-[#f59e0b]',
@@ -60,12 +60,12 @@
                 'cardAccent' => 'project-card-accent-progress',
             ],
             [
-                'title' => 'Terminé projects',
+                'title' => 'Projets terminés',
                 'status' => 'completed',
                 'column_id' => null,
                 'dot' => 'bg-[#00a86b]',
                 'empty' => 'Aucun projet terminé',
-                'description' => 'Delivered work and archived outcomes.',
+                'description' => 'Travaux livrés et résultats archivés.',
                 'laneClass' => 'kanban-lane-completed',
                 'badgeClass' => 'kanban-count-completed',
                 'cardAccent' => 'project-card-accent-completed',
@@ -226,7 +226,7 @@
 
                                 <div class="project-meta-grid">
                                     <div class="project-meta-item">
-                                        <span class="project-meta-label">Start</span>
+                                        <span class="project-meta-label">Début</span>
                                         <span class="project-meta-value">{{ $project->start_date ? $project->start_date->format('d M') : 'Non définie' }}</span>
                                     </div>
                                     <div class="project-meta-item">
@@ -251,7 +251,7 @@
                                         <span>{{ $project->created_at?->diffForHumans() }}</span>
                                     </div>
 
-                                    <span class="text-[11px] text-[var(--muted)]">{{ $project->tasks_count ?? 0 }} tasks</span>
+                                    <span class="text-[11px] text-[var(--muted)]">{{ $project->tasks_count ?? 0 }} tâches</span>
                                 </div>
 
                                 <div class="mt-4 flex items-center justify-between gap-3 border-t border-[var(--line)] pt-4">

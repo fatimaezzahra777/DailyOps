@@ -20,7 +20,7 @@
                 <label for="email" class="mb-2 block text-[13px] font-semibold text-[#374151]">E-mail</label>
                 <input id="email" name="email" type="email"
                     class="block w-full rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4 text-[15px] text-[#0a0a0a] placeholder:text-[#94a3b8] transition focus:border-[#c50064] focus:bg-white focus:ring-4 focus:ring-[#c50064]/10"
-                    value="{{ old('email', $user->email ?? '') }}" placeholder="Votre email *" required>
+                    value="{{ old('email', $user->email ?? '') }}" placeholder="Votre e-mail *" required>
                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
             </div>
 

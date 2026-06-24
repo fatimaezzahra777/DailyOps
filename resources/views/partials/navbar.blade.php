@@ -36,7 +36,7 @@
                     <i class="ti ti-layout-kanban mr-1"></i> Kanban
                 </a>
                 <a href="{{ route('projects.table', $projectNavigationQuery) }}" class="topbar-chip {{ request()->routeIs('projects.table') ? 'topbar-chip-active' : '' }}">
-                    <i class="ti ti-table mr-1"></i> Table
+                    <i class="ti ti-table mr-1"></i> Tableau
                 </a>
                 <a href="{{ route('projects.gantt', $projectNavigationQuery) }}" class="topbar-chip {{ request()->routeIs('projects.gantt') ? 'topbar-chip-active' : '' }}">
                     <i class="ti ti-timeline mr-1"></i> Gantt

@@ -11,7 +11,7 @@
 
             <div class="flex gap-3">
                 <a href="{{ route('tasks.index') }}" class="btn-secondary">Retour aux tâches</a>
-                <a href="{{ route('projects.index') }}" class="btn-secondary">Projets board</a>
+                <a href="{{ route('projects.index') }}" class="btn-secondary">Tableau des projets</a>
             </div>
         </div>
 

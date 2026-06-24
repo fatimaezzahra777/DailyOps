@@ -25,7 +25,7 @@
 
         <div class="view-toolbar">
             <a href="{{ route('projects.index', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-layout-kanban mr-1"></i> Kanban</a>
-            <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-table mr-1"></i> Table</a>
+            <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary"><i class="ti ti-table mr-1"></i> Tableau</a>
             <span class="ml-auto text-[12px] text-[var(--muted)]">{{ $projects->count() }} projets planifiés</span>
         </div>
 

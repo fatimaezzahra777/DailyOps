@@ -35,7 +35,7 @@
                 <div class="border-b border-black/10 p-4">
                     <form method="GET" action="{{ route('users.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <div class="sm:col-span-2">
-                            <x-text-input name="search" type="search" class="block w-full border-black/10 bg-[#f4f4f4] text-[13px] focus:border-[#c50064] focus:ring-[#c50064]" placeholder="Chercher par nom ou email" :value="$filters['search'] ?? ''" />
+                            <x-text-input name="search" type="search" class="block w-full border-black/10 bg-[#f4f4f4] text-[13px] focus:border-[#c50064] focus:ring-[#c50064]" placeholder="Chercher par nom ou e-mail" :value="$filters['search'] ?? ''" />
                         </div>
 
                         <div class="flex gap-2">
@@ -71,7 +71,7 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-[12.5px] text-[#888888]">
-                                        {{ $user->email_verified_at ? 'Verifie' : 'Non verifie' }}
+                                        {{ $user->email_verified_at ? 'Vérifié' : 'Non vérifié' }}
                                     </td>
                                     <td class="px-6 py-4 text-[12.5px] text-[#888888]">{{ $user->created_at->format('d/m/Y H:i') }}</td>
                                     <td class="px-6 py-4 text-right text-[13px] font-medium">

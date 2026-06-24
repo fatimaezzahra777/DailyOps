@@ -64,7 +64,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('status', 'Utilisateur cree avec succes. Le compte peut maintenant se connecter.');
+            ->with('status', 'Utilisateur créé avec succès. Le compte peut maintenant se connecter.');
     }
 
     /**
@@ -138,7 +138,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('status', 'Utilisateur mis a jour avec succes.');
+            ->with('status', 'Utilisateur mis à jour avec succès.');
     }
 
     /**
@@ -156,6 +156,6 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('status', 'Utilisateur supprime avec succes.');
+            ->with('status', 'Utilisateur supprimé avec succès.');
     }
 }

@@ -29,7 +29,7 @@ const applyTheme = (theme) => {
         themeToggle.setAttribute('aria-pressed', String(isDark));
         const label = themeToggle.querySelector('[data-theme-label]');
         if (label) {
-            label.textContent = isDark ? 'Dark' : 'Light';
+            label.textContent = isDark ? 'Sombre' : 'Clair';
         }
     }
 };
@@ -320,10 +320,10 @@ const updateTaskAssigneeOptions = (root = document) => {
         const placeholder = document.createElement('option');
         placeholder.value = '';
         placeholder.textContent = !selectedProject?.value
-            ? 'Select a project first'
+            ? 'Sélectionnez d’abord un projet'
             : collaborators.length === 0
-                ? 'No collaborators for this project'
-                : 'Unassigned';
+                ? 'Aucun collaborateur pour ce projet'
+                : 'Non assigné';
         assigneeField.appendChild(placeholder);
 
         collaborators.forEach((collaborator) => {
@@ -342,10 +342,10 @@ const updateTaskAssigneeOptions = (root = document) => {
 
         if (helpText) {
             helpText.textContent = !selectedProject?.value
-                ? 'Select a project to display its accepted collaborators.'
+                ? 'Sélectionnez un projet pour afficher ses collaborateurs acceptés.'
                 : collaborators.length === 0
-                    ? 'This project has no accepted collaborators yet.'
-                    : `${collaborators.length} collaborator${collaborators.length > 1 ? 's' : ''} available for this project.`;
+                    ? 'Ce projet n’a pas encore de collaborateur accepté.'
+                    : `${collaborators.length} collaborateur${collaborators.length > 1 ? 's' : ''} disponible${collaborators.length > 1 ? 's' : ''} pour ce projet.`;
         }
     });
 };
@@ -421,7 +421,7 @@ const setupBoardDragAndDrop = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Move failed');
+                    throw new Error('Déplacement impossible');
                 }
 
                 window.location.reload();
@@ -440,6 +440,12 @@ const setupTaskBoardDragAndDrop = () => {
     }
 
     document.querySelectorAll('[data-task-board]').forEach((board) => {
+        if (board.dataset.dragDropReady === 'true') {
+            return;
+        }
+
+        board.dataset.dragDropReady = 'true';
+
         const cards = Array.from(board.querySelectorAll('[data-draggable-task]'));
         const zones = Array.from(board.querySelectorAll('[data-task-drop-zone]'));
         let draggedCard = null;
@@ -502,7 +508,7 @@ const setupTaskBoardDragAndDrop = () => {
                     });
 
                     if (!response.ok) {
-                        throw new Error('Task move failed');
+                        throw new Error('Déplacement de la tâche impossible');
                     }
 
                     window.location.reload();
@@ -740,6 +746,7 @@ if (taskSearchRoot) {
         const data = await response.json();
         tasksContainer.innerHTML = data.results;
         tasksPagination.innerHTML = data.pagination;
+        setupTaskBoardDragAndDrop();
         window.history.replaceState({}, '', targetUrl);
     };
 

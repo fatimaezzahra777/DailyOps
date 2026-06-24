@@ -44,12 +44,12 @@ class ProjectInvitationController extends Controller
 
         if ($user && $project->manager_id === $user->id) {
             return back()->withErrors([
-                'email' => 'Le manager est deja responsable de ce projet.',
+                'email' => 'Le manager est déjà responsable de ce projet.',
             ])->withInput()->with('open_modal', 'invite-collaborator-modal');
         }
 
         if ($user && $project->collaborators()->whereKey($user->id)->exists()) {
-            return back()->with('success', 'Cette personne est deja collaborateur du projet.');
+            return back()->with('success', 'Cette personne est déjà collaborateur du projet.');
         }
 
         $invitation = ProjectInvitation::updateOrCreate(
@@ -68,7 +68,7 @@ class ProjectInvitationController extends Controller
 
         Mail::to($email)->send(new ProjectInvitationMail($invitation->load(['project', 'inviter'])));
 
-        return back()->with('success', 'Invitation envoyee par email.');
+        return back()->with('success', 'Invitation envoyée par e-mail.');
     }
 
     public function accept(Request $request, ProjectInvitation $invitation): RedirectResponse
@@ -78,7 +78,7 @@ class ProjectInvitationController extends Controller
         if (! $invitation->isPending()) {
             return redirect()
                 ->route('projects.show', $invitation->project)
-                ->with('success', 'Cette invitation a deja ete traitee.');
+                ->with('success', 'Cette invitation a déjà été traitée.');
         }
 
         $user = $invitation->user ?: User::where('email', $invitation->email)->first();
@@ -88,7 +88,7 @@ class ProjectInvitationController extends Controller
 
             return redirect()
                 ->route('register', ['email' => $invitation->email])
-                ->with('status', 'Creez un compte avec cette adresse email pour accepter l invitation.');
+                ->with('status', 'Créez un compte avec cette adresse e-mail pour accepter l’invitation.');
         }
 
         $this->invitationService->acceptInvitation($invitation, $user);
@@ -96,12 +96,12 @@ class ProjectInvitationController extends Controller
         if (! auth()->check()) {
             return redirect()
                 ->route('login')
-                ->with('status', 'Invitation acceptee. Connectez-vous pour acceder au projet.');
+                ->with('status', 'Invitation acceptée. Connectez-vous pour accéder au projet.');
         }
 
         return redirect()
             ->route('projects.show', $invitation->project)
-            ->with('success', 'Invitation acceptee. Vous etes maintenant collaborateur du projet.');
+            ->with('success', 'Invitation acceptée. Vous êtes maintenant collaborateur du projet.');
     }
 
     public function decline(Request $request, ProjectInvitation $invitation): RedirectResponse
@@ -117,6 +117,6 @@ class ProjectInvitationController extends Controller
 
         return redirect()
             ->route('projects.index')
-            ->with('success', 'Invitation refusee.');
+            ->with('success', 'Invitation refusée.');
     }
 }

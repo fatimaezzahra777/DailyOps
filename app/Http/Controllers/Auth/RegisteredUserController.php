@@ -61,7 +61,7 @@ class RegisteredUserController extends Controller
 
             return redirect()
                 ->route('projects.show', $invitation->project)
-                ->with('success', 'Invitation acceptee. Vous etes maintenant collaborateur du projet.');
+                ->with('success', 'Invitation acceptée. Vous êtes maintenant collaborateur du projet.');
         }
 
         return redirect(route('dashboard', absolute: false));

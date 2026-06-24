@@ -214,7 +214,7 @@ class ProjectController extends Controller
         $project->update($data);
 
         return response()->json([
-            'message' => 'Project moved successfully.',
+            'message' => 'Projet déplacé avec succès.',
         ]);
     }
 

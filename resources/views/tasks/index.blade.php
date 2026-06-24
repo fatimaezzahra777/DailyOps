@@ -15,7 +15,7 @@
             <div>
                 <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Gestion des tâches</p>
                 <h1 class="mt-2 text-3xl font-semibold">Tâches</h1>
-                <p class="mt-2 text-sm text-[var(--muted)]">Track execution, priorities, deadlines and comments in the same workspace.</p>
+                <p class="mt-2 text-sm text-[var(--muted)]">Suivez l’exécution, les priorités, les échéances et les commentaires dans le même espace.</p>
             </div>
 
             <div class="flex flex-wrap gap-3">
@@ -42,7 +42,7 @@
                     <div>
                         <label for="task-search-input" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Rechercher</label>
                         <input type="text" id="task-search-input" name="search" value="{{ request('search') }}"
-                            placeholder="Rechercher tasks, assignees, notes..." class="w-full px-4 py-3">
+                            placeholder="Rechercher des tâches, responsables, notes..." class="w-full px-4 py-3">
                     </div>
 
                     <div>
@@ -58,7 +58,7 @@
                     <div>
                         <label for="task-status-filter" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Statut</label>
                         <select id="task-status-filter" name="status" class="w-full px-4 py-3">
-                            <option value="">Tous status</option>
+                            <option value="">Tous les statuts</option>
                             <option value="todo" @selected(request('status') === 'todo')>À faire</option>
                             <option value="in_progress" @selected(request('status') === 'in_progress')>En cours</option>
                             <option value="done" @selected(request('status') === 'done')>Terminée</option>

@@ -1,7 +1,7 @@
 @php
     $projectNavItems = [
         ['label' => 'Kanban', 'icon' => 'ti-layout-dashboard', 'route' => 'projects.index', 'active' => ['projects.index', 'projects.create', 'projects.show', 'projects.edit']],
-        ['label' => 'Table', 'icon' => 'ti-table', 'route' => 'projects.table', 'active' => 'projects.table'],
+        ['label' => 'Tableau', 'icon' => 'ti-table', 'route' => 'projects.table', 'active' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'ti-chart-bar', 'route' => 'projects.gantt', 'active' => 'projects.gantt'],
         ['label' => 'Calendrier', 'icon' => 'ti-calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
         ['label' => 'Rapports', 'icon' => 'ti-report', 'route' => 'projects.reports', 'active' => 'projects.reports'],

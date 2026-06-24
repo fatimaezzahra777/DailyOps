@@ -40,13 +40,13 @@
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Termines</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Terminés</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['completed'] }}</p>
                         <p class="mt-2 text-[11px] text-[#00a86b]">Projets terminés</p>
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">A faire</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">À faire</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['pending'] }}</p>
                         <p class="mt-2 text-[11px] text-[#999999]">Projets en attente</p>
                     </div>
@@ -56,7 +56,7 @@
                     <div class="rounded-[10px] border border-black/10 bg-white shadow-sm lg:col-span-2">
                         <div class="flex items-center justify-between border-b border-black/10 px-5 py-4">
                             <div>
-                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Projets recents</h3>
+                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Projets récents</h3>
                                 <p class="mt-1 text-[12.5px] text-[#888888]">Suivez vos projets récents et leur avancement.</p>
                             </div>
                             <a href="{{ route('projects.index') }}" class="text-[13px] font-medium text-[#c50064] hover:text-[#a90056]">
@@ -129,8 +129,8 @@
                     <div class="rounded-[10px] border border-black/10 bg-white shadow-sm lg:col-span-2">
                         <div class="flex items-center justify-between border-b border-black/10 px-5 py-4">
                             <div>
-                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Utilisateurs recents</h3>
-                                <p class="mt-1 text-[12.5px] text-[#888888]">Les derniers comptes ajoutes.</p>
+                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Utilisateurs récents</h3>
+                                <p class="mt-1 text-[12.5px] text-[#888888]">Les derniers comptes ajoutés.</p>
                             </div>
                             <a href="{{ route('users.index') }}" class="text-[13px] font-medium text-[#c50064] hover:text-[#a90056]">
                                 Tout voir
