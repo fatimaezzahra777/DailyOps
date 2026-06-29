@@ -5,6 +5,7 @@
         auth()->user()->isAdmin() ? ['label' => 'Utilisateurs', 'icon' => 'users', 'route' => 'users.index', 'active' => 'users.*'] : null,
         ['label' => 'Tableau Kanban', 'icon' => 'grid', 'route' => 'projects.index', 'active' => ['projects.index', 'projects.create', 'projects.show', 'projects.edit']],
         ['label' => 'Tâches', 'icon' => 'checklist', 'route' => 'tasks.index', 'active' => 'tasks.*'],
+        ['label' => 'Créations', 'icon' => 'folder', 'route' => 'creadations.index', 'active' => 'creadations.*'],
         ['label' => 'Tableau', 'icon' => 'table', 'route' => 'projects.table', 'active' => 'projects.table'],
         ['label' => 'Gantt', 'icon' => 'chart', 'route' => 'projects.gantt', 'active' => 'projects.gantt'],
         ['label' => 'Calendrier', 'icon' => 'calendar', 'route' => 'projects.calendar', 'active' => 'projects.calendar'],
@@ -59,6 +60,8 @@
                                 <i class="ti ti-table"></i>
                             @elseif ($item['icon'] === 'checklist')
                                 <i class="ti ti-checklist"></i>
+                            @elseif ($item['icon'] === 'folder')
+                                <i class="ti ti-folder"></i>
                             @elseif ($item['icon'] === 'chart')
                                 <i class="ti ti-chart-bar"></i>
                             @elseif ($item['icon'] === 'calendar')
