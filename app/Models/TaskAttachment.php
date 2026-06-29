@@ -39,6 +39,39 @@ class TaskAttachment extends Model
         return str_starts_with((string) $this->mime_type, 'image/');
     }
 
+    public function extension(): string
+    {
+        return strtoupper(pathinfo($this->original_name, PATHINFO_EXTENSION) ?: 'FILE');
+    }
+
+    public function categorySlug(): string
+    {
+        $extension = strtolower($this->extension());
+        $mimeType = (string) $this->mime_type;
+
+        if ($extension === 'pdf' || $mimeType === 'application/pdf') {
+            return 'pdfs';
+        }
+
+        if (str_starts_with($mimeType, 'image/')) {
+            return 'images';
+        }
+
+        if (str_starts_with($mimeType, 'video/')) {
+            return 'videos';
+        }
+
+        if (in_array($extension, ['zip', 'rar', '7z'], true)) {
+            return 'archives';
+        }
+
+        if (in_array($extension, ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'], true)) {
+            return 'documents';
+        }
+
+        return 'documents';
+    }
+
     public function humanSize(): string
     {
         if ($this->size < 1024) {
