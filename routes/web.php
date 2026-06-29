@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CreadationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProjectInvitationController;
@@ -47,8 +48,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('tasks', TaskController::class);
     Route::patch('/tasks/{id}/change-status',[TaskController::class, 'changeStatus']);
+    Route::get('/creadations', [CreadationController::class, 'index'])->name('creadations.index');
     Route::post('/tasks/{task}/attachments', [TaskAttachmentController::class, 'store'])->name('tasks.attachments.store');
     Route::get('/task-attachments/{attachment}/download', [TaskAttachmentController::class, 'download'])->name('task-attachments.download');
+    Route::get('/task-attachments/{attachment}/preview', [TaskAttachmentController::class, 'preview'])->name('task-attachments.preview');
     Route::delete('/task-attachments/{attachment}', [TaskAttachmentController::class, 'destroy'])->name('task-attachments.destroy');
     Route::post('/projects/{project}/task-columns', [TaskColumnController::class, 'store'])->name('task-columns.store');
     Route::patch('/task-columns/{taskColumn}', [TaskColumnController::class, 'update'])->name('task-columns.update');
