@@ -1439,6 +1439,51 @@
         @apply flex h-16 w-16 items-center justify-center rounded-full bg-[#c90068]/10 text-2xl text-[#c90068];
     }
 
+    .asset-folder-card {
+        @apply flex min-h-24 items-center gap-4 rounded-[10px] border border-[var(--line)] bg-white p-5 shadow-sm transition duration-300;
+        animation: asset-card-enter 0.48s ease both;
+    }
+
+    .asset-folder-card:hover,
+    .asset-folder-card-active {
+        border-color: color-mix(in srgb, var(--folder-color) 28%, transparent);
+        box-shadow: 0 16px 32px rgb(197 0 100 / 0.12);
+        transform: translateY(-4px);
+    }
+
+    .asset-folder-icon {
+        @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-md;
+        background: color-mix(in srgb, var(--folder-color) 14%, white);
+        color: var(--folder-color);
+    }
+
+    .asset-file-card {
+        @apply overflow-hidden rounded-[10px] border border-[var(--line)] bg-white shadow-sm transition duration-300;
+        animation: asset-card-enter 0.5s ease both;
+    }
+
+    .asset-file-card:hover {
+        border-color: rgb(197 0 100 / 0.24);
+        box-shadow: 0 18px 32px rgb(0 0 0 / 0.09);
+        transform: translateY(-5px) scale(1.01);
+    }
+
+    .asset-file-preview {
+        @apply relative flex h-28 items-center justify-center overflow-hidden bg-[#f3f4f6];
+    }
+
+    .asset-file-preview img {
+        @apply h-full w-full object-cover transition duration-500;
+    }
+
+    .asset-file-card:hover .asset-file-preview img {
+        transform: scale(1.08);
+    }
+
+    .asset-file-extension {
+        @apply absolute right-2 top-2 rounded-sm border border-[#c50064]/20 bg-white px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#c50064] shadow-sm;
+    }
+
     @keyframes meeting-card-enter {
         from {
             opacity: 0;
@@ -1447,6 +1492,17 @@
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+
+    @keyframes asset-card-enter {
+        from {
+            opacity: 0;
+            transform: translateY(16px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
     }
 
