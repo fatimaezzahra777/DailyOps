@@ -4,28 +4,28 @@
     <section class="space-y-6">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-                <p class="kanban-eyebrow">Espace réunions</p>
-                <h1 class="kanban-title">Toutes les réunions</h1>
-                <p class="kanban-subtitle">Consultez les réunions que vous organisez ou auxquelles vous participez.</p>
+                <p class="kanban-eyebrow">Meetings workspace</p>
+                <h1 class="kanban-title">All meetings</h1>
+                <p class="kanban-subtitle">View meetings you organize or participate in.</p>
             </div>
 
         </div>
 
         <div class="grid gap-3 sm:grid-cols-3">
             <article class="metric-card">
-                <p class="metric-label">À venir</p>
+                <p class="metric-label">Upcoming</p>
                 <p class="metric-value mt-3">{{ $upcomingCount }}</p>
-                <p class="mt-1 text-xs text-[var(--muted)]">Réunions programmées</p>
+                <p class="mt-1 text-xs text-[var(--muted)]">Scheduled meetings</p>
             </article>
             <article class="metric-card">
-                <p class="metric-label">Organisées</p>
+                <p class="metric-label">Organized</p>
                 <p class="metric-value mt-3">{{ $organizedCount }}</p>
-                <p class="mt-1 text-xs text-[var(--muted)]">Créées par vous</p>
+                <p class="mt-1 text-xs text-[var(--muted)]">Created by you</p>
             </article>
             <article class="metric-card">
-                <p class="metric-label">Terminées</p>
+                <p class="metric-label">Completeds</p>
                 <p class="metric-value mt-3">{{ $pastCount }}</p>
-                <p class="mt-1 text-xs text-[var(--muted)]">Réunions passées</p>
+                <p class="mt-1 text-xs text-[var(--muted)]">Past meetings</p>
             </article>
         </div>
 
@@ -33,13 +33,13 @@
             <i class="ti ti-search text-lg text-[var(--muted)]"></i>
             <input name="search" type="search" value="{{ request('search') }}"
                 class="min-w-0 flex-1 border-0 bg-transparent p-0 text-sm shadow-none focus:border-0 focus:ring-0"
-                placeholder="Rechercher par nom, titre ou organisateur...">
+                placeholder="Search par nom, titre ou organisateur...">
             @if (request()->filled('search'))
-                <a href="{{ route('meetings.index') }}" class="meetings-search-clear" aria-label="Réinitialiser la recherche">
+                <a href="{{ route('meetings.index') }}" class="meetings-search-clear" aria-label="Reset search">
                     <i class="ti ti-x"></i>
                 </a>
             @endif
-            <button type="submit" class="meetings-search-submit" aria-label="Rechercher">
+            <button type="submit" class="meetings-search-submit" aria-label="Search">
                 <i class="ti ti-arrow-right"></i>
             </button>
         </form>
@@ -53,7 +53,7 @@
                     $meetingDate = $meeting->scheduled_at->copy()->locale('fr');
                     $visibleParticipants = $meeting->participants->take(3);
                     $remainingParticipants = max(0, $meeting->participants->count() - $visibleParticipants->count());
-                    $statusLabel = $isPast ? 'Terminée' : ($isToday ? "Aujourd'hui" : 'À venir');
+                    $statusLabel = $isPast ? 'Completed' : ($isToday ? "Today" : 'Upcoming');
                     $statusClass = $isPast ? 'meeting-card-status-past' : ($isToday ? 'meeting-card-status-today' : 'meeting-card-status-upcoming');
                 @endphp
 
@@ -70,15 +70,15 @@
                         </span>
 
                         <a href="{{ route('projects.calendar', ['month' => $meeting->scheduled_at->format('Y-m')]) }}"
-                            class="meeting-card-menu" aria-label="Voir les détails dans le calendrier"
-                            title="Voir dans le calendrier">
+                            class="meeting-card-menu" aria-label="View details in calendar"
+                            title="View in calendar">
                             <i class="ti ti-dots-vertical"></i>
                         </a>
                     </div>
 
                     <div class="meeting-card-simple-content mt-5 min-w-0">
                         <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
-                            {{ $isOrganizer ? 'Vous organisez' : 'Vous participez' }}
+                            {{ $isOrganizer ? 'You organize' : 'You participate' }}
                         </p>
                         <h2 class="mt-1.5 truncate font-['Syne'] text-[21px] font-semibold leading-tight text-[#242424]"
                             title="{{ $meeting->title }}">
@@ -100,7 +100,7 @@
                         </div>
                         <div class="flex items-center gap-2.5">
                             <i class="ti ti-video text-base"></i>
-                            <span>Réunion en ligne</span>
+                            <span>Meeting en ligne</span>
                         </div>
                     </dl>
 
@@ -120,12 +120,12 @@
                             @if ($isPast)
                                 <a href="{{ route('projects.calendar', ['month' => $meeting->scheduled_at->format('Y-m')]) }}"
                                     class="meeting-details-button">
-                                    Détails
+                                    Details
                                 </a>
                             @else
                                 <a href="{{ $meeting->meeting_url }}" target="_blank" rel="noopener noreferrer"
                                     class="meeting-join-button-simple">
-                                    Rejoindre
+                                    Join
                                 </a>
                             @endif
                         </div>
@@ -134,8 +134,8 @@
             @empty
                 <div class="meetings-empty-simple md:col-span-2 xl:col-span-3 2xl:col-span-4">
                     <span class="meetings-empty-simple-icon"><i class="ti ti-calendar-off"></i></span>
-                    <h2 class="mt-4 font-['Syne'] text-xl font-bold text-[var(--text-strong)]">Aucune réunion trouvée</h2>
-                    <p class="mt-2 text-sm text-[var(--muted)]">Planifiez une réunion depuis le calendrier pour la voir ici.</p>
+                    <h2 class="mt-4 font-['Syne'] text-xl font-bold text-[var(--text-strong)]">No meeting found</h2>
+                    <p class="mt-2 text-sm text-[var(--muted)]">Schedule a meeting from the calendar to see it here.</p>
                 </div>
             @endforelse
         </div>

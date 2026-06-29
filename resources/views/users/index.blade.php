@@ -4,14 +4,14 @@
             <div class="flex items-center gap-3">
                 <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
-                    <h2 class="font-['Syne'] text-base font-bold tracking-wide text-[#0a0a0a]">Gestion des utilisateurs</h2>
-                    <p class="mt-1 text-[12.5px] text-[#888888]">Recherche, modification et suppression.</p>
+                    <h2 class="font-['Syne'] text-base font-bold tracking-wide text-[#0a0a0a]">User management</h2>
+                    <p class="mt-1 text-[12.5px] text-[#888888]">Search, edit, and delete users.</p>
                 </div>
             </div>
 
             <a href="{{ route('users.create') }}" class="inline-flex items-center justify-center gap-2 rounded-md bg-[#c50064] px-4 py-2 text-[13px] font-medium text-white shadow-[0_2px_14px_rgba(197,0,100,0.3)] transition hover:bg-[#a90056]">
                 <i class="ti ti-plus text-base"></i>
-                Ajouter
+                Add
             </a>
         </div>
     </x-slot>
@@ -35,13 +35,13 @@
                 <div class="border-b border-black/10 p-4">
                     <form method="GET" action="{{ route('users.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <div class="sm:col-span-2">
-                            <x-text-input name="search" type="search" class="block w-full border-black/10 bg-[#f4f4f4] text-[13px] focus:border-[#c50064] focus:ring-[#c50064]" placeholder="Chercher par nom ou e-mail" :value="$filters['search'] ?? ''" />
+                            <x-text-input name="search" type="search" class="block w-full border-black/10 bg-[#f4f4f4] text-[13px] focus:border-[#c50064] focus:ring-[#c50064]" placeholder="Search by name or email" :value="$filters['search'] ?? ''" />
                         </div>
 
                         <div class="flex gap-2">
-                            <x-primary-button>Filtrer</x-primary-button>
+                            <x-primary-button>Filter</x-primary-button>
                             <a href="{{ route('users.index') }}" class="inline-flex items-center rounded-md border border-black/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-[#555555] hover:bg-[#f4f4f4]">
-                                Réinitialiser
+                                Reset
                             </a>
                         </div>
                     </form>
@@ -51,10 +51,10 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-[#f7f7f7]">
                             <tr>
-                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Utilisateur</th>
+                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">User</th>
                                 <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Rôle</th>
-                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Vérification</th>
-                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Créé le</th>
+                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Verification</th>
+                                <th class="px-6 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Created at</th>
                                 <th class="px-6 py-3 text-right font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Actions</th>
                             </tr>
                         </thead>
@@ -71,24 +71,24 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-[12.5px] text-[#888888]">
-                                        {{ $user->email_verified_at ? 'Vérifié' : 'Non vérifié' }}
+                                        {{ $user->email_verified_at ? 'Verified' : 'Not verified' }}
                                     </td>
                                     <td class="px-6 py-4 text-[12.5px] text-[#888888]">{{ $user->created_at->format('d/m/Y H:i') }}</td>
                                     <td class="px-6 py-4 text-right text-[13px] font-medium">
                                         <div class="flex justify-end gap-2">
                                             <a href="{{ route('users.show', $user) }}" class="icon-button h-8 w-8 p-0"
-                                                aria-label="Voir l’utilisateur" title="Voir l’utilisateur">
+                                                aria-label="View l’utilisateur" title="View l’utilisateur">
                                                 <span class="material-symbols-rounded text-[18px]">visibility</span>
                                             </a>
                                             <a href="{{ route('users.edit', $user) }}" class="icon-button h-8 w-8 p-0"
-                                                aria-label="Modifier l’utilisateur" title="Modifier l’utilisateur">
+                                                aria-label="Edit l’utilisateur" title="Edit l’utilisateur">
                                                 <span class="material-symbols-rounded text-[18px]">edit</span>
                                             </a>
-                                            <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                                            <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Delete cet utilisateur ?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="icon-button h-8 w-8 p-0"
-                                                    aria-label="Supprimer l’utilisateur" title="Supprimer l’utilisateur">
+                                                    aria-label="Delete l’utilisateur" title="Delete l’utilisateur">
                                                     <span class="material-symbols-rounded text-[18px]">delete</span>
                                                 </button>
                                             </form>
@@ -97,7 +97,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-500">Aucun utilisateur trouve.</td>
+                                    <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-500">No user found.</td>
                                 </tr>
                             @endforelse
                         </tbody>

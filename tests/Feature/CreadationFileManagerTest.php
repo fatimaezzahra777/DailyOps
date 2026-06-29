@@ -49,7 +49,7 @@ class CreadationFileManagerTest extends TestCase
         $this->actingAs($user)
             ->get(route('creadations.index'))
             ->assertOk()
-            ->assertSee('Créations')
+            ->assertSee('Files')
             ->assertSee('PDFs')
             ->assertSee('Images')
             ->assertSee('brief.pdf')

@@ -30,7 +30,7 @@
         <div class="flex justify-center gap-2 mb-8 flex-wrap">
             <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
                 <i class="ti ti-shield-check"></i>
-                Sécurisé
+                Secure
             </div>
 
             <div class="px-3 py-1 rounded-full border border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064] text-xs flex items-center gap-1">
@@ -54,10 +54,10 @@
             </h2>
 
             <p class="text-gray-500 mb-8 text-sm">
-                Connectez-vous pour accéder à votre espace de travail.
+                Sign in to access your workspace.
             </p>
 
-            <!-- Session Statut -->
+            <!-- Session Status -->
             <x-auth-session-status class="mb-4" :status="session('status')" />
 
             <form method="POST" action="{{ route('login') }}">
@@ -89,18 +89,18 @@
 
                 </div>
 
-                <!-- Mot de passe -->
+                <!-- Password -->
                 <div class="mb-5">
 
                     <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 font-semibold">
-                        Mot de passe
+                        Password
                     </label>
 
                     <input
                         type="password"
                         name="password"
                         required
-                        placeholder="Saisissez votre mot de passe"
+                        placeholder="Enter your password"
                         class="w-full px-4 py-3 rounded-md border border-black/10 bg-[#f4f4f4] focus:border-[#c50064] focus:ring-4 focus:ring-[#c50064]/10 outline-none transition"
                     >
 
@@ -131,7 +131,7 @@
 
                         <a href="{{ route('password.request') }}"
                             class="text-sm text-[#c50064] hover:text-[#a90056] transition">
-                            Mot de passe oublié ?
+                            Forgot your password?
                         </a>
 
                     @endif
@@ -153,7 +153,7 @@
 
         <!-- Footer -->
         <p class="text-center text-sm text-gray-400 mt-6">
-            Plateforme de gestion de projets DailyOps
+            DailyOps project management platform
         </p>
 
     </div>

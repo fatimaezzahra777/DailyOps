@@ -8,7 +8,7 @@
                         {{ ($isAdmin ?? false) ? 'Admin Dashboard' : 'Member Dashboard' }}
                     </h2>
                     <p class="mt-1 text-[12.5px] text-[#888888]">
-                        {{ ($isAdmin ?? false) ? 'Statistiques, users et activite DailyOps.' : 'Vue projets et activite de travail.' }}
+                        {{ ($isAdmin ?? false) ? 'DailyOps statistics, users, and activity.' : 'Project view and work activity.' }}
                     </p>
                 </div>
             </div>
@@ -28,27 +28,27 @@
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     <div class="relative overflow-hidden rounded-[10px] border border-[#c50064]/20 bg-white p-4 shadow-sm">
                         <div class="absolute right-0 top-0 h-20 w-20 bg-[radial-gradient(circle_at_top_right,rgba(197,0,100,0.16),transparent_70%)]"></div>
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Mes projets</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">My projects</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['total_projects'] }}</p>
                         <p class="mt-2 flex items-center gap-1 text-[11px] text-[#c50064]"><i class="ti ti-layout-kanban text-xs"></i> Workspace projects</p>
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Développement</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Development</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['in_progress'] }}</p>
-                        <p class="mt-2 text-[11px] text-[#d97706]">Projets actifs</p>
+                        <p class="mt-2 text-[11px] text-[#d97706]">Active projects</p>
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Déploiement</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Deployment</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['completed'] }}</p>
-                        <p class="mt-2 text-[11px] text-[#00a86b]">Projets livrés</p>
+                        <p class="mt-2 text-[11px] text-[#00a86b]">Delivered projects</p>
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Cahier charge</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Scope</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $memberStats['pending'] }}</p>
-                        <p class="mt-2 text-[11px] text-[#999999]">Projets en cadrage</p>
+                        <p class="mt-2 text-[11px] text-[#999999]">Scoping projects</p>
                     </div>
                 </div>
 
@@ -56,11 +56,11 @@
                     <div class="rounded-[10px] border border-black/10 bg-white shadow-sm lg:col-span-2">
                         <div class="flex items-center justify-between border-b border-black/10 px-5 py-4">
                             <div>
-                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Projets recents</h3>
-                                <p class="mt-1 text-[12.5px] text-[#888888]">Un espace de travail pour suivre tes projets, pas les comptes utilisateurs.</p>
+                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Recent projects</h3>
+                                <p class="mt-1 text-[12.5px] text-[#888888]">A workspace to track your projects, not user accounts.</p>
                             </div>
                             <a href="{{ route('projects.index') }}" class="text-[13px] font-medium text-[#c50064] hover:text-[#a90056]">
-                                Ouvrir board
+                                Open board
                             </a>
                         </div>
 
@@ -70,7 +70,7 @@
                                     <div>
                                         <div class="font-medium text-[#0a0a0a]">{{ $project->name }}</div>
                                         <div class="mt-1 text-[12.5px] text-[#888888]">
-                                            {{ $project->end_date ? 'Deadline: '.$project->end_date->format('d/m/Y') : 'Aucune deadline' }}
+                                            {{ $project->end_date ? 'Deadline: '.$project->end_date->format('d/m/Y') : 'No deadline' }}
                                         </div>
                                     </div>
                                     <span class="inline-flex w-fit rounded-full border px-2.5 py-1 text-[10.5px] font-medium {{ $project->status === 'completed' ? 'border-[#00a86b]/20 bg-[#00a86b]/10 text-[#00a86b]' : ($project->status === 'testing' ? 'border-[#4f46e5]/20 bg-[#4f46e5]/10 text-[#4f46e5]' : ($project->status === 'in_progress' ? 'border-[#d97706]/20 bg-[#d97706]/10 text-[#d97706]' : 'border-[#c50064]/20 bg-[#c50064]/10 text-[#c50064]')) }}">
@@ -78,16 +78,16 @@
                                     </span>
                                 </div>
                             @empty
-                                <div class="px-5 py-10 text-center text-sm text-[#888888]">Aucun projet pour le moment.</div>
+                                <div class="px-5 py-10 text-center text-sm text-[#888888]">No projects yet.</div>
                             @endforelse
                         </div>
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-5 shadow-sm">
-                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Espace membre</h3>
+                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Member workspace</h3>
                         <div class="mt-5 space-y-3">
                             <a href="{{ route('projects.index') }}" class="flex items-center justify-between rounded-md border border-black/10 px-4 py-3 text-[13px] font-medium text-[#555555] transition hover:border-[#c50064]/20 hover:bg-[#c50064]/10 hover:text-[#c50064]">
-                                Voir les projets
+                                View projects
                                 <i class="ti ti-arrow-right"></i>
                             </a>
                             <a href="{{ route('profile.edit') }}" class="flex items-center justify-between rounded-md border border-black/10 px-4 py-3 text-[13px] font-medium text-[#555555] transition hover:border-[#c50064]/20 hover:bg-[#c50064]/10 hover:text-[#c50064]">
@@ -119,7 +119,7 @@
                     </div>
 
                     <div class="rounded-[10px] border border-black/10 bg-white p-4 shadow-sm">
-                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Aujourd'hui</p>
+                        <p class="font-['Syne'] text-[10.5px] uppercase tracking-[0.08em] text-[#888888]">Today</p>
                         <p class="mt-2 font-['Syne'] text-[26px] font-bold leading-none text-[#0a0a0a]">{{ $stats['created_today'] }}</p>
                         <p class="mt-2 text-[11px] text-[#999999]">New accounts</p>
                     </div>
@@ -129,7 +129,7 @@
                     <div class="rounded-[10px] border border-black/10 bg-white shadow-sm lg:col-span-2">
                         <div class="flex items-center justify-between border-b border-black/10 px-5 py-4">
                             <div>
-                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Utilisateurs recents</h3>
+                                <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Recent users</h3>
                                 <p class="mt-1 text-[12.5px] text-[#888888]">Les derniers comptes ajoutes.</p>
                             </div>
                             <a href="{{ route('users.index') }}" class="text-[13px] font-medium text-[#c50064] hover:text-[#a90056]">
@@ -141,9 +141,9 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-[#f7f7f7]">
                                     <tr>
-                                        <th class="px-5 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Nom</th>
+                                        <th class="px-5 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Name</th>
                                         <th class="px-5 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Role</th>
-                                        <th class="px-5 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Cree le</th>
+                                        <th class="px-5 py-3 text-left font-['Syne'] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#999999]">Created at</th>
                                         <th class="px-6 py-3"></th>
                                     </tr>
                                 </thead>
@@ -161,12 +161,12 @@
                                             </td>
                                             <td class="px-5 py-4 text-[12.5px] text-[#888888]">{{ $user->created_at->format('d/m/Y') }}</td>
                                             <td class="px-5 py-4 text-right text-[13px] font-medium">
-                                                <a href="{{ route('users.edit', $user) }}" class="text-[#c50064] hover:text-[#a90056]">Modifier</a>
+                                                <a href="{{ route('users.edit', $user) }}" class="text-[#c50064] hover:text-[#a90056]">Edit</a>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">Aucun utilisateur pour le moment.</td>
+                                            <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">No users yet.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -178,11 +178,11 @@
                         <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Actions rapides</h3>
                         <div class="mt-5 space-y-3">
                             <a href="{{ route('users.index') }}" class="flex items-center justify-between rounded-md border border-black/10 px-4 py-3 text-[13px] font-medium text-[#555555] transition hover:border-[#c50064]/20 hover:bg-[#c50064]/10 hover:text-[#c50064]">
-                                Gerer les users
+                                Manage users
                                 <i class="ti ti-arrow-right"></i>
                             </a>
                             <a href="{{ route('users.create') }}" class="flex items-center justify-between rounded-md border border-black/10 px-4 py-3 text-[13px] font-medium text-[#555555] transition hover:border-[#c50064]/20 hover:bg-[#c50064]/10 hover:text-[#c50064]">
-                                Ajouter un user
+                                Add user
                                 <i class="ti ti-plus"></i>
                             </a>
                         </div>

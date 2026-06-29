@@ -25,9 +25,6 @@ class ProjectController extends Controller
         $this->projectService = $projectService;
     }
 
-    /**
-     * Afficher toutes les projets 
-     */
     public function index(Request $request)
     {
         $projects = $this->projectService->filterProjects($request);
@@ -111,7 +108,7 @@ class ProjectController extends Controller
 
         return redirect()
             ->route('projects.archives')
-            ->with('success', 'Projet restauré avec succès');
+            ->with('success', 'Project restored successfully');
     }
 
     /**
@@ -175,7 +172,7 @@ class ProjectController extends Controller
 
         $this->projectService->createProject($validated);
 
-        return back()->with('success', 'Projet créé avec succès');
+        return back()->with('success', 'Project created successfully');
     }
 
     public function storeColumn(Request $request): RedirectResponse
@@ -203,7 +200,7 @@ class ProjectController extends Controller
 
         return redirect()
             ->route('projects.index')
-            ->with('success', 'Colonne ajoutée avec succès');
+            ->with('success', 'Column added successfully');
     }
 
     public function move(Request $request, Project $project)
@@ -239,7 +236,7 @@ class ProjectController extends Controller
         $this->projectService->updateProject($project->id, $data);
 
         return response()->json([
-            'message' => 'Projet déplacé avec succès.',
+            'message' => 'Project moved successfully.',
         ]);
     }
 
@@ -262,7 +259,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * MOdifier un projet
+     * MOdifier un project
     */
 
     public function edit(Request $request, $id)
@@ -318,7 +315,7 @@ class ProjectController extends Controller
 
         $this->projectService->updateProject($id, $validated);
 
-        return back()->with('success', 'Projet mis à jour avec succès');
+        return back()->with('success', 'Project updated successfully');
     }
 
     /**
@@ -337,7 +334,7 @@ class ProjectController extends Controller
 
         return redirect()
             ->route('projects.index')
-            ->with('success', 'Projet supprimé avec succès');
+            ->with('success', 'Project deleted successfully');
     }
 
     protected function authorizeProjectAccess(Request $request, Project $project): void

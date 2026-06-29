@@ -1,17 +1,17 @@
 @component('mail::message')
-# Votre projet avance étape par étape
+# Your project is moving forward stage by stage
 
-Bonjour,
+Hello,
 
-Le projet **{{ $project->name }}** vient de changer d'étape.
+Project **{{ $project->name }}** has just changed stage.
 
 @component('mail::panel')
-Ancienne étape : **{{ \App\Models\Project::statusLabel($previousStatus) }}**  
-Nouvelle étape : **{{ \App\Models\Project::statusLabel($project->status) }}**
+Previous stage : **{{ \App\Models\Project::statusLabel($previousStatus) }}**  
+New stage : **{{ \App\Models\Project::statusLabel($project->status) }}**
 @endcomponent
 
-Notre équipe continue le suivi afin de faire avancer le projet dans les meilleures conditions.
+Our team continues to monitor progress and move the project forward under the best conditions.
 
-Merci,  
-L'équipe DailyOps
+Thanks,  
+The DailyOps team
 @endcomponent

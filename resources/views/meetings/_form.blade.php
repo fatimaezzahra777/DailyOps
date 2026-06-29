@@ -10,7 +10,7 @@
 
 <div class="grid gap-5 md:grid-cols-2">
     <div>
-        <label for="{{ $prefix }}-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Nom</label>
+        <label for="{{ $prefix }}-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Name</label>
         <input id="{{ $prefix }}-name" name="meeting_name" type="text" class="w-full px-4 py-3"
             value="{{ $fieldValue('meeting_name', $meeting?->name) }}"
             data-field-default="{{ $meeting?->name ?? '' }}" required>
@@ -24,7 +24,7 @@
     </div>
 
     <div class="md:col-span-2">
-        <label for="{{ $prefix }}-url" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Lien de réunion</label>
+        <label for="{{ $prefix }}-url" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Lien de meeting</label>
         <input id="{{ $prefix }}-url" name="meeting_url" type="url" class="w-full px-4 py-3"
             value="{{ $fieldValue('meeting_url', $meeting?->meeting_url) }}"
             data-field-default="{{ $meeting?->meeting_url ?? '' }}"
@@ -40,7 +40,7 @@
     </div>
 
     <fieldset class="md:col-span-2">
-        <legend class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Collaborateurs</legend>
+        <legend class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Collaborators</legend>
         <div class="max-h-52 space-y-2 overflow-y-auto rounded-md border border-[var(--line)] bg-[var(--card-soft)] p-3">
             @forelse ($meetingParticipants as $participant)
                 <label class="flex cursor-pointer items-center gap-3 rounded-md bg-white px-3 py-2 transition hover:bg-[#f8f8f8]">
@@ -53,7 +53,7 @@
                     </span>
                 </label>
             @empty
-                <p class="text-sm text-[var(--muted)]">Aucun collaborateur disponible.</p>
+                <p class="text-sm text-[var(--muted)]">No collaborator disponible.</p>
             @endforelse
         </div>
     </fieldset>

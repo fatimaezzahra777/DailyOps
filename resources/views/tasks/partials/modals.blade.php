@@ -21,11 +21,11 @@
     <div class="modal-panel modal-panel-form">
         <div class="modal-header">
             <div>
-                <p class="modal-eyebrow">Créer une tâche</p>
-                <h2 class="modal-title">Nouvelle tâche</h2>
-                <p class="modal-subtitle">Créez une tâche sans quitter cette page.</p>
+                <p class="modal-eyebrow">Create une task</p>
+                <h2 class="modal-title">Nouvelle task</h2>
+                <p class="modal-subtitle">Create a task without leaving this page.</p>
             </div>
-            <button type="button" class="modal-close" data-modal-close aria-label="Fermer la fenêtre">×</button>
+            <button type="button" class="modal-close" data-modal-close aria-label="Close window">×</button>
         </div>
 
         <form action="{{ route('tasks.store') }}" method="POST" class="space-y-5" autocomplete="off" spellcheck="false">
@@ -44,8 +44,8 @@
             ])
 
             <div class="modal-actions">
-                <button type="submit" class="btn-primary">Créer une tâche</button>
-                <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
+                <button type="submit" class="btn-primary">Create une task</button>
+                <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
             </div>
         </form>
     </div>
@@ -66,47 +66,47 @@
         <div class="modal-panel">
             <div class="modal-header">
                 <div>
-                    <p class="modal-eyebrow">Détails de la tâche</p>
+                    <p class="modal-eyebrow">Task details</p>
                     <h2 class="modal-title">{{ $task->title }}</h2>
-                    <p class="modal-subtitle">Consultez les informations, les notes et les actions de la tâche.</p>
+                    <p class="modal-subtitle">View task information, notes, and actions.</p>
                 </div>
-                <button type="button" class="modal-close" data-modal-close aria-label="Fermer la fenêtre">×</button>
+                <button type="button" class="modal-close" data-modal-close aria-label="Close window">×</button>
             </div>
 
             <div class="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
                 <article class="panel-dark p-5">
                     <div class="flex flex-wrap items-center gap-2">
-                        <span class="{{ $statusClasses[$task->status] ?? 'tag-chip' }}">{{ ['todo' => 'À faire', 'in_progress' => 'En cours', 'done' => 'Terminée'][$task->status] ?? $task->status }}</span>
-                        <span class="{{ $priorityClasses[$task->priority] ?? 'tag-chip' }}">Priorité {{ ['low' => 'faible', 'medium' => 'moyenne', 'high' => 'élevée'][$task->priority] ?? $task->priority }}</span>
+                        <span class="{{ $statusClasses[$task->status] ?? 'tag-chip' }}">{{ ['todo' => 'To do', 'in_progress' => 'In progress', 'done' => 'Completed'][$task->status] ?? $task->status }}</span>
+                        <span class="{{ $priorityClasses[$task->priority] ?? 'tag-chip' }}">Priority {{ ['low' => 'low', 'medium' => 'medium', 'high' => 'high'][$task->priority] ?? $task->priority }}</span>
                         @if ($task->project)
                             <span class="tag-chip">{{ $task->project->name }}</span>
                         @endif
                     </div>
 
                     <p class="mt-4 text-sm leading-7 text-[var(--text)]">
-                        {{ $task->description ?: 'Aucune description n’a encore été ajoutée à cette tâche.' }}
+                        {{ $task->description ?: 'No description has been added to this task yet.' }}
                     </p>
 
                     <div class="mt-5 flex flex-wrap gap-3">
-                        <a href="{{ route('tasks.show', $task) }}" class="btn-secondary">Ouvrir les détails complets</a>
-                        <a href="{{ route('projects.show', $task->project) }}" class="btn-secondary">Voir le projet</a>
+                        <a href="{{ route('tasks.show', $task) }}" class="btn-secondary">Open full details</a>
+                        <a href="{{ route('projects.show', $task->project) }}" class="btn-secondary">View project</a>
                     </div>
                 </article>
 
                 <aside class="space-y-4">
                     <div class="panel-dark p-5">
-                        <h3 class="text-sm font-semibold text-[var(--text-strong)]">Informations sur la tâche</h3>
+                        <h3 class="text-sm font-semibold text-[var(--text-strong)]">Task information</h3>
                         <dl class="mt-4 space-y-3 text-sm">
                             <div class="flex items-center justify-between gap-3">
-                                <dt class="text-[var(--muted)]">Responsable</dt>
-                                <dd class="text-[var(--text-strong)]">{{ $assigneeName ?: 'Non assignée' }}</dd>
+                                <dt class="text-[var(--muted)]">Assignee</dt>
+                                <dd class="text-[var(--text-strong)]">{{ $assigneeName ?: 'Unassigned' }}</dd>
                             </div>
                             <div class="flex items-center justify-between gap-3">
-                                <dt class="text-[var(--muted)]">Date d’échéance</dt>
-                                <dd class="text-[var(--text-strong)]">{{ $task->due_date ? \Illuminate\Support\Carbon::parse($task->due_date)->format('d M Y') : 'Non définie' }}</dd>
+                                <dt class="text-[var(--muted)]">Due date</dt>
+                                <dd class="text-[var(--text-strong)]">{{ $task->due_date ? \Illuminate\Support\Carbon::parse($task->due_date)->format('d M Y') : 'Not set' }}</dd>
                             </div>
                             <div class="flex items-center justify-between gap-3">
-                                <dt class="text-[var(--muted)]">Commentaires</dt>
+                                <dt class="text-[var(--muted)]">Comments</dt>
                                 <dd class="text-[var(--text-strong)]">{{ $task->comments->count() }}</dd>
                             </div>
                         </dl>
@@ -114,11 +114,11 @@
 
                     <div class="modal-actions">
                         <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $editModalId }}"
-                            aria-label="Modifier la tâche" title="Modifier la tâche">
+                            aria-label="Edit task" title="Edit task">
                             <span class="material-symbols-rounded text-[20px]">edit</span>
                         </button>
                         <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $deleteModalId }}"
-                            aria-label="Supprimer la tâche" title="Supprimer la tâche">
+                            aria-label="Delete task" title="Delete task">
                             <span class="material-symbols-rounded text-[20px]">delete</span>
                         </button>
                     </div>
@@ -133,11 +133,11 @@
         <div class="modal-panel modal-panel-form">
             <div class="modal-header">
                 <div>
-                    <p class="modal-eyebrow">Mettre à jour la tâche</p>
+                    <p class="modal-eyebrow">Update task</p>
                     <h2 class="modal-title">{{ $task->title }}</h2>
-                    <p class="modal-subtitle">Modifiez la tâche directement depuis la liste.</p>
+                    <p class="modal-subtitle">Edit the task directly from the list.</p>
                 </div>
-                <button type="button" class="modal-close" data-modal-close aria-label="Fermer la fenêtre">×</button>
+                <button type="button" class="modal-close" data-modal-close aria-label="Close window">×</button>
             </div>
 
             <form action="{{ route('tasks.update', $task) }}" method="POST" class="space-y-5">
@@ -152,8 +152,8 @@
                 ])
 
                 <div class="modal-actions">
-                    <button type="submit" class="btn-primary">Mettre à jour la tâche</button>
-                    <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
+                    <button type="submit" class="btn-primary">Update task</button>
+                    <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
                 </div>
             </form>
         </div>
@@ -165,22 +165,22 @@
         <div class="modal-panel modal-panel-compact">
             <div class="modal-header">
                 <div>
-                    <p class="modal-eyebrow text-rose-300">Supprimer la tâche</p>
+                    <p class="modal-eyebrow text-rose-300">Delete task</p>
                     <h2 class="modal-title">{{ $task->title }}</h2>
-                    <p class="modal-subtitle">Cette tâche sera définitivement supprimée.</p>
+                    <p class="modal-subtitle">This task will be permanently deleted.</p>
                 </div>
-                <button type="button" class="modal-close" data-modal-close aria-label="Fermer la fenêtre">×</button>
+                <button type="button" class="modal-close" data-modal-close aria-label="Close window">×</button>
             </div>
 
             <div class="rounded-2xl border border-rose-500/15 bg-rose-500/10 p-4 text-sm text-[var(--text)]">
-                Vous allez supprimer définitivement cette tâche de la liste.
+                You are about to permanently delete this task from the list.
             </div>
 
             <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="modal-actions">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn-primary">Supprimer la tâche</button>
-                <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
+                <button type="submit" class="btn-primary">Delete task</button>
+                <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
             </form>
         </div>
     </div>

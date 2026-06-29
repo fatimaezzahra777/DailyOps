@@ -1,12 +1,12 @@
 <x-mail::message>
-# Un anniversaire approche
+# Birthday coming up
 
-Bonjour {{ $recipient->name }},
+Hello {{ $recipient->name }},
 
-L’anniversaire de **{{ $birthdayUser->name }}** est demain.
+**{{ $birthdayUser->name }}** has a birthday tomorrow.
 
-Pensez à lui souhaiter un joyeux anniversaire !
+Remember to wish them a happy birthday!
 
-Merci,<br>
+Thanks,<br>
 {{ config('app.name') }}
 </x-mail::message>

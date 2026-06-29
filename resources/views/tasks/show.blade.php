@@ -52,10 +52,10 @@
                 <section class="panel-dark p-6">
                     <div class="flex items-center justify-between gap-4">
                         <div>
-                            <h2 class="text-lg font-semibold">Fichiers</h2>
-                            <p class="mt-1 text-sm text-[var(--muted)]">Ajoutez les images, documents ou livrables liés à cette tâche.</p>
+                            <h2 class="text-lg font-semibold">Files</h2>
+                            <p class="mt-1 text-sm text-[var(--muted)]">Add images, documents, or deliverables related to this task.</p>
                         </div>
-                        <span class="tag-chip">{{ $task->attachments->count() }} fichiers</span>
+                        <span class="tag-chip">{{ $task->attachments->count() }} files</span>
                     </div>
 
                     <form action="{{ route('tasks.attachments.store', $task) }}" method="POST" enctype="multipart/form-data"
@@ -64,7 +64,7 @@
                         <label for="task-attachments" class="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl bg-white/70 px-4 py-7 text-center transition hover:bg-white">
                             <span class="material-symbols-rounded text-[34px] text-[#e8007d]">upload_file</span>
                             <span>
-                                <span class="block text-sm font-semibold text-[var(--text-strong)]">Glissez vos fichiers ou cliquez ici</span>
+                                <span class="block text-sm font-semibold text-[var(--text-strong)]">Glissez vos files ou cliquez ici</span>
                                 <span class="mt-1 block text-xs text-[var(--muted)]">Images, PDF, Office, ZIP — max 10 Mo par fichier.</span>
                             </span>
                             <input id="task-attachments" name="attachments[]" type="file" multiple class="sr-only">
@@ -76,8 +76,8 @@
                             <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
                         @enderror
                         <div class="mt-4 flex flex-wrap items-center gap-3">
-                            <button type="submit" class="btn-primary">Ajouter fichier</button>
-                            <span class="text-xs text-[var(--muted)]">Vous pouvez sélectionner plusieurs fichiers.</span>
+                            <button type="submit" class="btn-primary">Add file</button>
+                            <span class="text-xs text-[var(--muted)]">You can select multiple files.</span>
                         </div>
                     </form>
 
@@ -98,7 +98,7 @@
                                         <p class="mt-1 text-xs text-[var(--muted)]">
                                             {{ $attachment->humanSize() }}
                                             @if ($attachment->user)
-                                                · ajouté par {{ $attachment->user->name }}
+                                                · added by {{ $attachment->user->name }}
                                             @endif
                                         </p>
                                     </div>
@@ -106,22 +106,22 @@
 
                                 <div class="mt-4 flex items-center justify-between gap-3">
                                     <a href="{{ route('task-attachments.download', $attachment) }}" class="btn-secondary py-2 text-xs">
-                                        Télécharger
+                                        Download
                                     </a>
 
                                     @if ($canManageTask || $attachment->user_id === auth()->id())
                                         <form action="{{ route('task-attachments.destroy', $attachment) }}" method="POST"
-                                            onsubmit="return confirm('Supprimer ce fichier ?')">
+                                            onsubmit="return confirm('Delete ce fichier ?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-xs font-medium text-rose-400 hover:text-rose-300">Supprimer</button>
+                                            <button type="submit" class="text-xs font-medium text-rose-400 hover:text-rose-300">Delete</button>
                                         </form>
                                     @endif
                                 </div>
                             </article>
                         @empty
                             <div class="empty-column-card min-h-32 md:col-span-2">
-                                <p>Aucun fichier pour cette tâche. Ajoutez la première pièce jointe.</p>
+                                <p>No files for this task. Add the first attachment.</p>
                             </div>
                         @endforelse
                     </div>
@@ -130,8 +130,8 @@
                 <section class="panel-dark p-6">
                     <div class="flex items-center justify-between gap-4">
                         <div>
-                            <h2 class="text-lg font-semibold">Commentaires</h2>
-                            <p class="mt-1 text-sm text-[var(--muted)]">Gardez le contexte de la tâche au même endroit.</p>
+                            <h2 class="text-lg font-semibold">Comments</h2>
+                            <p class="mt-1 text-sm text-[var(--muted)]">Keep task context in one place.</p>
                         </div>
                         <span class="tag-chip">{{ $task->comments->count() }} commentaire{{ $task->comments->count() > 1 ? 's' : '' }}</span>
                     </div>
@@ -142,9 +142,9 @@
 
                         <div class="grid gap-4 md:grid-cols-[1fr_220px]">
                             <div>
-                                <label for="comment-content" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Commentaire</label>
+                                <label for="comment-content" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Comment</label>
                                 <textarea id="comment-content" name="content" rows="4" class="w-full px-4 py-3"
-                                    placeholder="Écrivez une mise à jour utile pour l’équipe...">{{ old('content') }}</textarea>
+                                    placeholder="Write a useful update for the team...">{{ old('content') }}</textarea>
                                 @error('content')
                                     <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
                                 @enderror
@@ -153,7 +153,7 @@
                             <div>
                                 <label for="comment-author" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Auteur</label>
                                 <input id="comment-author" type="text" name="author" class="w-full px-4 py-3"
-                                    value="{{ old('author') }}" placeholder="Auteur du commentaire">
+                                    value="{{ old('author') }}" placeholder="Comment author">
                                 @error('author')
                                     <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
                                 @enderror
@@ -161,8 +161,8 @@
                         </div>
 
                         <div class="flex flex-wrap items-center gap-3">
-                            <button type="submit" class="btn-primary">Ajouter un commentaire</button>
-                            <a href="{{ route('projects.show', $task->project) }}" class="btn-secondary">Voir le projet</a>
+                            <button type="submit" class="btn-primary">Add comment</button>
+                            <a href="{{ route('projects.show', $task->project) }}" class="btn-secondary">View project</a>
                         </div>
                     </form>
 
@@ -179,16 +179,16 @@
                                     </div>
 
                                     <form action="{{ route('comments.destroy', $comment) }}" method="POST"
-                                        onsubmit="return confirm('Supprimer ce commentaire ?')">
+                                        onsubmit="return confirm('Delete ce commentaire ?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-xs font-medium text-rose-300 hover:text-rose-200">Supprimer</button>
+                                        <button type="submit" class="text-xs font-medium text-rose-300 hover:text-rose-200">Delete</button>
                                     </form>
                                 </div>
                             </article>
                         @empty
                             <div class="empty-column-card min-h-32">
-                                <p>Aucun commentaire pour le moment. Ajoutez la première mise à jour de cette tâche.</p>
+                                <p>No comments yet. Add the first update for this task.</p>
                             </div>
                         @endforelse
                     </div>
@@ -197,22 +197,22 @@
 
             <aside class="space-y-4">
                 <div class="panel-dark p-6">
-                    <h2 class="text-lg font-semibold">Informations de la tâche</h2>
+                    <h2 class="text-lg font-semibold">Task information</h2>
                     <dl class="mt-4 space-y-4 text-sm">
                         <div class="flex items-center justify-between gap-3">
-                            <dt class="text-[var(--muted)]">Projet</dt>
-                            <dd class="text-right text-[var(--text-strong)]">{{ $task->project?->name ?? 'Projet inconnu' }}</dd>
+                            <dt class="text-[var(--muted)]">Project</dt>
+                            <dd class="text-right text-[var(--text-strong)]">{{ $task->project?->name ?? 'Unknown project' }}</dd>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <dt class="text-[var(--muted)]">Échéance</dt>
-                            <dd class="text-[var(--text-strong)]">{{ $task->due_date ? \Illuminate\Support\Carbon::parse($task->due_date)->format('d M Y') : 'Non définie' }}</dd>
+                            <dt class="text-[var(--muted)]">Due date</dt>
+                            <dd class="text-[var(--text-strong)]">{{ $task->due_date ? \Illuminate\Support\Carbon::parse($task->due_date)->format('d M Y') : 'Not set' }}</dd>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <dt class="text-[var(--muted)]">Responsable</dt>
-                            <dd class="text-[var(--text-strong)]">{{ $assigneeName ?: 'Non assignée' }}</dd>
+                            <dt class="text-[var(--muted)]">Assignee</dt>
+                            <dd class="text-[var(--text-strong)]">{{ $assigneeName ?: 'Unassigned' }}</dd>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <dt class="text-[var(--muted)]">Créée le</dt>
+                            <dt class="text-[var(--muted)]">Created at</dt>
                             <dd class="text-[var(--text-strong)]">{{ $task->created_at?->format('d M Y') }}</dd>
                         </div>
                     </dl>
@@ -222,7 +222,7 @@
                     <h2 class="text-lg font-semibold">Actions rapides</h2>
                     @if ($canManageTask)
                         <div class="mt-4 flex flex-col gap-3">
-                            <a href="{{ route('tasks.edit', $task) }}" class="btn-primary">Modifier la tâche</a>
+                            <a href="{{ route('tasks.edit', $task) }}" class="btn-primary">Edit task</a>
                             <form action="{{ route('tasks.destroy', $task) }}" method="POST"
                                 onsubmit="return confirm('Delete this task?')">
                                 @csrf

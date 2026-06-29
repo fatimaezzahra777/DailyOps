@@ -104,7 +104,7 @@ class TaskController extends Controller
 
         $this->taskService->createTask($validated);
 
-        return back()->with('success', 'Tâche créée avec succès.');
+        return back()->with('success', 'Task created successfully.');
     }
     // afficher details d'une tache
 
@@ -163,14 +163,14 @@ class TaskController extends Controller
 
         if (filled($validated['task_column_id']) && ! TaskColumn::where('project_id', $project->id)->whereKey($validated['task_column_id'])->exists()) {
             return back()
-                ->withErrors(['task_column_id' => 'La colonne choisie doit appartenir au projet.'], "updateTask.{$id}")
+                ->withErrors(['task_column_id' => 'La colonne choisie doit appartenir au project.'], "updateTask.{$id}")
                 ->withInput()
                 ->with('open_modal', "edit-task-modal-{$id}");
         }
 
         if (filled($validated['assigned_user_id']) && ! $project->collaborators->contains('id', (int) $validated['assigned_user_id'])) {
             return back()
-                ->withErrors(['assigned_user_id' => 'La personne choisie doit être collaborateur du projet.'], "updateTask.{$id}")
+                ->withErrors(['assigned_user_id' => 'The selected person must be a project collaborator.'], "updateTask.{$id}")
                 ->withInput()
                 ->with('open_modal', "edit-task-modal-{$id}");
         }
@@ -179,7 +179,7 @@ class TaskController extends Controller
 
         $this->taskService->updateTask($id, $validated);
 
-        return back()->with('success', 'Tâche mise à jour avec succès.');
+        return back()->with('success', 'Task updated successfully.');
     }
 
     public function destroy($id)
@@ -189,7 +189,7 @@ class TaskController extends Controller
 
         $this->taskService->deleteTask($id);
 
-        return back()->with('success', 'Tâche supprimée avec succès.');
+        return back()->with('success', 'Task deleted successfully.');
     }
 
     public function changeStatus(Request $request, $id)

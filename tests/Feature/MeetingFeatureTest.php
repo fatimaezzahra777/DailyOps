@@ -262,11 +262,11 @@ class MeetingFeatureTest extends TestCase
         $this->actingAs($user)
             ->get(route('meetings.index'))
             ->assertOk()
-            ->assertSee('Toutes les réunions')
+            ->assertSee('All meetings')
             ->assertSee('My organized meeting')
             ->assertSee('My participant meeting')
             ->assertDontSee('Hidden meeting')
-            ->assertSee('Réunions');
+            ->assertSee('Meetings');
     }
 
     public function test_meetings_index_can_be_searched(): void

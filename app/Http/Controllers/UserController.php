@@ -64,7 +64,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('status', 'Utilisateur cree avec succes. Le compte peut maintenant se connecter.');
+            ->with('status', 'User created successfully. The account can now sign in.');
     }
 
     /**
@@ -146,7 +146,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('status', 'Utilisateur mis a jour avec succes.');
+            ->with('status', 'User updated successfully.');
     }
 
     /**
@@ -156,7 +156,7 @@ class UserController extends Controller
     {
         if ($request->user()->is($user)) {
             return back()->withErrors([
-                'user' => 'Vous ne pouvez pas supprimer votre propre compte.',
+                'user' => 'You cannot delete your own account.',
             ]);
         }
 
@@ -164,6 +164,6 @@ class UserController extends Controller
 
         return redirect()
             ->route('users.index')
-            ->with('status', 'Utilisateur supprime avec succes.');
+            ->with('status', 'User deleted successfully.');
     }
 }

@@ -11,12 +11,12 @@
                         Afficher<br>un user
                     </h1>
                     <p class="mt-5 text-[15px] text-[#6b7280] sm:text-base">
-                        Consultez les informations et l'etat du compte membre.
+                        View member account information and status.
                     </p>
                 </div>
 
                 <a href="{{ route('users.edit', $user) }}" class="icon-button h-11 w-11 p-0"
-                    aria-label="Modifier user" title="Modifier user">
+                    aria-label="Edit user" title="Edit user">
                     <span class="material-symbols-rounded text-[22px]" aria-hidden="true">edit</span>
                 </a>
             </div>
@@ -29,7 +29,7 @@
 
                 <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4">
-                        <dt class="text-[12px] font-semibold text-[#6b7280]">Nom complet</dt>
+                        <dt class="text-[12px] font-semibold text-[#6b7280]">Full name</dt>
                         <dd class="mt-2 text-[15px] font-bold text-[#111827]">{{ $user->name }}</dd>
                     </div>
                     <div class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4">
@@ -61,11 +61,11 @@
                         </dd>
                     </div>
                     <div class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4">
-                        <dt class="text-[12px] font-semibold text-[#6b7280]">Cree le</dt>
+                        <dt class="text-[12px] font-semibold text-[#6b7280]">Created at</dt>
                         <dd class="mt-2 text-[15px] font-bold text-[#111827]">{{ $user->created_at->format('d/m/Y H:i') }}</dd>
                     </div>
                     <div class="rounded-[10px] border border-[#dce4ef] bg-[#f8fafc] px-4 py-4">
-                        <dt class="text-[12px] font-semibold text-[#6b7280]">Mis a jour le</dt>
+                        <dt class="text-[12px] font-semibold text-[#6b7280]">Updated at</dt>
                         <dd class="mt-2 text-[15px] font-bold text-[#111827]">{{ $user->updated_at->format('d/m/Y H:i') }}</dd>
                     </div>
                 </dl>
@@ -76,11 +76,11 @@
                     <div class="flex items-center gap-3">
                         <span class="h-7 w-[3px] rounded-full bg-[#c50064]"></span>
                         <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#c50064]">
-                            {{ $user->isAdmin() ? 'Tous les projets' : 'Projets de cette personne' }}
+                            {{ $user->isAdmin() ? 'All projects' : 'Projects de cette personne' }}
                         </p>
                     </div>
                     <span class="inline-flex rounded-full border border-black/10 bg-[#f8fafc] px-3 py-1 text-[11px] font-bold text-[#6b7280]">
-                        {{ $visibleProjects->count() }} projets
+                        {{ $visibleProjects->count() }} projects
                     </span>
                 </div>
 
@@ -96,7 +96,7 @@
                         return [
                             'statusClass' => $statusClass,
                             'statusLabel' => \App\Models\Project::statusLabel($project->status),
-                            'deadline' => $project->end_date?->format('d M Y') ?? 'Aucune échéance',
+                            'deadline' => $project->end_date?->format('d M Y') ?? 'No due date',
                         ];
                     };
                 @endphp
@@ -112,7 +112,7 @@
                                         <p class="mt-1 text-xs text-[#6b7280]">Manager: {{ $project->manager?->name ?? 'Not assigned' }}</p>
                                     </div>
                                     <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
-                                        aria-label="Voir projet" title="Voir projet">
+                                        aria-label="View project" title="View project">
                                         <span class="material-symbols-rounded text-[18px]">visibility</span>
                                     </a>
                                 </div>
@@ -126,13 +126,13 @@
                                 </div>
                             </article>
                         @empty
-                            <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">Aucun projet trouve.</p>
+                            <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">No project found.</p>
                         @endforelse
                     </div>
                 @else
                     <div class="grid gap-6 lg:grid-cols-2">
                         <div>
-                            <h3 class="mb-3 text-sm font-extrabold text-[#111827]">Projets crees / geres</h3>
+                            <h3 class="mb-3 text-sm font-extrabold text-[#111827]">Created / managed projects</h3>
                             <div class="space-y-3">
                                 @forelse ($managedProjects as $project)
                                     @php($meta = $projectCard($project))
@@ -143,7 +143,7 @@
                                                 <p class="mt-1 text-xs text-[#6b7280]">{{ $meta['deadline'] }}</p>
                                             </div>
                                             <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
-                                                aria-label="Voir projet" title="Voir projet">
+                                                aria-label="View project" title="View project">
                                                 <span class="material-symbols-rounded text-[18px]">visibility</span>
                                             </a>
                                         </div>
@@ -152,13 +152,13 @@
                                         </span>
                                     </article>
                                 @empty
-                                    <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">Aucun projet gere.</p>
+                                    <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">No project gere.</p>
                                 @endforelse
                             </div>
                         </div>
 
                         <div>
-                            <h3 class="mb-3 text-sm font-extrabold text-[#111827]">Projets assignes / collaboration</h3>
+                            <h3 class="mb-3 text-sm font-extrabold text-[#111827]">Assigned projects / collaboration</h3>
                             <div class="space-y-3">
                                 @forelse ($assignedProjects as $project)
                                     @php($meta = $projectCard($project))
@@ -169,7 +169,7 @@
                                                 <p class="mt-1 text-xs text-[#6b7280]">Manager: {{ $project->manager?->name ?? 'Not assigned' }}</p>
                                             </div>
                                             <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
-                                                aria-label="Voir projet" title="Voir projet">
+                                                aria-label="View project" title="View project">
                                                 <span class="material-symbols-rounded text-[18px]">visibility</span>
                                             </a>
                                         </div>
@@ -183,7 +183,7 @@
                                         </div>
                                     </article>
                                 @empty
-                                    <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">Aucun projet assigne.</p>
+                                    <p class="rounded-[10px] border border-dashed border-[#dce4ef] bg-[#f8fafc] p-5 text-sm text-[#6b7280]">No project assigne.</p>
                                 @endforelse
                             </div>
                         </div>
@@ -194,7 +194,7 @@
             <div class="mt-10">
                 <a href="{{ route('users.index') }}" class="inline-flex items-center justify-center gap-2 rounded-[10px] border border-[#dce4ef] bg-white px-5 py-4 text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#374151] transition hover:bg-[#f8fafc]">
                     <span class="material-symbols-rounded text-[18px]" aria-hidden="true">arrow_back</span>
-                    Retour
+                    Back
                 </a>
             </div>
         </div>

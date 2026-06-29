@@ -11,15 +11,15 @@
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <p class="kanban-eyebrow">File manager</p>
-                <h1 class="font-['Syne'] text-3xl font-extrabold text-[var(--text-strong)]">Créations</h1>
+                <h1 class="font-['Syne'] text-3xl font-extrabold text-[var(--text-strong)]">Files</h1>
                 <p class="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-                    Toutes les pièces jointes des tâches, regroupées automatiquement par type de fichier.
+                    All task attachments, automatically grouped by file type.
                 </p>
             </div>
 
             <a href="{{ route('tasks.index') }}" class="btn-primary inline-flex items-center gap-2">
                 <span class="material-symbols-rounded text-[18px]">upload_file</span>
-                Upload depuis une tâche
+                Upload from a task
             </a>
         </div>
 
@@ -35,7 +35,7 @@
                     <span class="min-w-0 flex-1">
                         <span class="block truncate text-base font-bold text-[var(--text-strong)]">{{ $folder->name }}</span>
                         <span class="mt-1 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
-                            {{ $folder->files_count }} fichiers
+                            {{ $folder->files_count }} files
                         </span>
                     </span>
                     <span class="material-symbols-rounded text-[20px] text-[var(--muted)] transition group-hover:translate-x-1">chevron_right</span>
@@ -46,16 +46,16 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h2 class="font-['Syne'] text-lg font-bold text-[var(--text-strong)]">
-                    {{ $selectedFolderName ? "Fichiers {$selectedFolderName}" : 'Fichiers récents' }}
+                    {{ $selectedFolderName ? "Files {$selectedFolderName}" : 'Recent files' }}
                 </h2>
                 <p class="mt-1 text-xs text-[var(--muted)]">
-                    {{ $selectedFolderName ? $attachments->count().' fichiers dans ce dossier' : $totalAttachments.' fichiers au total' }}
+                    {{ $selectedFolderName ? $attachments->count().' files in this folder' : $totalAttachments.' files total' }}
                 </p>
             </div>
 
             @if ($selectedFolder)
                 <a href="{{ route('creadations.index') }}" class="text-xs font-bold uppercase tracking-[0.12em] text-[#c50064] hover:text-[#9f0050]">
-                    Voir tout
+                    View tout
                 </a>
             @endif
         </div>
@@ -87,14 +87,14 @@
                         </div>
 
                         <div class="mt-3 border-t border-[var(--line)] pt-3 text-xs text-[var(--muted)]">
-                            <p class="truncate">Projet : {{ $attachment->task?->project?->name ?? 'Non défini' }}</p>
-                            <p class="mt-1 truncate">Tâche : {{ $attachment->task?->title ?? 'Non définie' }}</p>
+                            <p class="truncate">Project : {{ $attachment->task?->project?->name ?? 'Not set' }}</p>
+                            <p class="mt-1 truncate">Task : {{ $attachment->task?->title ?? 'Not set' }}</p>
                         </div>
                     </div>
                 </article>
             @empty
                 <div class="empty-column-card min-h-52 sm:col-span-2 lg:col-span-3 2xl:col-span-5">
-                    <p>Aucun fichier trouvé. Ajoutez des attachments depuis la page détail d’une tâche.</p>
+                    <p>No file found. Add attachments from a task detail page.</p>
                 </div>
             @endforelse
         </div>

@@ -82,10 +82,10 @@ class Project extends Model
     public static function statusOptions(): array
     {
         return [
-            'pending' => 'Cahier charge',
-            'in_progress' => 'Développement',
-            'testing' => 'Teste',
-            'completed' => 'Déploiement',
+            'pending' => 'Scope',
+            'in_progress' => 'Development',
+            'testing' => 'Testing',
+            'completed' => 'Deployment',
         ];
     }
 
@@ -153,7 +153,7 @@ class Project extends Model
         return $this->hasMany(ProjectInvitation::class);
     }
 
-    // filtrer les projet de chaque user 
+    // filtrer les project de chaque user 
     
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {

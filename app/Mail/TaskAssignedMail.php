@@ -27,7 +27,7 @@ class TaskAssignedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Nouvelle tâche assignée : '.$this->task->title,
+            subject: 'New task assigned: '.$this->task->title,
         );
     }
 

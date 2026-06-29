@@ -35,7 +35,7 @@ class TaskAttachmentController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Fichier ajouté avec succès');
+        return back()->with('success', 'File added successfully');
     }
 
     public function download(Request $request, TaskAttachment $attachment)
@@ -73,6 +73,6 @@ class TaskAttachmentController extends Controller
 
         $attachment->delete();
 
-        return back()->with('success', 'Fichier supprimé avec succès');
+        return back()->with('success', 'File deleted successfully');
     }
 }

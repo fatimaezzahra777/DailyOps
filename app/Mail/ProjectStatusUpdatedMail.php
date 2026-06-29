@@ -21,7 +21,7 @@ class ProjectStatusUpdatedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Mise à jour de votre projet : '.$this->project->name,
+            subject: 'Project update : '.$this->project->name,
         );
     }
 

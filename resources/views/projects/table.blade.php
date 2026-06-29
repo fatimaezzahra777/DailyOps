@@ -5,10 +5,10 @@
         $queryWithoutStatus = request()->except(['status', 'page']);
         $tableQuery = array_filter(request()->only(['search', 'status', 'company']), fn ($value) => filled($value));
         $statusMeta = [
-            'pending' => ['label' => 'Cahier charge', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#c50064]'],
-            'in_progress' => ['label' => 'Développement', 'class' => 'status-tag-progress', 'progress' => 64, 'priority' => 'bg-[#d97706]'],
-            'testing' => ['label' => 'Teste', 'class' => 'status-tag-testing', 'progress' => 82, 'priority' => 'bg-[#4f46e5]'],
-            'completed' => ['label' => 'Déploiement', 'class' => 'status-tag-completed', 'progress' => 100, 'priority' => 'bg-[#00a86b]'],
+            'pending' => ['label' => 'Scope', 'class' => 'status-tag-pending', 'progress' => 18, 'priority' => 'bg-[#c50064]'],
+            'in_progress' => ['label' => 'Development', 'class' => 'status-tag-progress', 'progress' => 64, 'priority' => 'bg-[#d97706]'],
+            'testing' => ['label' => 'Testing', 'class' => 'status-tag-testing', 'progress' => 82, 'priority' => 'bg-[#4f46e5]'],
+            'completed' => ['label' => 'Deployment', 'class' => 'status-tag-completed', 'progress' => 100, 'priority' => 'bg-[#00a86b]'],
         ];
     @endphp
 
@@ -17,15 +17,15 @@
             <div class="flex items-center gap-3">
                 <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
-                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projets - Vue tableau</h2>
-                    <p class="mt-1 text-[12.5px] text-[#888888]">Vue compacte de tous les projets.</p>
+                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projects - Table view</h2>
+                    <p class="mt-1 text-[12.5px] text-[#888888]">Compact view of all projects.</p>
                 </div>
             </div>
 
         </div>
 
         <div class="view-toolbar">
-            <a href="{{ route('projects.table', $queryWithoutStatus) }}" class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">Tous</a>
+            <a href="{{ route('projects.table', $queryWithoutStatus) }}" class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">All</a>
             @foreach (\App\Models\Project::statusOptions() as $status => $label)
                 <a href="{{ route('projects.table', array_merge($queryWithoutStatus, ['status' => $status])) }}" class="filter-pill {{ request('status') === $status ? 'filter-pill-active' : '' }}">{{ $label }}</a>
             @endforeach
@@ -37,16 +37,16 @@
                 @if (request('status'))
                     <input type="hidden" name="status" value="{{ request('status') }}">
                 @endif
-                <label for="company-filter" class="sr-only">Filtrer par entreprise</label>
+                <label for="company-filter" class="sr-only">Filter by company</label>
                 <select id="company-filter" name="company" class="min-w-44 py-2 pl-3 pr-9 text-xs"
                     onchange="this.form.submit()">
-                    <option value="">Toutes les entreprises</option>
+                    <option value="">All companies</option>
                     <option value="softart" @selected(request('company') === 'softart')>SoftArt</option>
                     <option value="company_name" @selected(request('company') === 'company_name')>Company Name</option>
                 </select>
             </form>
 
-            <div class="ml-auto text-[12px] text-[#888888]">{{ $allFilteredProjects->count() }} projets</div>
+            <div class="ml-auto text-[12px] text-[#888888]">{{ $allFilteredProjects->count() }} projects</div>
             <a href="{{ route('projects.index', $tableQuery) }}" class="btn-secondary">
                 <i class="ti ti-layout-kanban mr-1"></i>
                 Kanban
@@ -57,11 +57,11 @@
             <table class="view-table min-w-full">
                 <thead>
                     <tr>
-                        <th>Nom du projet <i class="ti ti-chevron-up text-[11px]"></i></th>
-                        <th>Entreprise</th>
-                        <th>Statut</th>
+                        <th>Project name <i class="ti ti-chevron-up text-[11px]"></i></th>
+                        <th>Company</th>
+                        <th>Status</th>
                         <th>Progression</th>
-                        <th>Date d’échéance</th>
+                        <th>Due date</th>
                         <th>Manager</th>
                         <th class="text-right">Actions</th>
                     </tr>
@@ -79,7 +79,7 @@
                                     <div class="project-check"></div>
                                     <div class="priority-dot {{ $meta['priority'] }}"></div>
                                     @if ($project->projectLogoUrl())
-                                        <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                                        <img src="{{ $project->projectLogoUrl() }}" alt="Logo of {{ $project->name }}"
                                             class="project-logo-circle">
                                     @endif
                                     <div>
@@ -96,7 +96,7 @@
                                         <img src="{{ asset($project->companyLogo()) }}" alt="{{ $project->companyLabel() }}">
                                     </span>
                                 @else
-                                    <span class="text-xs text-[var(--muted)]">Non définie</span>
+                                    <span class="text-xs text-[var(--muted)]">Not set</span>
                                 @endif
                             </td>
                             <td><span class="status-tag {{ $meta['class'] }}">{{ $meta['label'] }}</span></td>
@@ -109,18 +109,18 @@
                                 </div>
                             </td>
                             <td class="{{ $project->end_date && $project->end_date->isPast() && $project->status !== 'completed' ? 'text-[#dc2626]' : '' }}">
-                                {{ $project->end_date ? $project->end_date->format('d M') : 'Aucune échéance' }}
+                                {{ $project->end_date ? $project->end_date->format('d M') : 'No due date' }}
                             </td>
                             <td>
                                 <div class="flex items-center gap-2">
                                     <div class="assignee-dot">{{ $initial }}</div>
-                                    <span class="text-[12px] text-[#888888]">{{ $managerName ?: 'Aucun responsable' }}</span>
+                                    <span class="text-[12px] text-[#888888]">{{ $managerName ?: 'No owner' }}</span>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ route('projects.show', $project) }}" class="icon-button h-8 w-8 p-0"
-                                        aria-label="Voir le projet" title="Voir le projet">
+                                        aria-label="View project" title="View project">
                                         <span class="material-symbols-rounded text-[18px]">visibility</span>
                                     </a>
                                     <a href="{{ route('projects.edit', $project) }}" class="icon-button h-8 w-8 p-0"
@@ -141,7 +141,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-10 text-center text-sm text-[#888888]">Aucun projet trouve.</td>
+                            <td colspan="7" class="px-6 py-10 text-center text-sm text-[#888888]">No project found.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -15,7 +15,7 @@
 @endphp
 
 <fieldset class="md:col-span-2">
-    <legend class="mb-3 block text-sm font-medium text-[var(--text-strong)]">Entreprise</legend>
+    <legend class="mb-3 block text-sm font-medium text-[var(--text-strong)]">Company</legend>
     <div class="grid gap-3 sm:grid-cols-2">
         @foreach ($companies as $companyValue => $company)
             <div>

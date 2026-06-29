@@ -21,7 +21,7 @@ class BirthdayTomorrowMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "L'anniversaire de {$this->birthdayUser->name} est demain",
+            subject: "'s birthday is tomorrow",
         );
     }
 

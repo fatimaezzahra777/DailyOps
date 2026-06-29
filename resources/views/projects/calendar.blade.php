@@ -26,10 +26,10 @@
             'completed' => 'calendar-event-completed',
         ];
         $stats = [
-            ['label' => 'Échéances', 'value' => $monthEvents->count(), 'meta' => $month->format('F Y')],
-            ['label' => 'Réunions', 'value' => $monthMeetings->count(), 'meta' => 'Planifiées ce mois-ci'],
-            ['label' => 'Démarrages', 'value' => $startingThisMonth->count(), 'meta' => 'Projets démarrant ce mois'],
-            ['label' => 'En retard', 'value' => $overdueProjects->count(), 'meta' => 'Suivi nécessaire'],
+            ['label' => 'Due dates', 'value' => $monthEvents->count(), 'meta' => $month->format('F Y')],
+            ['label' => 'Meetings', 'value' => $monthMeetings->count(), 'meta' => 'Scheduled this month'],
+            ['label' => 'Starts', 'value' => $startingThisMonth->count(), 'meta' => 'Projects starting this month'],
+            ['label' => 'Overdue', 'value' => $overdueProjects->count(), 'meta' => 'Needs follow-up'],
         ];
         $openModal = session('open_modal');
         $selectedEventType = session('calendar_event_type', 'project');
@@ -38,8 +38,8 @@
     <section class="space-y-5">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div class="max-w-2xl">
-                <p class="kanban-eyebrow">Vue calendrier</p>
-                <h2 class="kanban-title">Projets - Calendrier</h2>
+                <p class="kanban-eyebrow">Calendar view</p>
+                <h2 class="kanban-title">Projects - Calendar</h2>
                 <p class="kanban-subtitle">Track project deadlines by month and keep upcoming delivery dates visible.</p>
             </div>
 
@@ -113,7 +113,7 @@
                                         @if ($events->isNotEmpty())
                                             <span class="text-[10.5px] font-semibold text-[var(--muted)]">{{ $events->count() }}</span>
                                         @endif
-                                        <button type="button" class="calendar-day-add" aria-label="Ajouter un événement le {{ $day->format('d M Y') }}"
+                                        <button type="button" class="calendar-day-add" aria-label="Add an event on {{ $day->format('d M Y') }}"
                                             data-modal-open="create-project-modal"
                                             data-create-date="{{ $dateKey }}">
                                             <i class="ti ti-plus"></i>
@@ -181,7 +181,7 @@
                 </article>
 
                 <article class="report-card p-4">
-                    <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Répartition des statuts</h3>
+                    <h3 class="font-['Syne'] text-sm font-bold text-[var(--text-strong)]">Status breakdown</h3>
                     <div class="mt-4 space-y-3">
                         @foreach (\App\Models\Project::statusOptions() as $status => $label)
                             @php
@@ -212,9 +212,9 @@
         <div class="modal-panel modal-panel-form">
             <div class="modal-header">
                 <div>
-                    <p class="modal-eyebrow">Événement calendrier</p>
-                    <h2 class="modal-title">Nouvel événement</h2>
-                    <p class="modal-subtitle">Créez un projet ou planifiez une réunion pour la date sélectionnée.</p>
+                    <p class="modal-eyebrow">Calendar event</p>
+                    <h2 class="modal-title">New event</h2>
+                    <p class="modal-subtitle">Create a project or schedule a meeting for the selected date.</p>
                 </div>
                 <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
             </div>
@@ -223,12 +223,12 @@
                 <button type="button" class="rounded-full px-4 py-3 text-sm font-bold transition"
                     data-calendar-event-type="project"
                     data-selected="{{ $selectedEventType === 'project' ? 'true' : 'false' }}">
-                    Projet
+                    Project
                 </button>
                 <button type="button" class="rounded-full px-4 py-3 text-sm font-bold transition"
                     data-calendar-event-type="meeting"
                     data-selected="{{ $selectedEventType === 'meeting' ? 'true' : 'false' }}">
-                    Réunion
+                    Meeting
                 </button>
             </div>
 
@@ -248,8 +248,8 @@
                     ])
 
                     <div class="modal-actions">
-                        <button type="submit" class="btn-primary">Enregistrer le projet</button>
-                        <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
+                        <button type="submit" class="btn-primary">Save project</button>
+                        <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
                     </div>
                 </form>
             </div>
@@ -260,7 +260,7 @@
 
                     @if ($errors->getBag('createMeeting')->any())
                         <div class="rounded-md border border-red-600/20 bg-red-600/10 p-4 text-sm text-red-600">
-                            <p class="font-medium text-red-700">Veuillez corriger les erreurs suivantes :</p>
+                            <p class="font-medium text-red-700">Please fix the following errors:</p>
                             <ul class="mt-2 space-y-1">
                                 @foreach ($errors->getBag('createMeeting')->all() as $error)
                                     <li>{{ $error }}</li>
@@ -276,8 +276,8 @@
                     ])
 
                     <div class="modal-actions">
-                        <button type="submit" class="btn-primary">Créer la réunion</button>
-                        <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
+                        <button type="submit" class="btn-primary">Create meeting</button>
+                        <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
                     </div>
                 </form>
             </div>
@@ -299,7 +299,7 @@
             <div class="modal-panel">
                 <div class="modal-header">
                     <div>
-                        <p class="modal-eyebrow">Réunion</p>
+                        <p class="modal-eyebrow">Meeting</p>
                         <h2 class="modal-title">{{ $meeting->title }}</h2>
                         <p class="modal-subtitle">{{ $meeting->name }}</p>
                     </div>
@@ -312,7 +312,7 @@
                             <div>
                                 <dt class="text-[var(--muted)]">Date et heure</dt>
                                 <dd class="mt-1 font-semibold text-[var(--text-strong)]">
-                                    {{ $meeting->scheduled_at->format('d M Y à H:i') }}
+                                    {{ $meeting->scheduled_at->format('d M Y H:i') }}
                                 </dd>
                             </div>
                             <div>
@@ -343,19 +343,19 @@
 
                 <div class="modal-actions">
                     <a href="{{ $meeting->meeting_url }}" target="_blank" rel="noopener noreferrer" class="btn-primary">
-                        Rejoindre la réunion
+                        Join meeting
                     </a>
                     @if ($canManageMeeting)
                         <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $editModalId }}"
-                            aria-label="Modifier la réunion" title="Modifier la réunion">
+                            aria-label="Edit meeting" title="Edit meeting">
                             <span class="material-symbols-rounded text-[20px]">edit</span>
                         </button>
                         <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $deleteModalId }}"
-                            aria-label="Supprimer la réunion" title="Supprimer la réunion">
+                            aria-label="Delete meeting" title="Delete meeting">
                             <span class="material-symbols-rounded text-[20px]">delete</span>
                         </button>
                     @endif
-                    <button type="button" class="btn-secondary" data-modal-close>Fermer</button>
+                    <button type="button" class="btn-secondary" data-modal-close>Close</button>
                 </div>
             </div>
         </div>
@@ -367,9 +367,9 @@
                 <div class="modal-panel modal-panel-form">
                     <div class="modal-header">
                         <div>
-                            <p class="modal-eyebrow">Modifier la réunion</p>
+                            <p class="modal-eyebrow">Edit meeting</p>
                             <h2 class="modal-title">{{ $meeting->title }}</h2>
-                            <p class="modal-subtitle">Mettez à jour les informations et les participants.</p>
+                            <p class="modal-subtitle">Update the information and participants.</p>
                         </div>
                         <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
                     </div>
@@ -395,8 +395,8 @@
                         ])
 
                         <div class="modal-actions">
-                            <button type="submit" class="btn-primary">Enregistrer</button>
-                            <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
+                            <button type="submit" class="btn-primary">Save</button>
+                            <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -408,22 +408,22 @@
                 <div class="modal-panel modal-panel-compact">
                     <div class="modal-header">
                         <div>
-                            <p class="modal-eyebrow text-red-600">Supprimer la réunion</p>
+                            <p class="modal-eyebrow text-red-600">Delete meeting</p>
                             <h2 class="modal-title">{{ $meeting->title }}</h2>
-                            <p class="modal-subtitle">Cette action est définitive.</p>
+                            <p class="modal-subtitle">This action is permanent.</p>
                         </div>
                         <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
                     </div>
 
                     <div class="rounded-md border border-red-600/15 bg-red-600/10 p-4 text-sm text-[var(--text)]">
-                        La réunion sera supprimée du calendrier de tous les participants.
+                        The meeting will be removed from every participant's calendar.
                     </div>
 
                     <form action="{{ route('meetings.destroy', $meeting) }}" method="POST" class="modal-actions">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn-primary">Supprimer</button>
-                        <button type="button" class="btn-secondary" data-modal-close>Annuler</button>
+                        <button type="submit" class="btn-primary">Delete</button>
+                        <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
                     </form>
                 </div>
             </div>

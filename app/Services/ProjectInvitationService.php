@@ -75,8 +75,6 @@ class ProjectInvitationService
 
         return $invitation;
     }
-    // transformer ce que le manager ecrit dans assigned_to en email
-
     protected function resolveInviteEmail(?string $assignedTo): ?string
     {
         $value = trim((string) $assignedTo);
@@ -84,8 +82,6 @@ class ProjectInvitationService
         if ($value === '') {
             return null;
         }
-        // Si M ecrit Maryem,on cherche un user avec name = Maryem, puis récupère son email
-
         if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
             return mb_strtolower($value);
         }

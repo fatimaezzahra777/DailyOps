@@ -10,74 +10,74 @@
 
         $stats = [
             [
-                'label' => 'Total projets',
+                'label' => 'Total projects',
                 'value' => $projectCollection->count(),
-                'meta' => $projectCollection->where('created_at', '>=', now()->startOfWeek())->count() . ' ajoutés cette semaine',
+                'meta' => $projectCollection->where('created_at', '>=', now()->startOfWeek())->count() . ' added this week',
                 'tone' => 'positive',
             ],
             [
-                'label' => 'Développement',
+                'label' => 'Development',
                 'value' => $projectCollection->where('status', 'in_progress')->count(),
                 'meta' => 'Active',
                 'tone' => 'neutral',
             ],
             [
-                'label' => 'Déploiement',
+                'label' => 'Deployment',
                 'value' => $projectCollection->where('status', 'completed')->count(),
-                'meta' => $projectCollection->count() > 0 ? round(($projectCollection->where('status', 'completed')->count() / max($projectCollection->count(), 1)) * 100) . '% du total' : 'Pas encore de données',
+                'meta' => $projectCollection->count() > 0 ? round(($projectCollection->where('status', 'completed')->count() / max($projectCollection->count(), 1)) * 100) . '% of total' : 'No data yet',
                 'tone' => 'neutral',
             ],
             [
-                'label' => 'En retard',
+                'label' => 'Overdue',
                 'value' => $projectCollection
                     ->filter(fn ($project) => $project->end_date && $project->end_date->isPast() && $project->status !== 'completed')
                     ->count(),
-                'meta' => 'À surveiller',
+                'meta' => 'Needs attention',
                 'tone' => 'danger',
             ],
         ];
 
         $columns = collect([
             [
-                'title' => 'Cahier charge',
+                'title' => 'Scope',
                 'status' => 'pending',
                 'column_id' => null,
                 'dot' => 'bg-[#c50064]',
-                'empty' => 'Aucun projet en cahier charge',
-                'description' => 'Brief, besoins et cadrage à valider.',
+                'empty' => 'No projects in scope',
+                'description' => 'Brief, needs, and scope to validate.',
                 'laneClass' => 'kanban-lane-pending',
                 'badgeClass' => 'kanban-count-pending',
                 'cardAccent' => 'project-card-accent-pending',
             ],
             [
-                'title' => 'Développement',
+                'title' => 'Development',
                 'status' => 'in_progress',
                 'column_id' => null,
                 'dot' => 'bg-[#f59e0b]',
-                'empty' => 'Aucun projet en développement',
-                'description' => 'Production active avec les contributeurs.',
+                'empty' => 'No projects in development',
+                'description' => 'Active production with contributors.',
                 'laneClass' => 'kanban-lane-progress',
                 'badgeClass' => 'kanban-count-progress',
                 'cardAccent' => 'project-card-accent-progress',
             ],
             [
-                'title' => 'Teste',
+                'title' => 'Testing',
                 'status' => 'testing',
                 'column_id' => null,
                 'dot' => 'bg-[#6366f1]',
-                'empty' => 'Aucun projet en teste',
-                'description' => 'Validation qualité avant déploiement.',
+                'empty' => 'No projects in testing',
+                'description' => 'Quality validation before deployment.',
                 'laneClass' => 'kanban-lane-testing',
                 'badgeClass' => 'kanban-count-testing',
                 'cardAccent' => 'project-card-accent-testing',
             ],
             [
-                'title' => 'Déploiement',
+                'title' => 'Deployment',
                 'status' => 'completed',
                 'column_id' => null,
                 'dot' => 'bg-[#00a86b]',
-                'empty' => 'Aucun projet en déploiement',
-                'description' => 'Livraison, mise en ligne et suivi client.',
+                'empty' => 'No projects in deployment',
+                'description' => 'Delivery, launch, and client follow-up.',
                 'laneClass' => 'kanban-lane-completed',
                 'badgeClass' => 'kanban-count-completed',
                 'cardAccent' => 'project-card-accent-completed',
@@ -109,15 +109,15 @@
             <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
                 <div class="max-w-2xl">
                     <p class="kanban-eyebrow">Kanban board</p>
-                    <h1 class="kanban-title">Flux des projets</h1>
-                    <p class="kanban-subtitle">Suivez chaque projet étape par étape, du cahier de charge jusqu'au déploiement.</p>
+                    <h1 class="kanban-title">Project workflow</h1>
+                    <p class="kanban-subtitle">Track every project stage by stage, from scope to deployment.</p>
                 </div>
 
                 <div class="kanban-legend">
-                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#c50064]"></span> Cahier charge</span>
-                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#f59e0b]"></span> Développement</span>
-                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#6366f1]"></span> Teste</span>
-                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#00a86b]"></span> Déploiement</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#c50064]"></span> Scope</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#f59e0b]"></span> Development</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#6366f1]"></span> Testing</span>
+                    <span class="kanban-legend-item"><span class="kanban-legend-dot bg-[#00a86b]"></span> Deployment</span>
                 </div>
             </div>
         </div>
@@ -139,14 +139,14 @@
         <div class="kanban-toolbar">
             <div class="flex flex-wrap items-center gap-2">
                 <a href="{{ route('projects.index', $queryWithoutStatus) }}"
-                    class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">Tous les projets</a>
+                    class="filter-pill {{ request('status') ? '' : 'filter-pill-active' }}">All projects</a>
                 @foreach ($statusOptions as $statusValue => $statusLabel)
                     <a href="{{ route('projects.index', array_merge($queryWithoutStatus, ['status' => $statusValue])) }}"
                         class="filter-pill {{ request('status') === $statusValue ? 'filter-pill-active' : '' }}">{{ $statusLabel }}</a>
                 @endforeach
             </div>
 
-            <span class="kanban-toolbar-note">{{ $projectCollection->count() }} projets visibles</span>
+            <span class="kanban-toolbar-note">{{ $projectCollection->count() }} visible projects</span>
         </div>
 
         <div class="kanban-shell custom-scroll overflow-x-auto pb-4" data-board data-projects-base-url="{{ url('/projects') }}">
@@ -217,7 +217,7 @@
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="flex min-w-0 items-center gap-2">
                                         @if ($project->projectLogoUrl())
-                                            <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                                            <img src="{{ $project->projectLogoUrl() }}" alt="Logo of {{ $project->name }}"
                                                 class="project-logo-circle">
                                         @endif
                                         <a href="{{ route('projects.show', $project) }}" class="task-title truncate text-left hover:text-[#c50064]">
@@ -305,7 +305,7 @@
                             data-modal-open="create-project-modal"
                             data-create-status="{{ $column['status'] ?? 'pending' }}"
                             data-create-column-id="{{ $column['column_id'] }}">
-                            + Ajouter un projet
+                            + Add project
                         </button>
                     </div>
                 </section>
@@ -348,9 +348,9 @@
         <div class="modal-panel modal-panel-form">
             <div class="modal-header">
                 <div>
-                    <p class="modal-eyebrow">Créer un projet</p>
-                    <h2 class="modal-title">Nouveau projet</h2>
-                    <p class="modal-subtitle">Créez un projet sans quitter le board.</p>
+                    <p class="modal-eyebrow">Create project</p>
+                    <h2 class="modal-title">New project</h2>
+                    <p class="modal-subtitle">Create a project without leaving the board.</p>
                 </div>
                 <button type="button" class="modal-close" data-modal-close aria-label="Close modal">×</button>
             </div>
@@ -373,14 +373,14 @@
 
                 <div class="grid gap-5 md:grid-cols-2">
                     <div>
-                        <label for="create-project-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Nom</label>
+                        <label for="create-project-name" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Name</label>
                         <input id="create-project-name" name="create_name" type="text" class="w-full px-4 py-3"
                             value="{{ $openModal === 'create-project-modal' ? old('create_name') : '' }}"
                             data-field-default="" autocomplete="new-password" required>
                     </div>
 
                     <div>
-                        <label for="create-project-logo" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Logo du projet</label>
+                        <label for="create-project-logo" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Project logo</label>
                         <div class="project-logo-upload project-logo-upload-compact">
                             <span class="project-logo-placeholder material-symbols-rounded" aria-hidden="true">image</span>
                             <div class="min-w-0 flex-1">
@@ -405,16 +405,16 @@
                     ])
 
                     <div>
-                        <label for="create-project-client-email" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Email client</label>
+                        <label for="create-project-client-email" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Client email</label>
                         <input id="create-project-client-email" name="create_client_email" type="email" class="w-full px-4 py-3"
                             value="{{ $openModal === 'create-project-modal' ? old('create_client_email') : '' }}"
                             placeholder="client@example.com"
                             data-field-default="" autocomplete="off">
-                        <p class="mt-2 text-xs text-[var(--muted)]">Un email sera envoyé au client quand l'étape change.</p>
+                        <p class="mt-2 text-xs text-[var(--muted)]">An email will be sent to the client when the stage changes.</p>
                     </div>
 
                     <div>
-                        <label for="create-project-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Étape</label>
+                        <label for="create-project-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Stage</label>
                         <select id="create-project-status" name="create_status" class="w-full px-4 py-3"
                             data-field-default="pending" autocomplete="off">
                             @foreach ($statusOptions as $value => $label)

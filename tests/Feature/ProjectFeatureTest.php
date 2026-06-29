@@ -83,10 +83,10 @@ class ProjectFeatureTest extends TestCase
 
         $this->get(route('projects.index'))
             ->assertOk()
-            ->assertSee('Cahier charge')
-            ->assertSee('Développement')
-            ->assertSee('Teste')
-            ->assertSee('Déploiement')
+            ->assertSee('Scope')
+            ->assertSee('Development')
+            ->assertSee('Testing')
+            ->assertSee('Deployment')
             ->assertSee('value="testing"', false);
     }
 
@@ -157,10 +157,10 @@ class ProjectFeatureTest extends TestCase
             'end_date' => now()->addWeek(),
         ]);
 
-        $this->get('/projects/table')->assertOk()->assertSee('Projets - Vue tableau');
-        $this->get('/projects/gantt')->assertOk()->assertSee('Projets - Vue Gantt');
-        $this->get('/projects/calendar')->assertOk()->assertSee('Projets - Calendrier');
-        $this->get('/projects/reports')->assertOk()->assertSee('Projets - Rapports');
+        $this->get('/projects/table')->assertOk()->assertSee('Projects - Table view');
+        $this->get('/projects/gantt')->assertOk()->assertSee('Projects - Gantt view');
+        $this->get('/projects/calendar')->assertOk()->assertSee('Projects - Calendar');
+        $this->get('/projects/reports')->assertOk()->assertSee('Projects - Reports');
     }
 
     public function test_calendar_create_form_is_not_prefilled_from_an_upcoming_project(): void
@@ -280,7 +280,7 @@ class ProjectFeatureTest extends TestCase
         $this->actingAs($user)
             ->get(route('projects.table'))
             ->assertOk()
-            ->assertSee('Entreprise')
+            ->assertSee('Company')
             ->assertDontSee('<th>Column</th>', false)
             ->assertSee('project-company-circle', false)
             ->assertSee('images/companies/softart.png');
@@ -592,7 +592,7 @@ class ProjectFeatureTest extends TestCase
         $response = $this->actingAs($user)->get(route('projects.show', $project));
 
         $response->assertOk()
-            ->assertSee('Voir 2 tâches de plus')
+            ->assertSee('View 2 more tasks')
             ->assertSee('data-task-list-toggle', false);
 
         $this->assertSame(2, substr_count($response->getContent(), 'data-task-overflow'));

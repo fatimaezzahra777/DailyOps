@@ -34,10 +34,10 @@
     </div>
 
     <div>
-        <label for="{{ $prefix }}-logo" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Logo du projet</label>
+        <label for="{{ $prefix }}-logo" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Project logo</label>
         <div class="project-logo-upload project-logo-upload-compact">
             @if ($project?->projectLogoUrl())
-                <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                <img src="{{ $project->projectLogoUrl() }}" alt="Logo of {{ $project->name }}"
                     class="project-logo-preview">
             @else
                 <span class="project-logo-placeholder material-symbols-rounded" aria-hidden="true">image</span>
@@ -52,7 +52,7 @@
         @if ($project?->logo_path)
             <label class="mt-2 inline-flex items-center gap-2 text-xs text-[var(--muted)]">
                 <input name="remove_logo" type="checkbox" value="1" class="rounded border-[var(--line)] text-[var(--accent)]">
-                Supprimer le logo actuel
+                Remove current logo
             </label>
         @endif
     </div>
@@ -70,16 +70,16 @@
     ])
 
     <div>
-        <label for="{{ $prefix }}-client_email" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Email client</label>
+        <label for="{{ $prefix }}-client_email" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Client email</label>
         <input id="{{ $prefix }}-client_email" name="{{ $inputName('client_email') }}" type="email" class="w-full px-4 py-3"
             value="{{ $fieldValue('client_email', $project?->client_email) }}"
             placeholder="client@example.com"
             autocomplete="off" data-field-default="{{ $project?->client_email ?? '' }}">
-        <p class="mt-2 text-xs text-[var(--muted)]">Le client reçoit un email quand le projet change d'étape.</p>
+        <p class="mt-2 text-xs text-[var(--muted)]">The client receives an email when the project stage changes.</p>
     </div>
 
     <div>
-        <label for="{{ $prefix }}-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Étape</label>
+        <label for="{{ $prefix }}-status" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Stage</label>
         <select id="{{ $prefix }}-status" name="{{ $inputName('status') }}" class="w-full px-4 py-3"
             autocomplete="off" data-field-default="{{ $project?->status ?? 'pending' }}">
             @foreach ($statusOptions as $value => $label)

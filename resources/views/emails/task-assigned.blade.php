@@ -1,18 +1,18 @@
 <x-mail::message>
-# Nouvelle tâche assignée
+# New Task Assigned
 
-Bonjour {{ $assignee?->name }},
+Hello {{ $assignee?->name }},
 
-Le manager du projet **{{ $project?->name }}** vous a assigné la tâche **{{ $task->title }}**.
+The manager of project **{{ $project?->name }}** assigned you task **{{ $task->title }}**.
 
 @if ($task->due_date)
-Date limite: {{ \Illuminate\Support\Carbon::parse($task->due_date)->format('d/m/Y') }}
+Due date: {{ \Illuminate\Support\Carbon::parse($task->due_date)->format('d/m/Y') }}
 @endif
 
 <x-mail::button :url="route('tasks.show', $task)">
-Voir la tâche
+View task
 </x-mail::button>
 
-Merci,<br>
+Thanks,<br>
 {{ config('app.name') }}
 </x-mail::message>

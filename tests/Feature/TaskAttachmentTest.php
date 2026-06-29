@@ -51,7 +51,7 @@ class TaskAttachmentTest extends TestCase
             ->get(route('tasks.show', $task))
             ->assertOk()
             ->assertSee('brief.pdf')
-            ->assertSee('Fichiers');
+            ->assertSee('Files');
     }
 
     public function test_task_attachment_can_be_downloaded_by_visible_user(): void

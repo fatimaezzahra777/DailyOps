@@ -1,9 +1,9 @@
 <x-guest-layout>
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Mot de passe oublié ? Indiquez votre adresse e-mail et nous vous enverrons un lien pour en choisir un nouveau.') }}
+        {{ __('Forgot your password? Enter your email address and we will send you a link to choose a new one.') }}
     </div>
 
-    <!-- Session Statut -->
+    <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <form method="POST" action="{{ route('password.email') }}">
@@ -18,7 +18,7 @@
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Envoyer le lien de réinitialisation') }}
+                {{ __('Send reset link') }}
             </x-primary-button>
         </div>
     </form>

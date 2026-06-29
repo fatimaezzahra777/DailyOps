@@ -45,7 +45,7 @@
                     @isset($header)
                         <header class="border-b border-black/10 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
                             <div class="px-4 py-4 pl-16 sm:px-5 sm:pl-5">
-                                <button id="menu-btn" class="icon-button fixed left-4 top-3 z-20 lg:hidden" type="button" aria-label="Ouvrir le menu">
+                                <button id="menu-btn" class="icon-button fixed left-4 top-3 z-20 lg:hidden" type="button" aria-label="Open menu">
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                         <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
                                     </svg>

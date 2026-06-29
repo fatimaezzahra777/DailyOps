@@ -2,7 +2,7 @@
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
 
-        <!-- Mot de passe Réinitialiser Token -->
+        <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
         <!-- Adresse e-mail -->
@@ -12,16 +12,16 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <!-- Mot de passe -->
+        <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Mot de passe')" />
+            <x-input-label for="password" :value="__('Password')" />
             <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Confirmer le mot de passe -->
+        <!-- Confirm password -->
         <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirmer le mot de passe')" />
+            <x-input-label for="password_confirmation" :value="__('Confirm password')" />
 
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                                 type="password"
@@ -32,7 +32,7 @@
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Réinitialiser le mot de passe') }}
+                {{ __('Reset password') }}
             </x-primary-button>
         </div>
     </form>

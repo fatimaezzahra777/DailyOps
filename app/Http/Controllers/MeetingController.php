@@ -72,7 +72,7 @@ class MeetingController extends Controller
             ->route('projects.calendar', [
                 'month' => date('Y-m', strtotime($validated['meeting_scheduled_at'])),
             ])
-            ->with('success', 'Réunion créée avec succès.');
+            ->with('success', 'Meeting created successfully.');
     }
 
     public function update(Request $request, Meeting $meeting): RedirectResponse
@@ -105,7 +105,7 @@ class MeetingController extends Controller
             ->route('projects.calendar', [
                 'month' => date('Y-m', strtotime($validated['meeting_scheduled_at'])),
             ])
-            ->with('success', 'Réunion mise à jour avec succès.');
+            ->with('success', 'Meeting updated successfully.');
     }
 
     public function destroy(Request $request, Meeting $meeting): RedirectResponse
@@ -117,7 +117,7 @@ class MeetingController extends Controller
 
         return redirect()
             ->route('projects.calendar', ['month' => $month])
-            ->with('success', 'Réunion supprimée avec succès.');
+            ->with('success', 'Meeting deleted successfully.');
     }
 
     private function meetingValidator(Request $request): ValidationValidator

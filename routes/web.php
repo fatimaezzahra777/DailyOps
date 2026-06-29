@@ -7,6 +7,7 @@ use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProjectInvitationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupportController;
 use App\Http\Controllers\TaskAttachmentController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskColumnController;
@@ -25,6 +26,12 @@ Route::get('/project-invitations/{invitation}/accept', [ProjectInvitationControl
 
 Route::get('/project-invitations/{invitation}/decline', [ProjectInvitationController::class, 'decline'])
     ->name('project-invitations.decline');
+
+Route::redirect('/support', '/dailyops/support');
+Route::get('/dailyops/support', [SupportController::class, 'create'])->name('support.create');
+Route::post('/dailyops/support', [SupportController::class, 'store'])->name('support.store');
+Route::get('/dailyops/support/chat/{token}', [SupportController::class, 'showClientChat'])->name('support.chat.show');
+Route::post('/dailyops/support/chat/{token}/messages', [SupportController::class, 'storeClientMessage'])->name('support.chat.messages.store');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])
@@ -53,6 +60,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/task-attachments/{attachment}/download', [TaskAttachmentController::class, 'download'])->name('task-attachments.download');
     Route::get('/task-attachments/{attachment}/preview', [TaskAttachmentController::class, 'preview'])->name('task-attachments.preview');
     Route::delete('/task-attachments/{attachment}', [TaskAttachmentController::class, 'destroy'])->name('task-attachments.destroy');
+    Route::get('/support/conversations', [SupportController::class, 'index'])->name('support.index');
+    Route::get('/support/conversations/{conversation}', [SupportController::class, 'showManagerChat'])->name('support.manager.chat.show');
+    Route::post('/support/conversations/{conversation}/messages', [SupportController::class, 'storeManagerMessage'])->name('support.manager.messages.store');
     Route::post('/projects/{project}/task-columns', [TaskColumnController::class, 'store'])->name('task-columns.store');
     Route::patch('/task-columns/{taskColumn}', [TaskColumnController::class, 'update'])->name('task-columns.update');
     Route::delete('/task-columns/{taskColumn}', [TaskColumnController::class, 'destroy'])->name('task-columns.destroy');

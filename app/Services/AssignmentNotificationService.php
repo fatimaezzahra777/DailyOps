@@ -35,8 +35,8 @@ class AssignmentNotificationService
 
         $this->broadcast($user, [
             'type' => 'task',
-            'title' => 'Nouvelle tâche assignée',
-            'message' => "La tâche « {$task->title} » vous a été assignée.",
+            'title' => 'New task assigned',
+            'message' => "Task \"{$task->title}\" has been assigned to you.",
             'url' => route('tasks.show', $task),
         ]);
     }
@@ -51,8 +51,8 @@ class AssignmentNotificationService
 
         $this->broadcast($user, [
             'type' => 'project',
-            'title' => 'Nouveau projet assigné',
-            'message' => "Le projet « {$project->name} » vous a été assigné.",
+            'title' => 'New project assigned',
+            'message' => "Project \"{$project->name}\" has been assigned to you.",
             'url' => route('projects.show', $project),
         ]);
     }

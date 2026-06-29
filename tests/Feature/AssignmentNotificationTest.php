@@ -56,7 +56,7 @@ class AssignmentNotificationTest extends TestCase
             AssignmentNotificationSent::class,
             fn (AssignmentNotificationSent $event) => $event->user->is($assignedUser)
                 && $event->notification['type'] === 'task'
-                && $event->notification['title'] === 'Nouvelle tâche assignée'
+                && $event->notification['title'] === 'New task assigned'
         );
 
         Mail::assertSent(TaskAssignedMail::class, fn (TaskAssignedMail $mail) => $mail->task->assigned_user_id === $assignedUser->id);
@@ -132,7 +132,7 @@ class AssignmentNotificationTest extends TestCase
         Event::assertDispatched(
             AssignmentNotificationSent::class,
             fn (AssignmentNotificationSent $event) => $event->user->is($assignedUser)
-                && $event->notification['message'] === 'La tâche « Notify despite SMTP failure » vous a été assignée.'
+                && $event->notification['message'] === 'Task "Notify despite SMTP failure" has been assigned to you.'
         );
     }
 

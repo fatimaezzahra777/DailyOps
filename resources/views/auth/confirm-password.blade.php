@@ -1,14 +1,14 @@
 <x-guest-layout>
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Cette zone est sécurisée. Confirmez votre mot de passe pour continuer.') }}
+        {{ __('This area is secure. Confirm your password to continue.') }}
     </div>
 
     <form method="POST" action="{{ route('password.confirm') }}">
         @csrf
 
-        <!-- Mot de passe -->
+        <!-- Password -->
         <div>
-            <x-input-label for="password" :value="__('Mot de passe')" />
+            <x-input-label for="password" :value="__('Password')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"

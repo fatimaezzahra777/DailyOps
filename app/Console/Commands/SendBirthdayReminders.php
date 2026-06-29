@@ -11,7 +11,7 @@ class SendBirthdayReminders extends Command
 {
     protected $signature = 'birthdays:send-reminders';
 
-    protected $description = 'Prévenir les utilisateurs des anniversaires prévus le lendemain';
+    protected $description = 'Notify users about birthdays scheduled for tomorrow';
 
     public function handle(): int
     {
@@ -41,7 +41,7 @@ class SendBirthdayReminders extends Command
             ])->saveQuietly();
         }
 
-        $this->info("{$sent} rappel(s) d'anniversaire envoyé(s).");
+        $this->info("{$sent} birthday reminder(s) sent.");
 
         return self::SUCCESS;
     }

@@ -3,24 +3,24 @@
 @section('content')
     @php
         $stats = [
-            ['label' => 'Total des tâches', 'value' => $tasks->total(), 'meta' => 'Tous projets confondus'],
-            ['label' => 'En cours', 'value' => $tasks->getCollection()->where('status', 'in_progress')->count(), 'meta' => 'Page actuelle'],
-            ['label' => 'Terminée', 'value' => $tasks->getCollection()->where('status', 'done')->count(), 'meta' => 'Page actuelle'],
-            ['label' => 'Priorité élevée', 'value' => $tasks->getCollection()->where('priority', 'high')->count(), 'meta' => 'À surveiller'],
+            ['label' => 'Total tasks', 'value' => $tasks->total(), 'meta' => 'Across all projects'],
+            ['label' => 'In progress', 'value' => $tasks->getCollection()->where('status', 'in_progress')->count(), 'meta' => 'Page actuelle'],
+            ['label' => 'Completed', 'value' => $tasks->getCollection()->where('status', 'done')->count(), 'meta' => 'Page actuelle'],
+            ['label' => 'High priority', 'value' => $tasks->getCollection()->where('priority', 'high')->count(), 'meta' => 'Needs attention'],
         ];
     @endphp
 
     <section class="space-y-6" data-task-search>
         <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
             <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Gestion des tâches</p>
-                <h1 class="mt-2 text-3xl font-semibold">Tâches</h1>
-                <p class="mt-2 text-sm text-[var(--muted)]">Suivez l’exécution, les priorités, les échéances et les commentaires dans le même espace.</p>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Task management</p>
+                <h1 class="mt-2 text-3xl font-semibold">Tasks</h1>
+                <p class="mt-2 text-sm text-[var(--muted)]">Track execution, priorities, due dates, and comments in one workspace.</p>
             </div>
 
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('projects.index') }}" class="btn-secondary">Retour aux projets</a>
-                <button type="button" class="btn-primary" data-modal-open="create-task-modal">+ Ajouter une tâche</button>
+                <a href="{{ route('projects.index') }}" class="btn-secondary">Back to projects</a>
+                <button type="button" class="btn-primary" data-modal-open="create-task-modal">+ Add task</button>
             </div>
         </div>
 
@@ -40,15 +40,15 @@
             <form id="task-filter-form" class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                 <div class="grid flex-1 gap-4 md:grid-cols-2 xl:grid-cols-[minmax(260px,1.4fr)_repeat(3,minmax(170px,0.6fr))]">
                     <div>
-                        <label for="task-search-input" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Rechercher</label>
+                        <label for="task-search-input" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Search</label>
                         <input type="text" id="task-search-input" name="search" value="{{ request('search') }}"
-                            placeholder="Rechercher des tâches, responsables, notes..." class="w-full px-4 py-3">
+                            placeholder="Search tasks, assignees, notes..." class="w-full px-4 py-3">
                     </div>
 
                     <div>
-                        <label for="task-project-filter" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Projet</label>
+                        <label for="task-project-filter" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Project</label>
                         <select id="task-project-filter" name="project_id" class="w-full px-4 py-3">
-                            <option value="">Tous les projets</option>
+                            <option value="">All projects</option>
                             @foreach ($projects as $project)
                                 <option value="{{ $project->id }}" @selected(request('project_id') == $project->id)>{{ $project->name }}</option>
                             @endforeach
@@ -56,29 +56,29 @@
                     </div>
 
                     <div>
-                        <label for="task-status-filter" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Statut</label>
+                        <label for="task-status-filter" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Status</label>
                         <select id="task-status-filter" name="status" class="w-full px-4 py-3">
-                            <option value="">Tous les statuts</option>
-                            <option value="todo" @selected(request('status') === 'todo')>À faire</option>
-                            <option value="in_progress" @selected(request('status') === 'in_progress')>En cours</option>
-                            <option value="done" @selected(request('status') === 'done')>Terminée</option>
+                            <option value="">All statuses</option>
+                            <option value="todo" @selected(request('status') === 'todo')>To do</option>
+                            <option value="in_progress" @selected(request('status') === 'in_progress')>In progress</option>
+                            <option value="done" @selected(request('status') === 'done')>Completed</option>
                         </select>
                     </div>
 
                     <div>
-                        <label for="task-priority-filter" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Priorité</label>
+                        <label for="task-priority-filter" class="mb-2 block text-sm font-medium text-[var(--text-strong)]">Priority</label>
                         <select id="task-priority-filter" name="priority" class="w-full px-4 py-3">
-                            <option value="">Toutes les priorités</option>
-                            <option value="low" @selected(request('priority') === 'low')>Faible</option>
-                            <option value="medium" @selected(request('priority') === 'medium')>Moyenne</option>
-                            <option value="high" @selected(request('priority') === 'high')>Élevée</option>
+                            <option value="">All priorities</option>
+                            <option value="low" @selected(request('priority') === 'low')>Low</option>
+                            <option value="medium" @selected(request('priority') === 'medium')>Medium</option>
+                            <option value="high" @selected(request('priority') === 'high')>High</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="flex items-end gap-3">
-                    <button type="submit" class="btn-primary">Appliquer les filtres</button>
-                    <a href="{{ route('tasks.index') }}" class="btn-secondary">Réinitialiser</a>
+                    <button type="submit" class="btn-primary">Apply filters</button>
+                    <a href="{{ route('tasks.index') }}" class="btn-secondary">Reset</a>
                 </div>
             </form>
         </div>

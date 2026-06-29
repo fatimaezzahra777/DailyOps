@@ -13,7 +13,7 @@
     <header>
         <h2 class="text-lg font-medium text-gray-900">Apparence</h2>
         <p class="mt-1 text-sm text-gray-600">
-            Personnalisez la couleur principale et la taille des textes. Ces choix sont enregistrés uniquement pour votre compte.
+            Customize the primary color and text size. These choices are saved only for your account.
         </p>
     </header>
 
@@ -22,8 +22,8 @@
         @method('patch')
 
         <fieldset>
-            <legend class="text-sm font-medium text-gray-900">Taille du texte</legend>
-            <p class="mt-1 text-xs text-gray-500">La taille normale est recommandée pour la plupart des écrans.</p>
+            <legend class="text-sm font-medium text-gray-900">Text size</legend>
+            <p class="mt-1 text-xs text-gray-500">Normal size is recommended for most screens.</p>
 
             <div class="mt-3 grid gap-3 sm:grid-cols-3">
                 @foreach ([
@@ -45,7 +45,7 @@
 
         <fieldset>
             <legend class="text-sm font-medium text-gray-900">Couleur principale</legend>
-            <p class="mt-1 text-xs text-gray-500">Elle sera utilisée pour les boutons, les liens actifs et les éléments importants.</p>
+            <p class="mt-1 text-xs text-gray-500">It will be used for buttons, active links, and important elements.</p>
 
             <div class="mt-3 flex flex-wrap gap-3">
                 <input type="hidden" name="theme_color" value="{{ old('theme_color', $user->themeColor()) }}" data-theme-color-field>
@@ -60,9 +60,9 @@
                     </label>
                 @endforeach
 
-                <label class="appearance-color appearance-color-custom" title="Couleur personnalisée">
+                <label class="appearance-color appearance-color-custom" title="Custom color">
                     <input type="color" value="{{ old('theme_color', $user->themeColor()) }}"
-                        data-custom-theme-color aria-label="Choisir une couleur personnalisée">
+                        data-custom-theme-color aria-label="Choose a custom color">
                     <span class="text-xs font-medium">Autre</span>
                 </label>
             </div>
@@ -71,18 +71,18 @@
 
         <div class="appearance-preview" data-appearance-preview>
             <div>
-                <p class="font-semibold text-[var(--text-strong)]">Aperçu du thème</p>
-                <p class="mt-1 text-sm text-[var(--muted)]">Voici comment vos éléments principaux seront affichés.</p>
+                <p class="font-semibold text-[var(--text-strong)]">Theme preview</p>
+                <p class="mt-1 text-sm text-[var(--muted)]">This is how your main elements will be displayed.</p>
             </div>
             <button type="button" class="btn-primary">Bouton principal</button>
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>Enregistrer l’apparence</x-primary-button>
+            <x-primary-button>Save l’apparence</x-primary-button>
 
             @if (session('status') === 'appearance-updated')
                 <p class="flash-message text-sm font-medium text-green-600" data-flash-message role="status">
-                    Préférences enregistrées.
+                    Preferences saved.
                 </p>
             @endif
         </div>

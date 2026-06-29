@@ -64,7 +64,7 @@
                 <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Project workspace</p>
                 <div class="mt-2 flex items-center gap-3">
                     @if ($project->projectLogoUrl())
-                        <img src="{{ $project->projectLogoUrl() }}" alt="Logo de {{ $project->name }}"
+                        <img src="{{ $project->projectLogoUrl() }}" alt="Logo of {{ $project->name }}"
                             class="project-logo-circle project-logo-circle-large">
                     @endif
                     <h1 class="text-3xl font-semibold">{{ $project->name }}</h1>
@@ -203,7 +203,7 @@
 
                         @if ($columnTasks->count() > 15)
                             <button type="button" class="kanban-show-more" data-task-list-toggle aria-expanded="false">
-                                <span data-task-list-toggle-label>Voir {{ $columnTasks->count() - 15 }} tâches de plus</span>
+                                <span data-task-list-toggle-label>View {{ $columnTasks->count() - 15 }} more tasks</span>
                                 <i class="ti ti-chevron-down" data-task-list-toggle-icon></i>
                             </button>
                         @endif
@@ -301,7 +301,7 @@
 
                         @if ($columnTasks->count() > 15)
                             <button type="button" class="kanban-show-more" data-task-list-toggle aria-expanded="false">
-                                <span data-task-list-toggle-label>Voir {{ $columnTasks->count() - 15 }} tâches de plus</span>
+                                <span data-task-list-toggle-label>View {{ $columnTasks->count() - 15 }} more tasks</span>
                                 <i class="ti ti-chevron-down" data-task-list-toggle-icon></i>
                             </button>
                         @endif
@@ -342,7 +342,7 @@
 
                 <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                     <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
-                        <p class="text-xs text-[var(--muted)]">Entreprise</p>
+                        <p class="text-xs text-[var(--muted)]">Company</p>
                         <div class="mt-3 flex items-center gap-3">
                             @if ($project->companyLogo())
                                 <span class="project-company-circle project-company-circle-large">
@@ -350,13 +350,13 @@
                                 </span>
                             @endif
                             <p class="text-sm font-semibold text-[var(--text-strong)]">
-                                {{ $project->companyLabel() ?? 'Non définie' }}
+                                {{ $project->companyLabel() ?? 'Not set' }}
                             </p>
                         </div>
                     </div>
                     <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
-                        <p class="text-xs text-[var(--muted)]">Email client</p>
-                        <p class="mt-1 break-words text-sm font-semibold text-[var(--text-strong)]">{{ $project->client_email ?: 'Non défini' }}</p>
+                        <p class="text-xs text-[var(--muted)]">Client email</p>
+                        <p class="mt-1 break-words text-sm font-semibold text-[var(--text-strong)]">{{ $project->client_email ?: 'Not set' }}</p>
                     </div>
                     <div class="rounded-xl border border-[var(--line)] bg-[var(--card-soft)] p-4">
                         <p class="text-xs text-[var(--muted)]">Start date</p>

@@ -12,11 +12,11 @@
             ->filter(fn ($project) => $project->end_date && $project->end_date->isPast() && $project->status !== 'completed')
             ->count();
         $rows = [
-            ['label' => 'Déploiement', 'value' => $completed, 'color' => '#00a86b'],
-            ['label' => 'Teste', 'value' => $testing, 'color' => '#4f46e5'],
-            ['label' => 'Développement', 'value' => $inProgress, 'color' => '#d97706'],
-            ['label' => 'Cahier charge', 'value' => $pending, 'color' => '#c50064'],
-            ['label' => 'En retard', 'value' => $overdue, 'color' => '#dc2626'],
+            ['label' => 'Deployment', 'value' => $completed, 'color' => '#00a86b'],
+            ['label' => 'Testing', 'value' => $testing, 'color' => '#4f46e5'],
+            ['label' => 'Development', 'value' => $inProgress, 'color' => '#d97706'],
+            ['label' => 'Scope', 'value' => $pending, 'color' => '#c50064'],
+            ['label' => 'Overdue', 'value' => $overdue, 'color' => '#dc2626'],
         ];
     @endphp
 
@@ -25,13 +25,13 @@
             <div class="flex items-center gap-3">
                 <span class="h-2 w-2 rounded-full bg-[#c50064] shadow-[0_0_8px_rgba(197,0,100,0.5)]"></span>
                 <div>
-                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projets - Rapports</h2>
-                    <p class="mt-1 text-[12.5px] text-[#888888]">Synthese du workspace.</p>
+                    <h2 class="font-['Syne'] text-base font-bold text-[#0a0a0a]">Projects - Reports</h2>
+                    <p class="mt-1 text-[12.5px] text-[#888888]">Workspace summary.</p>
                 </div>
             </div>
             <a href="{{ route('projects.table', $navigationQuery) }}" class="btn-secondary">
                 <i class="ti ti-table mr-1"></i>
-                Ouvrir le tableau
+                Open table
             </a>
         </div>
 
@@ -42,12 +42,12 @@
                 <p class="mt-2 text-xs text-[#888888]">All workspace projects</p>
             </article>
             <article class="metric-card">
-                <p class="metric-label">Déploiement</p>
+                <p class="metric-label">Deployment</p>
                 <p class="metric-value mt-3">{{ $completed }}</p>
                 <p class="mt-2 text-xs text-[#00a86b]">{{ round(($completed / $total) * 100) }}% of total</p>
             </article>
             <article class="metric-card">
-                <p class="metric-label">Développement</p>
+                <p class="metric-label">Development</p>
                 <p class="metric-value mt-3">{{ $inProgress }}</p>
                 <p class="mt-2 text-xs text-[#d97706]">Travail actif</p>
             </article>
@@ -62,8 +62,8 @@
             <article class="report-card p-5 lg:col-span-2">
                 <div class="mb-5 flex items-center justify-between">
                     <div>
-                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Répartition des statuts</h3>
-                        <p class="mt-1 text-[12.5px] text-[#888888]">Distribution des projets par statut.</p>
+                        <h3 class="font-['Syne'] text-[14px] font-bold text-[#0a0a0a]">Status breakdown</h3>
+                        <p class="mt-1 text-[12.5px] text-[#888888]">Project distribution by status.</p>
                     </div>
                     <i class="ti ti-chart-bar text-xl text-[#c50064]"></i>
                 </div>
@@ -93,7 +93,7 @@
                             <span class="ml-3 text-[11px] text-[#999999]">{{ $project->created_at->format('d M') }}</span>
                         </a>
                     @empty
-                        <p class="py-6 text-center text-sm text-[#888888]">Aucune activite.</p>
+                        <p class="py-6 text-center text-sm text-[#888888]">Noe activite.</p>
                     @endforelse
                 </div>
             </article>
