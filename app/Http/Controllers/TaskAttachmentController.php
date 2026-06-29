@@ -19,7 +19,7 @@ class TaskAttachmentController extends Controller
             'attachments.*' => [
                 'file',
                 'max:10240',
-                'mimes:jpg,jpeg,png,webp,gif,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv,zip,rar',
+                'mimes:jpg,jpeg,png,webp,gif,mp4,mov,webm,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv,zip,rar',
             ],
         ]);
 
@@ -46,6 +46,20 @@ class TaskAttachmentController extends Controller
         abort_unless(Storage::exists($attachment->path), Response::HTTP_NOT_FOUND);
 
         return Storage::download($attachment->path, $attachment->original_name);
+    }
+
+    public function preview(Request $request, TaskAttachment $attachment)
+    {
+        $attachment->load('task.project');
+
+        abort_unless($attachment->task?->project?->isVisibleTo($request->user()), Response::HTTP_FORBIDDEN);
+        abort_unless($attachment->isImage(), Response::HTTP_NOT_FOUND);
+        abort_unless(Storage::exists($attachment->path), Response::HTTP_NOT_FOUND);
+
+        return Storage::response($attachment->path, $attachment->original_name, [
+            'Content-Type' => $attachment->mime_type ?: 'image/jpeg',
+            'Content-Disposition' => 'inline; filename="'.$attachment->original_name.'"',
+        ]);
     }
 
     public function destroy(Request $request, TaskAttachment $attachment)
