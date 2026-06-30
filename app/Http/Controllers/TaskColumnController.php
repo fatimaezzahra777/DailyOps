@@ -12,7 +12,7 @@ class TaskColumnController extends Controller
 {
     public function store(Request $request, Project $project): RedirectResponse
     {
-        abort_if(! $project->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $project->canManageTasks($request->user()), Response::HTTP_FORBIDDEN);
 
         $validated = $request->validate([
             'name' => 'required|string|max:80',
@@ -28,7 +28,7 @@ class TaskColumnController extends Controller
 
     public function update(Request $request, TaskColumn $taskColumn): RedirectResponse
     {
-        abort_if(! $taskColumn->project->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $taskColumn->project->canManageTasks($request->user()), Response::HTTP_FORBIDDEN);
 
         $validated = $request->validate([
             'name' => 'required|string|max:80',
@@ -41,7 +41,7 @@ class TaskColumnController extends Controller
 
     public function destroy(Request $request, TaskColumn $taskColumn): RedirectResponse
     {
-        abort_if(! $taskColumn->project->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $taskColumn->project->canManageTasks($request->user()), Response::HTTP_FORBIDDEN);
 
         $taskColumn->tasks()->update([
             'task_column_id' => null,

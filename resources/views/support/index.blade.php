@@ -9,7 +9,7 @@
             </div>
             <a href="{{ route('support.create') }}" class="btn-secondary">
                 <i class="ti ti-external-link mr-1"></i>
-                Page client
+                Client page
             </a>
         </div>
 
@@ -20,7 +20,7 @@
                         <tr>
                             <th>Client</th>
                             <th>Project</th>
-                            <th>Titre</th>
+                            <th>Title</th>
                             <th>Expiration</th>
                             <th class="text-right">Action</th>
                         </tr>
@@ -32,7 +32,7 @@
                                     <div class="font-medium text-[var(--text-strong)]">{{ $conversation->first_name }} {{ $conversation->last_name }}</div>
                                     <div class="text-xs text-[var(--muted)]">{{ $conversation->email }}</div>
                                 </td>
-                                <td>{{ $conversation->project?->name ?? 'Project supprime' }}</td>
+                                <td>{{ $conversation->project?->name ?? 'Deleted project' }}</td>
                                 <td class="max-w-xs truncate">{{ $conversation->title }}</td>
                                 <td>
                                     <span class="{{ $conversation->isExpired() ? 'text-[var(--red)]' : 'text-[var(--green)]' }}">

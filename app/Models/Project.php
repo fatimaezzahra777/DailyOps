@@ -197,4 +197,10 @@ class Project extends Model
     {
         return $user->isAdmin() || $this->manager_id === $user->id;
     }
+
+    public function canManageTasks(User $user): bool
+    {
+        return $this->isManagedBy($user)
+            || $this->collaborators()->where('users.id', $user->id)->exists();
+    }
 }

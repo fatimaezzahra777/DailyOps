@@ -59,7 +59,7 @@ class TaskController extends Controller
         ];
 
         $project = Project::with('collaborators')->find($input['project_id']);
-        abort_if(! $project || ! $project->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $project || ! $project->canManageTasks($request->user()), Response::HTTP_FORBIDDEN);
 
         $validator = Validator::make($input, [
 
@@ -106,8 +106,6 @@ class TaskController extends Controller
 
         return back()->with('success', 'Task created successfully.');
     }
-    // afficher details d'une tache
-
     public function show($id)
     {
         $task = $this->taskService->getTaskById($id);
@@ -119,7 +117,7 @@ class TaskController extends Controller
     public function edit($id)
     {
         $task = $this->taskService->getTaskById($id);
-        abort_if(! $task->project?->isManagedBy(request()->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $task->project?->canManageTasks(request()->user()), Response::HTTP_FORBIDDEN);
 
         $projects = $this->availableProjects(request());
 
@@ -156,14 +154,14 @@ class TaskController extends Controller
 
         $validated = $validator->validated();
         $task = $this->taskService->getTaskById($id);
-        abort_if(! $task->project?->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $task->project?->canManageTasks($request->user()), Response::HTTP_FORBIDDEN);
 
         $project = Project::with('collaborators')->findOrFail($validated['project_id']);
-        abort_if(! $project->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $project->canManageTasks($request->user()), Response::HTTP_FORBIDDEN);
 
         if (filled($validated['task_column_id']) && ! TaskColumn::where('project_id', $project->id)->whereKey($validated['task_column_id'])->exists()) {
             return back()
-                ->withErrors(['task_column_id' => 'La colonne choisie doit appartenir au project.'], "updateTask.{$id}")
+                ->withErrors(['task_column_id' => 'The selected column must belong to the project.'], "updateTask.{$id}")
                 ->withInput()
                 ->with('open_modal', "edit-task-modal-{$id}");
         }
@@ -185,7 +183,7 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = $this->taskService->getTaskById($id);
-        abort_if(! $task->project?->isManagedBy(request()->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $task->project?->canManageTasks(request()->user()), Response::HTTP_FORBIDDEN);
 
         $this->taskService->deleteTask($id);
 
@@ -195,7 +193,7 @@ class TaskController extends Controller
     public function changeStatus(Request $request, $id)
     {
         $task = $this->taskService->getTaskById($id);
-        abort_if(! $task->project?->isManagedBy($request->user()), Response::HTTP_FORBIDDEN);
+        abort_if(! $task->project?->canManageTasks($request->user()), Response::HTTP_FORBIDDEN);
 
         $validated = $request->validate([
             'status' => 'nullable|in:todo,in_progress,done',

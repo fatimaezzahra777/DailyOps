@@ -22,16 +22,24 @@ Route::get('/', function () {
 });
 
 Route::get('/project-invitations/{invitation}/accept', [ProjectInvitationController::class, 'accept'])
+    ->middleware('signed')
     ->name('project-invitations.accept');
 
 Route::get('/project-invitations/{invitation}/decline', [ProjectInvitationController::class, 'decline'])
+    ->middleware('signed')
     ->name('project-invitations.decline');
 
 Route::redirect('/support', '/dailyops/support');
 Route::get('/dailyops/support', [SupportController::class, 'create'])->name('support.create');
-Route::post('/dailyops/support', [SupportController::class, 'store'])->name('support.store');
-Route::get('/dailyops/support/chat/{token}', [SupportController::class, 'showClientChat'])->name('support.chat.show');
-Route::post('/dailyops/support/chat/{token}/messages', [SupportController::class, 'storeClientMessage'])->name('support.chat.messages.store');
+Route::post('/dailyops/support', [SupportController::class, 'store'])->middleware('throttle:5,1')->name('support.store');
+Route::get('/dailyops/support/chat/{token}', [SupportController::class, 'showClientChat'])
+    ->whereAlphaNumeric('token')
+    ->middleware('throttle:30,1')
+    ->name('support.chat.show');
+Route::post('/dailyops/support/chat/{token}/messages', [SupportController::class, 'storeClientMessage'])
+    ->whereAlphaNumeric('token')
+    ->middleware('throttle:20,1')
+    ->name('support.chat.messages.store');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])

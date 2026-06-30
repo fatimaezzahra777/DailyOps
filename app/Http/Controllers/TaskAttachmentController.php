@@ -66,7 +66,7 @@ class TaskAttachmentController extends Controller
     {
         $attachment->load('task.project');
 
-        $canDelete = $attachment->task?->project?->isManagedBy($request->user())
+        $canDelete = $attachment->task?->project?->canManageTasks($request->user())
             || $attachment->user_id === $request->user()->id;
 
         abort_unless($canDelete, Response::HTTP_FORBIDDEN);
