@@ -49,7 +49,7 @@
             <article class="metric-card">
                 <p class="metric-label">Development</p>
                 <p class="metric-value mt-3">{{ $inProgress }}</p>
-                <p class="mt-2 text-xs text-[#d97706]">Travail actif</p>
+                <p class="mt-2 text-xs text-[#d97706]">Active work</p>
             </article>
             <article class="metric-card">
                 <p class="metric-label">Overdue</p>
@@ -93,7 +93,7 @@
                             <span class="ml-3 text-[11px] text-[#999999]">{{ $project->created_at->format('d M') }}</span>
                         </a>
                     @empty
-                        <p class="py-6 text-center text-sm text-[#888888]">Noe activite.</p>
+                        <p class="py-6 text-center text-sm text-[#888888]">No activity.</p>
                     @endforelse
                 </div>
             </article>
