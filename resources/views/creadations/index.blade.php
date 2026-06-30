@@ -55,7 +55,7 @@
 
             @if ($selectedFolder)
                 <a href="{{ route('creadations.index') }}" class="text-xs font-bold uppercase tracking-[0.12em] text-[#c50064] hover:text-[#9f0050]">
-                    View tout
+                    View all
                 </a>
             @endif
         </div>
