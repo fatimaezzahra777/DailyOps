@@ -42,7 +42,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Vidéos',
+                'name' => 'Videos',
                 'slug' => 'videos',
                 'icon' => 'smart_display',
                 'color' => '#c50064',
