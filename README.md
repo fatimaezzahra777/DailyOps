@@ -204,6 +204,10 @@ APP_KEY=
 APP_DEBUG=true
 APP_URL=http://127.0.0.1:8000
 
+ADMIN_NAME="DailyOps Admin"
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -222,6 +226,9 @@ MAIL_FROM_NAME="${APP_NAME}"
 BROADCAST_CONNECTION=reverb
 QUEUE_CONNECTION=database
 ```
+
+Avant d'exécuter les seeders en production, définir obligatoirement `ADMIN_PASSWORD`.
+Sans cette variable, `AdminSeeder` bloque la création du premier admin afin d'éviter un compte inaccessible avec un mot de passe généré aléatoirement.
 
 Pour utiliser les uploads de fichiers et logos projet, créer le lien symbolique de stockage:
 
