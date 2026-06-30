@@ -50,7 +50,7 @@
 
             <h2 class="text-xl font-bold text-black mb-2"
                 style="font-family: 'Syne', sans-serif;">
-                Bon retour
+               Welcome back
             </h2>
 
             <p class="text-gray-500 mb-8 text-sm">
