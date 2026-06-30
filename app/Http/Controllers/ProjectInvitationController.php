@@ -73,8 +73,6 @@ class ProjectInvitationController extends Controller
 
     public function accept(Request $request, ProjectInvitation $invitation): RedirectResponse
     {
-        abort_unless($request->hasValidSignature(), Response::HTTP_FORBIDDEN);
-
         if (! $invitation->isPending()) {
             return redirect()
                 ->route('projects.show', $invitation->project)
@@ -106,8 +104,6 @@ class ProjectInvitationController extends Controller
 
     public function decline(Request $request, ProjectInvitation $invitation): RedirectResponse
     {
-        abort_unless($request->hasValidSignature(), Response::HTTP_FORBIDDEN);
-
         if ($invitation->isPending()) {
             $invitation->update([
                 'status' => ProjectInvitation::STATUS_DECLINED,
