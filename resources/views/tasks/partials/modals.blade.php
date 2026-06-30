@@ -21,8 +21,8 @@
     <div class="modal-panel modal-panel-form">
         <div class="modal-header">
             <div>
-                <p class="modal-eyebrow">Create une task</p>
-                <h2 class="modal-title">Nouvelle task</h2>
+                <p class="modal-eyebrow">Create task</p>
+                <h2 class="modal-title">New task</h2>
                 <p class="modal-subtitle">Create a task without leaving this page.</p>
             </div>
             <button type="button" class="modal-close" data-modal-close aria-label="Close window">×</button>
@@ -44,7 +44,7 @@
             ])
 
             <div class="modal-actions">
-                <button type="submit" class="btn-primary">Create une task</button>
+                <button type="submit" class="btn-primary">Create task</button>
                 <button type="button" class="btn-secondary" data-modal-close>Cancel</button>
             </div>
         </form>
@@ -58,6 +58,7 @@
         $deleteModalId = "delete-task-modal-{$task->id}";
         $editBag = "updateTask.{$task->id}";
         $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
+        $canManageTask = $task->project?->canManageTasks(auth()->user()) ?? false;
     @endphp
 
     <div class="modal-shell {{ $openModal === $detailModalId ? '' : 'hidden' }}" id="{{ $detailModalId }}" data-modal tabindex="-1"
@@ -112,16 +113,18 @@
                         </dl>
                     </div>
 
-                    <div class="modal-actions">
-                        <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $editModalId }}"
-                            aria-label="Edit task" title="Edit task">
-                            <span class="material-symbols-rounded text-[20px]">edit</span>
-                        </button>
-                        <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $deleteModalId }}"
-                            aria-label="Delete task" title="Delete task">
-                            <span class="material-symbols-rounded text-[20px]">delete</span>
-                        </button>
-                    </div>
+                    @if ($canManageTask)
+                        <div class="modal-actions">
+                            <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $editModalId }}"
+                                aria-label="Edit task" title="Edit task">
+                                <span class="material-symbols-rounded text-[20px]">edit</span>
+                            </button>
+                            <button type="button" class="icon-button h-10 w-10 p-0" data-modal-switch="{{ $deleteModalId }}"
+                                aria-label="Delete task" title="Delete task">
+                                <span class="material-symbols-rounded text-[20px]">delete</span>
+                            </button>
+                        </div>
+                    @endif
                 </aside>
             </div>
         </div>

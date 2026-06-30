@@ -9,6 +9,7 @@
             'completed' => 'tag-chip tag-chip-emerald',
         ];
         $canManageProject = $project->isManagedBy(auth()->user());
+        $canManageTasks = $project->canManageTasks(auth()->user());
         $openModal = session('open_modal');
         $tasks = $project->tasks;
         $customTaskColumns = $project->taskColumns;
@@ -88,11 +89,13 @@
                         aria-label="Add collaborator" title="Add collaborator">
                         <span class="material-symbols-rounded text-[24px]">person_add</span>
                     </button>
+                    <a href="{{ route('projects.edit', $project) }}" class="btn-secondary">Edit project</a>
+                @endif
+                @if ($canManageTasks)
                     <button type="button" class="icon-button h-11 w-11 px-0" data-modal-open="create-task-modal"
                         aria-label="Add task" title="Add task">
                         <span class="material-symbols-rounded text-[24px]">add_task</span>
                     </button>
-                    <a href="{{ route('projects.edit', $project) }}" class="btn-secondary">Edit project</a>
                 @endif
                 <a href="{{ route('projects.index') }}" class="btn-secondary">Back to board</a>
             </div>
@@ -104,12 +107,14 @@
                     <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Project tasks</p>
                     <h2 class="mt-2 text-2xl font-semibold">Task board</h2>
                 </div>
-                @if ($canManageProject)
+                @if ($canManageTasks)
                     <div class="flex items-center gap-2">
-                        <button type="button" class="icon-button h-10 w-10 px-0" data-modal-open="invite-collaborator-modal"
-                            aria-label="Add collaborator" title="Add collaborator">
-                            <span class="material-symbols-rounded text-[22px]">person_add</span>
-                        </button>
+                        @if ($canManageProject)
+                            <button type="button" class="icon-button h-10 w-10 px-0" data-modal-open="invite-collaborator-modal"
+                                aria-label="Add collaborator" title="Add collaborator">
+                                <span class="material-symbols-rounded text-[22px]">person_add</span>
+                            </button>
+                        @endif
                         <button type="button" class="icon-button h-10 w-10 px-0" data-modal-open="create-task-modal"
                             aria-label="Add task" title="Add task">
                             <span class="material-symbols-rounded text-[22px]">add_task</span>
@@ -136,7 +141,7 @@
                                     <p class="kanban-lane-description">{{ $taskColumn['description'] }}</p>
                                 </div>
                             </div>
-                            @if ($canManageProject)
+                            @if ($canManageTasks)
                                 <button type="button" class="icon-button h-7 w-7 p-0" aria-label="Add task"
                                     data-modal-open="create-task-modal"
                                     data-create-task-status="{{ $status }}"
@@ -153,7 +158,7 @@
                                     $assigneeInitial = $assigneeName ? strtoupper(substr($assigneeName, 0, 1)) : null;
                                 @endphp
                                 <article class="task-card project-card {{ $taskColumn['cardAccent'] }} {{ $loop->index >= 15 ? 'hidden' : '' }}"
-                                    @if ($canManageProject) draggable="true" data-draggable-task @endif
+                                    @if ($canManageTasks) draggable="true" data-draggable-task @endif
                                     @if ($loop->index >= 15) data-task-overflow @endif
                                     data-task-id="{{ $task->id }}">
                                     <div class="flex items-start justify-between gap-3">
@@ -178,7 +183,7 @@
                                             <a href="{{ route('tasks.show', $task) }}" class="icon-button h-8 w-8 p-0" aria-label="View task" title="View task">
                                                 <span class="material-symbols-rounded text-[18px]">visibility</span>
                                             </a>
-                                            @if ($canManageProject)
+                                            @if ($canManageTasks)
                                                 <button type="button" class="icon-button h-8 w-8 p-0" data-modal-open="edit-task-modal-{{ $task->id }}"
                                                     aria-label="Edit task" title="Edit task">
                                                     <span class="material-symbols-rounded text-[18px]">edit</span>
@@ -226,7 +231,7 @@
                                     <p class="kanban-lane-description">Custom task workflow column.</p>
                                 </div>
                             </div>
-                            @if ($canManageProject)
+                            @if ($canManageTasks)
                                 <div class="flex items-center gap-1">
                                     <button type="button" class="icon-button h-7 w-7 p-0" aria-label="Add task"
                                         data-modal-open="create-task-modal"
@@ -253,7 +258,7 @@
                                     $assigneeInitial = $assigneeName ? strtoupper(substr($assigneeName, 0, 1)) : null;
                                 @endphp
                                 <article class="task-card project-card project-card-accent-empty {{ $loop->index >= 15 ? 'hidden' : '' }}"
-                                    @if ($canManageProject) draggable="true" data-draggable-task @endif
+                                    @if ($canManageTasks) draggable="true" data-draggable-task @endif
                                     @if ($loop->index >= 15) data-task-overflow @endif
                                     data-task-id="{{ $task->id }}">
                                     <div class="flex items-start justify-between gap-3">
@@ -278,7 +283,7 @@
                                             <a href="{{ route('tasks.show', $task) }}" class="icon-button h-8 w-8 p-0" aria-label="View task" title="View task">
                                                 <span class="material-symbols-rounded text-[18px]">visibility</span>
                                             </a>
-                                            @if ($canManageProject)
+                                            @if ($canManageTasks)
                                                 <button type="button" class="icon-button h-8 w-8 p-0" data-modal-open="edit-task-modal-{{ $task->id }}"
                                                     aria-label="Edit task" title="Edit task">
                                                     <span class="material-symbols-rounded text-[18px]">edit</span>
@@ -308,7 +313,7 @@
                     </section>
                 @endforeach
 
-                @if ($canManageProject)
+                @if ($canManageTasks)
                     <section class="board-column kanban-lane kanban-lane-empty">
                         <div class="kanban-lane-head">
                             <div class="flex min-w-0 items-start gap-3">
@@ -406,7 +411,7 @@
         </div>
     </section>
 
-    @if ($canManageProject)
+    @if ($canManageTasks)
         <div class="modal-shell {{ $openModal === 'create-task-column-modal' ? '' : 'hidden' }}" id="create-task-column-modal"
             data-reset-on-open="true" data-modal tabindex="-1"
             aria-hidden="{{ $openModal === 'create-task-column-modal' ? 'false' : 'true' }}">

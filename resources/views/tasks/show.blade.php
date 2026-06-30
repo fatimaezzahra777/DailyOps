@@ -15,7 +15,7 @@
         ];
 
         $assigneeName = $task->assignedUser?->name ?? $task->assigned_to;
-        $canManageTask = $task->project?->isManagedBy(auth()->user()) ?? false;
+        $canManageTask = $task->project?->canManageTasks(auth()->user()) ?? false;
     @endphp
 
     <section class="mx-auto max-w-6xl space-y-6">
@@ -64,8 +64,8 @@
                         <label for="task-attachments" class="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl bg-white/70 px-4 py-7 text-center transition hover:bg-white">
                             <span class="material-symbols-rounded text-[34px] text-[#e8007d]">upload_file</span>
                             <span>
-                                <span class="block text-sm font-semibold text-[var(--text-strong)]">Glissez vos files ou cliquez ici</span>
-                                <span class="mt-1 block text-xs text-[var(--muted)]">Images, PDF, Office, ZIP — max 10 Mo par fichier.</span>
+                                <span class="block text-sm font-semibold text-[var(--text-strong)]">Drop your files here or click to browse</span>
+                                <span class="mt-1 block text-xs text-[var(--muted)]">Images, PDF, Office, ZIP — max 10 MB per file.</span>
                             </span>
                             <input id="task-attachments" name="attachments[]" type="file" multiple class="sr-only">
                         </label>
@@ -111,7 +111,7 @@
 
                                     @if ($canManageTask || $attachment->user_id === auth()->id())
                                         <form action="{{ route('task-attachments.destroy', $attachment) }}" method="POST"
-                                            onsubmit="return confirm('Delete ce fichier ?')">
+                                            onsubmit="return confirm('Delete this file?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-xs font-medium text-rose-400 hover:text-rose-300">Delete</button>
@@ -133,7 +133,7 @@
                             <h2 class="text-lg font-semibold">Comments</h2>
                             <p class="mt-1 text-sm text-[var(--muted)]">Keep task context in one place.</p>
                         </div>
-                        <span class="tag-chip">{{ $task->comments->count() }} commentaire{{ $task->comments->count() > 1 ? 's' : '' }}</span>
+                        <span class="tag-chip">{{ $task->comments->count() }} comment{{ $task->comments->count() > 1 ? 's' : '' }}</span>
                     </div>
 
                     <form action="{{ route('comments.store') }}" method="POST" class="mt-6 space-y-4">
@@ -179,7 +179,7 @@
                                     </div>
 
                                     <form action="{{ route('comments.destroy', $comment) }}" method="POST"
-                                        onsubmit="return confirm('Delete ce commentaire ?')">
+                                        onsubmit="return confirm('Delete this comment?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-xs font-medium text-rose-300 hover:text-rose-200">Delete</button>

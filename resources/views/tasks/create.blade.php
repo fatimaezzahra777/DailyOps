@@ -4,8 +4,8 @@
     <section class="mx-auto max-w-5xl space-y-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Create une task</p>
-                <h1 class="mt-2 text-3xl font-semibold">Nouvelle task</h1>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">Create task</p>
+                <h1 class="mt-2 text-3xl font-semibold">New task</h1>
                 <p class="mt-2 text-sm text-[var(--muted)]">Create a task and link it to the relevant project.</p>
             </div>
 
@@ -21,7 +21,7 @@
                 @include('tasks.partials.form')
 
                 <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <button type="submit" class="btn-primary">Create une task</button>
+                    <button type="submit" class="btn-primary">Create task</button>
                     <a href="{{ route('tasks.index') }}" class="btn-secondary">Cancel</a>
                 </div>
             </form>
